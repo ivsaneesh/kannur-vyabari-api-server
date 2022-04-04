@@ -39,13 +39,20 @@ var db = function (app) {
 			}
 
 		} catch (e) {
-				console.log("Error => ", e)
-		 }
+			console.log("Error => ", e)
+		}
 		return errors;
 	}
 
 
 	this.models = {};
+	this.models.Permission = require('../model/permission.js')(this.sequelize, this.Sequelize);
+	this.models.UserPermissions = require('../model/user_permissions.js')(this.sequelize, this.Sequelize);
+	this.models.User = require('../model/user.js')(this.sequelize, this.Sequelize);
+
+	//relations for user
+	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
+	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "UserRoles" });
 };
 module.exports = db;
 

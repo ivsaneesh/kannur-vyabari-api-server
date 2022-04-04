@@ -1,7 +1,8 @@
 var path = require('path')
 var path_controller = path.normalize(__dirname + "/../controllers")
 var path_services = path.normalize(__dirname + "/../services")
-var index = require(path_services + '/index')
+var index = require(path_services + '/index');
+var user = require(path_services + '/user')
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -11,5 +12,8 @@ module.exports = function(app) {
         logger.warn("warn message")
         logger.error("error message")
         index.home(req, res)
+    });
+    app.post('/user/register',  function(req, res)  {
+        user.create(req, res)
     });
 }
