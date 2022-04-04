@@ -1,0 +1,14 @@
+{"level":"warn","message":"warn message","service":"user-service"}
+{"level":"error","message":"error message","service":"user-service"}
+{"level":"warn","message":"warn message","service":"user-service"}
+{"level":"error","message":"error message","service":"user-service"}
+{"level":"error","message":"log error","service":"user-service"}
+{"level":"warn","message":"log warn","service":"user-service"}
+{"level":"warn","message":"warn message","service":"user-service"}
+{"level":"error","message":"error message","service":"user-service"}
+{"level":"error","message":"log error","service":"user-service"}
+{"level":"warn","message":"log warn","service":"user-service"}
+{"level":"warn","message":"warn message","service":"user-service"}
+{"level":"error","message":"error message","service":"user-service"}
+{"level":"error","message":"log error","service":"user-service"}
+{"level":"warn","message":"log warn","service":"user-service"}
