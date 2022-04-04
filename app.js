@@ -73,6 +73,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+app.use(express.json());
+app.use(express.urlencoded());
+
 app.set('logger', new logger());
 
 app.use(session({
