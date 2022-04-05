@@ -18,6 +18,14 @@ exports.isNotUndefined = function(terms) {
               return false;
           }
 }
+exports.isValidMobile = function(value){
+	if(/^((?!(0))[0-9]{10})$/.test(value)){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
 /*
 |--------------------------------------------------------------------------
 | isValidJSONString
