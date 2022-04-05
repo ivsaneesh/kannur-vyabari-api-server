@@ -1,7 +1,7 @@
 "use strict";
 var path = require('path')
 var moment = require('moment')
-//var utils = require("../../helper/utils")
+var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
 class Users {
@@ -17,11 +17,33 @@ class Users {
         var transaction;
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try {
-            transaction = await sequelize.sequelize.transaction();
-console.log(moment(new Date()).format("X"));
+        try {           
             if (!req.body.permission_id && req.body.permission_id !== 0 ) {
                 return { "status": "error", "message": "There is no permission id specified!" };
+            }
+            if (!utils.isNotUndefined(req.body.first_name)) {
+                return { "status": "error", "message": "First name is required!" };
+            }
+            if (!utils.isNotUndefined(req.body.mobile)) {
+                return { "status": "error", "message": "Mobile is required!" };
+            }
+            if (!utils.isNotUndefined(req.body.username)) {
+                return { "status": "error", "message": "Username is required!" };
+            }
+            if (!utils.isNotUndefined(req.body.password)) {
+                return { "status": "error", "message": "password is required!" };
+            }
+            if (!utils.isValidMobile(req.body.mobile)) {
+                return { "status": "error", "message": "Mobile number is not valid!" };
+            }
+            var usernameExist = api.findAllAsync(sequelize, "User", { 'where': { 'username': req.body.username } });
+            var mobileExist = api.findAllAsync(sequelize, "User", { 'where': { 'mobile': req.body.mobile } });
+            let [usernameExistResult, mobileExistResult] = await Promise.all([usernameExist, mobileExist]);
+            if(usernameExistResult && usernameExistResult.length > 0){
+                return { "status": "error", "message": "Username is already registered!" };
+            }
+            if(mobileExistResult && mobileExistResult.length > 0){
+                return { "status": "error", "message": "Mobile is already used!" };
             }
             var user_data = {
                 'first_name': req.body.first_name ? req.body.first_name : null,
@@ -34,6 +56,7 @@ console.log(moment(new Date()).format("X"));
                 'type': req.body.type ? req.body.type : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
             }
+            transaction = await sequelize.sequelize.transaction();
             //create user
             var userResult = await api.createT(sequelize, "User", user_data, transaction);
             var permissionObj = { 
