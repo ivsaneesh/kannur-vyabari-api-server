@@ -49,10 +49,19 @@ var db = function (app) {
 	this.models.Permission = require('../model/permission.js')(this.sequelize, this.Sequelize);
 	this.models.UserPermissions = require('../model/user_permissions.js')(this.sequelize, this.Sequelize);
 	this.models.User = require('../model/user.js')(this.sequelize, this.Sequelize);
+	this.models.Member = require('../model/member.js')(this.sequelize, this.Sequelize);
+	this.models.Family = require('../model/family.js')(this.sequelize, this.Sequelize);
+	this.models.Business = require('../model/business.js')(this.sequelize, this.Sequelize);
+	this.models.Nominee = require('../model/nominee.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
-	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "UserRoles" });
+	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "Permission" });
+	this.models.Member.hasMany(this.models.Business, { foreignKey: "member_id", as: "Business" });
+	this.models.Member.hasMany(this.models.Family, { foreignKey: "member_id", as: "Family" });
+	this.models.Member.hasMany(this.models.Nominee, { foreignKey: "member_id", as: "Nominee" });
+
+
 };
 module.exports = db;
 
