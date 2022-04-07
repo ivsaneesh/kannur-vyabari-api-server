@@ -57,7 +57,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     modified_on: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
+    },
+    dob: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     },
     active: {
       type: DataTypes.INTEGER,

@@ -20,4 +20,7 @@ module.exports = function(app) {
     app.post('/member/register',  function(req, res)  {
         member.createMember(req, res)
     });
+    app.post('/member/list',  function(req, res)  {
+        member.listMember(req, res)
+    });
 }
