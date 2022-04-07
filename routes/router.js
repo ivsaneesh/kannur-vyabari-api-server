@@ -2,7 +2,8 @@ var path = require('path')
 var path_controller = path.normalize(__dirname + "/../controllers")
 var path_services = path.normalize(__dirname + "/../services")
 var index = require(path_services + '/index');
-var user = require(path_services + '/user')
+var user = require(path_services + '/user');
+var member = require(path_services + '/member');
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -15,5 +16,8 @@ module.exports = function(app) {
     });
     app.post('/user/register',  function(req, res)  {
         user.create(req, res)
+    });
+    app.post('/member/register',  function(req, res)  {
+        member.createMember(req, res)
     });
 }
