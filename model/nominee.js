@@ -32,10 +32,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    bank_name: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
     created_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -50,18 +46,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
-    },
-    account_holder_name: {
-      type: DataTypes.STRING(300),
-      allowNull: true
-    },
-    account_number: {
-      type: DataTypes.STRING(50),
-      allowNull: true
-    },
-    ifsc_code: {
-      type: DataTypes.STRING(50),
-      allowNull: true
     }
   }, {
     sequelize,

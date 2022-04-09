@@ -1,54 +1,77 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('external_entity_payout', {
+  return sequelize.define('collector', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    member_id: {
-      type: DataTypes.INTEGER,
+    first_name: {
+      type: DataTypes.STRING(150),
       allowNull: false
     },
-    external_entity_id: {
-      type: DataTypes.INTEGER,
+    middle_name: {
+      type: DataTypes.STRING(150),
+      allowNull: true
+    },
+    last_name: {
+      type: DataTypes.STRING(150),
+      allowNull: true
+    },
+    mobile: {
+      type: DataTypes.STRING(20),
       allowNull: false
     },
-    bill_amount: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      defaultValue: 0
-    },
-    amount_given: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    payout_date: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    offer_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    bill_details: {
+    address: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    created_on: {
+    aadhar: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    area_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    unit_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    created_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    designation: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    modified_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'external_entity_payout',
+    tableName: 'collector',
     timestamps: false,
     indexes: [
       {
         name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "id",
         unique: true,
         using: "BTREE",
         fields: [

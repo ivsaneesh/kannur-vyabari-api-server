@@ -1,37 +1,36 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_payout', {
+  return sequelize.define('district_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
+    amount: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    credit_debit: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     member_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    collected: {
-      type: DataTypes.FLOAT,
-      allowNull: false
+    created_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
-    deduction: {
-      type: DataTypes.FLOAT,
-      allowNull: false
+    modified_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
-    deduction_reason: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    due: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    given: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    payout_date: {
+    deleted: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -40,18 +39,13 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    created_on: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
     cheque_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_payout',
+    tableName: 'district_payout',
     timestamps: false,
     indexes: [
       {

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_ledger', {
+  return sequelize.define('unit_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -16,24 +16,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    collected_from_type: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    collected_from_id: {
+    member_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    given_to_type: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    given_to_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    details: {
-      type: DataTypes.TEXT,
       allowNull: false
     },
     created_on: {
@@ -50,10 +34,18 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    cheque_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_ledger',
+    tableName: 'unit_payout',
     timestamps: false,
     indexes: [
       {

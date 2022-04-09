@@ -1,57 +1,54 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_payout', {
+  return sequelize.define('area', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    member_id: {
+    name: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    id_number: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    manager_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    collected: {
-      type: DataTypes.FLOAT,
+    manager_type: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    deduction: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    deduction_reason: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    due: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    given: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    payout_date: {
+    deleted: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
-    },
-    details: {
-      type: DataTypes.TEXT,
-      allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    cheque_id: {
+    modified_on: {
       type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    mobile: {
+      type: DataTypes.STRING(20),
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_payout',
+    tableName: 'area',
     timestamps: false,
     indexes: [
       {

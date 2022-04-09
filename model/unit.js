@@ -15,6 +15,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(50),
       allowNull: false
     },
+    manager_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    manager_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     deleted: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -29,6 +37,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    mobile: {
+      type: DataTypes.STRING(20),
+      allowNull: false
     }
   }, {
     sequelize,

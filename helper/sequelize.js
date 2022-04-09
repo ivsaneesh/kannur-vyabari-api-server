@@ -53,6 +53,7 @@ var db = function (app) {
 	this.models.Family = require('../model/family.js')(this.sequelize, this.Sequelize);
 	this.models.Business = require('../model/business.js')(this.sequelize, this.Sequelize);
 	this.models.Nominee = require('../model/nominee.js')(this.sequelize, this.Sequelize);
+	this.models.Collection = require('../model/collection.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
@@ -60,6 +61,7 @@ var db = function (app) {
 	this.models.Member.hasMany(this.models.Business, { foreignKey: "member_id", as: "Business" });
 	this.models.Member.hasMany(this.models.Family, { foreignKey: "member_id", as: "Family" });
 	this.models.Member.hasMany(this.models.Nominee, { foreignKey: "member_id", as: "Nominee" });
+	this.models.Collection.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
 
 
 };

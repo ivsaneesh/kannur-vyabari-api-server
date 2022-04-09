@@ -31,12 +31,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    division: {
+    area_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    unit: {
+    unit_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0

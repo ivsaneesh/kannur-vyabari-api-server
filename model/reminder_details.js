@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_payout', {
+  return sequelize.define('reminder_details', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -11,27 +11,21 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    collected: {
-      type: DataTypes.FLOAT,
+    member_type: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    deduction: {
-      type: DataTypes.FLOAT,
-      allowNull: false
+    sms_call: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
-    deduction_reason: {
-      type: DataTypes.TEXT,
-      allowNull: false
+    created_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
-    due: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    given: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    payout_date: {
+    modified_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -39,19 +33,10 @@ module.exports = function(sequelize, DataTypes) {
     details: {
       type: DataTypes.TEXT,
       allowNull: false
-    },
-    created_on: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    cheque_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_payout',
+    tableName: 'reminder_details',
     timestamps: false,
     indexes: [
       {

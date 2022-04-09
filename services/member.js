@@ -89,13 +89,13 @@ class Member {
                 member_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }, { mobile: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.from_dob) && utils.isNotUndefined(req.body.to_dob)) {
-                member_condition.dob = { [Op.between]: [req.body.from_dob, req.body.to_dob] };
+                member_condition.date_of_birth = { [Op.between]: [req.body.from_dob, req.body.to_dob] };
             } else if (utils.isNotUndefined(req.body.from_dob)) {
-                member_condition.dob = { [Op.gte]: req.body.from_dob };
+                member_condition.date_of_birth = { [Op.gte]: req.body.from_dob };
             } else if (utils.isNotUndefined(req.body.to_dob)) {
-                member_condition.dob = { [Op.lte]: req.body.to_dob };
+                member_condition.date_of_birth = { [Op.lte]: req.body.to_dob };
             }else if(utils.isNotUndefined(req.body.from_dob) && utils.isNotUndefined(req.body.to_dob) && req.body.from_dob == req.body.to_dob){
-                member_condition.dob = req.body.from_dob;
+                member_condition.date_of_birth = req.body.from_dob;
             }
             if (utils.isNotUndefined(req.body.division_id)) {
                 member_condition.division_id = req.body.division_id;
@@ -105,6 +105,12 @@ class Member {
             }
             var include = [{ model: sequelize.models.Business, as: "Business"},{ model: sequelize.models.Family, as: "Family"},{ model: sequelize.models.Nominee, as: "Nominee"}]
             var json_obj = { where: member_condition, include: include }
+            json_obj.offset = offset
+            json_obj.limit = limit
+            json_obj.pagination = pagination
+            if (req.body.sort_column) {
+                json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
+            }
             var result = await api.findAllAsync(sequelize, "Member", json_obj);
             return res.json({ "status": 'success', "data": result });
         }

@@ -7,16 +7,16 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       primaryKey: true
     },
+    dead_member_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     member_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     collector_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    collector_type: {
-      type: DataTypes.STRING(20),
       allowNull: false
     },
     created_on: {
@@ -37,6 +37,11 @@ module.exports = function(sequelize, DataTypes) {
     amount_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    paid: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

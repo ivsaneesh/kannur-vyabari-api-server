@@ -19,6 +19,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: true
     },
+    date_of_birth: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     mobile: {
       type: DataTypes.STRING(20),
       allowNull: false
@@ -36,7 +41,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: "member_id"
     },
-    division_id: {
+    area_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -51,17 +56,21 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
+    photo: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    form_photo: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
     created_on: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
     modified_on: {
       type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    dob: {
-      type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     },
     active: {
       type: DataTypes.INTEGER,
