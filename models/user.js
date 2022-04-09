@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member', {
+  return sequelize.define('user', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -19,72 +19,59 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: true
     },
+    username: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
+    password: {
+      type: DataTypes.STRING(200),
+      allowNull: false
+    },
+    email: {
+      type: DataTypes.STRING(200),
+      allowNull: true
+    },
     mobile: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: true
     },
-    address: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    aadhar: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    register_number: {
-      type: DataTypes.INTEGER,
+    type: {
+      type: DataTypes.STRING(20),
       allowNull: false,
-      unique: "member_id"
+      defaultValue: "user"
     },
-    division_id: {
+    blocked: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    unit_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    designation: {
+    blocked_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
     created_on: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     modified_on: {
       type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    dob: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    active: {
-      type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    status: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    dead: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    in_active_reason: {
+    block_reason: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: false
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
-    tableName: 'member',
+    tableName: 'user',
     timestamps: false,
     indexes: [
       {
@@ -101,14 +88,7 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-        ]
-      },
-      {
-        name: "member_id",
-        unique: true,
-        using: "BTREE",
-        fields: [
-          { name: "register_number" },
+          { name: "middle_name" },
         ]
       },
     ]

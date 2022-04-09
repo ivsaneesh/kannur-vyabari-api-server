@@ -1,33 +1,18 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_payout', {
+  return sequelize.define('event_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    member_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    collected: {
+    bill_amount: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
-    deduction: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    deduction_reason: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    due: {
-      type: DataTypes.FLOAT,
-      allowNull: false
-    },
-    given: {
+    amount_given: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
@@ -36,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    details: {
+    bill_details: {
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -44,10 +29,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    cheque_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_payout',
+    tableName: 'event_payout',
     timestamps: false,
     indexes: [
       {

@@ -1,38 +1,47 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('event_payout', {
+  return sequelize.define('charity', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    bill_amount: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      defaultValue: 0
-    },
-    amount_given: {
+    amount: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    payout_date: {
+    credit_debit: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    bill_details: {
-      type: DataTypes.TEXT,
+    member_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    modified_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'event_payout',
+    tableName: 'charity',
     timestamps: false,
     indexes: [
       {

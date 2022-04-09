@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('family', {
+  return sequelize.define('nominee', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     aadhar: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: false
     },
     relation: {
       type: DataTypes.STRING(50),
@@ -23,6 +23,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false,
       defaultValue: "0"
+    },
+    percentage: {
+      type: DataTypes.FLOAT,
+      allowNull: false
     },
     member_id: {
       type: DataTypes.INTEGER,
@@ -37,10 +41,25 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
-    tableName: 'family',
-    timestamps: false
+    tableName: 'nominee',
+    timestamps: false,
+    indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
+    ]
   });
 };

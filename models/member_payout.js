@@ -1,38 +1,57 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('division', {
+  return sequelize.define('member_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    name: {
-      type: DataTypes.STRING(100),
+    member_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
-    id_number: {
-      type: DataTypes.STRING(50),
+    collected: {
+      type: DataTypes.FLOAT,
       allowNull: false
     },
-    deleted: {
+    deduction: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    deduction_reason: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    due: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    given: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    payout_date: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    modified_on: {
+    cheque_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'division',
+    tableName: 'member_payout',
     timestamps: false,
     indexes: [
       {

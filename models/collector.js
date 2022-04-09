@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('user', {
+  return sequelize.define('collector', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -19,59 +19,47 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: true
     },
-    username: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    password: {
-      type: DataTypes.STRING(200),
-      allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING(200),
-      allowNull: true
-    },
     mobile: {
       type: DataTypes.STRING(20),
-      allowNull: true
+      allowNull: false
     },
-    type: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      defaultValue: "user"
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
-    blocked: {
+    aadhar: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    area_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    blocked_on: {
+    unit_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
     created_on: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: false
+    },
+    designation: {
+      type: DataTypes.STRING(100),
+      allowNull: false
+    },
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     modified_on: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
-    block_reason: {
-      type: DataTypes.TEXT,
-      allowNull: true
-    },
-    deleted: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'user',
+    tableName: 'collector',
     timestamps: false,
     indexes: [
       {
@@ -88,7 +76,6 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "id" },
-          { name: "middle_name" },
         ]
       },
     ]

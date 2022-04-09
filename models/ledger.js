@@ -1,39 +1,34 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('external_entity_payout', {
+  return sequelize.define('ledger', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    member_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    external_entity_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    bill_amount: {
-      type: DataTypes.FLOAT,
-      allowNull: false,
-      defaultValue: 0
-    },
-    amount_given: {
+    amount: {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    payout_date: {
+    credit_debit: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
     },
-    offer_id: {
+    collector_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    bill_details: {
+    given_to_type: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    given_to_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    details: {
       type: DataTypes.TEXT,
       allowNull: false
     },
@@ -41,10 +36,20 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    modified_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,
-    tableName: 'external_entity_payout',
+    tableName: 'ledger',
     timestamps: false,
     indexes: [
       {

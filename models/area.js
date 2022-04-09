@@ -1,40 +1,32 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('member_ledger', {
+  return sequelize.define('area', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    amount: {
-      type: DataTypes.FLOAT,
+    name: {
+      type: DataTypes.STRING(100),
       allowNull: false
     },
-    credit_debit: {
+    id_number: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
+    manager_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    manager_type: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    deleted: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
-    },
-    collected_from_type: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    collected_from_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    given_to_type: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    given_to_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    details: {
-      type: DataTypes.TEXT,
-      allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
@@ -46,14 +38,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    deleted: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+    address: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    mobile: {
+      type: DataTypes.STRING(20),
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'member_ledger',
+    tableName: 'area',
     timestamps: false,
     indexes: [
       {

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('external_entity_ledger', {
+  return sequelize.define('bank_transaction', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
@@ -11,12 +11,12 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.FLOAT,
       allowNull: false
     },
-    external_entity_id: {
+    action: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    details: {
-      type: DataTypes.TEXT,
+    bank_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     created_on: {
@@ -36,7 +36,7 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'external_entity_ledger',
+    tableName: 'bank_transaction',
     timestamps: false,
     indexes: [
       {

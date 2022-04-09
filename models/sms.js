@@ -1,24 +1,19 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('unit', {
+  return sequelize.define('sms', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    name: {
-      type: DataTypes.STRING(100),
-      allowNull: false
-    },
-    id_number: {
-      type: DataTypes.STRING(50),
-      allowNull: false
-    },
-    deleted: {
+    type: {
       type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
+      allowNull: false
+    },
+    content: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
@@ -29,10 +24,19 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    type_data: {
+      type: DataTypes.TEXT,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'unit',
+    tableName: 'sms',
     timestamps: false,
     indexes: [
       {

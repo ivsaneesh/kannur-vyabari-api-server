@@ -264,6 +264,16 @@ class Api {
     return await sequelize.models[model].findAll(json)
   }
 
+  //create using async
+  async createAsync(sequelize, model, json) {
+    return await sequelize.models[model].create(json)
+  }
+
+  //create using async
+  async bulkCreateAsync(sequelize, model, json) {
+    return await sequelize.models[model].bulkCreate(json)
+  }
+
   //CRUD CREATE WITH TRANSACTION
   async createT(sequelize, model, json_obj, transaction) {
     return await sequelize.models[model].create(json_obj, { transaction })

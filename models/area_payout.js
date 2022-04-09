@@ -1,31 +1,24 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('external_entity', {
+  return sequelize.define('area_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    full_name: {
-      type: DataTypes.STRING(300),
+    amount: {
+      type: DataTypes.FLOAT,
       allowNull: false
     },
-    aadhar: {
+    credit_debit: {
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    type: {
-      type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     member_id: {
       type: DataTypes.INTEGER,
-      allowNull: true
-    },
-    bank_name: {
-      type: DataTypes.STRING(200),
-      allowNull: true
+      allowNull: false
     },
     created_on: {
       type: DataTypes.INTEGER,
@@ -42,21 +35,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    account_holder_name: {
-      type: DataTypes.STRING(300),
-      allowNull: true
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
     },
-    account_number: {
-      type: DataTypes.STRING(50),
-      allowNull: true
-    },
-    ifsc_code: {
-      type: DataTypes.STRING(50),
-      allowNull: true
+    cheque_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'external_entity',
+    tableName: 'area_payout',
     timestamps: false,
     indexes: [
       {

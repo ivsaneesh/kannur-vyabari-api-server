@@ -1,22 +1,23 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('collection', {
+  return sequelize.define('unit_payout', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
+    amount: {
+      type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    credit_debit: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     member_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    collector_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-    collector_type: {
-      type: DataTypes.STRING(20),
       allowNull: false
     },
     created_on: {
@@ -34,13 +35,17 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    amount_id: {
+    details: {
+      type: DataTypes.TEXT,
+      allowNull: false
+    },
+    cheque_id: {
       type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {
     sequelize,
-    tableName: 'collection',
+    tableName: 'unit_payout',
     timestamps: false,
     indexes: [
       {
