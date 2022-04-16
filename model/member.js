@@ -70,7 +70,8 @@ module.exports = function(sequelize, DataTypes) {
     },
     modified_on: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
+      defaultValue: 0
     },
     active: {
       type: DataTypes.INTEGER,
