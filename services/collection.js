@@ -1,7 +1,7 @@
 "use strict";
 var path = require('path')
 var moment = require('moment')
-var utils = require("../helper/utils");
+var util = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
 class Collection {
@@ -41,7 +41,7 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
-    async createBulkCollection(req, res) {
+    async createBulkCollection(collectionArray) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
         try {
@@ -49,7 +49,7 @@ class Collection {
                 return { "status": "error", "message": "Collection Array is required!" };
             }
             // inserting collection
-            var result = await api.bulkCreateAsync(sequelize, "Collection", req.body.collectionArray);
+            var result = await api.bulkCreateAsync(sequelize, "Collection", collectionArray);
             return { "status": 'success', "data": result };
         }
         catch (err) {
@@ -72,8 +72,13 @@ class Collection {
             if (util.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
             } 
-            var include = [{ model: sequelize.models.Business, as: "Business"},{ model: sequelize.models.Family, as: "Family"},{ model: sequelize.models.Nominee, as: "Nominee"}]
-            var json_obj = { where: collection_condition, include: include }
+            if (util.isNotUndefined(req.body.member_id)) {
+                collection_condition.dead_member_id = req.body.dead_member_id;
+            } 
+            if (util.isNotUndefined(req.body.paid)) {
+                collection_condition.paid = req.body.paid;
+            } 
+            var json_obj = { where: collection_condition }
             json_obj.offset = offset
             json_obj.limit = limit
             json_obj.pagination = pagination
