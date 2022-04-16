@@ -51,9 +51,16 @@ class Member {
                 transaction.rollback();
                 return res.json({ "status": 'error', "message": "something went wrong" });
             }
-            req.body.business_details.member_id = memberResult.id;
-            req.body.family_details.member_id = memberResult.id;
-            req.body.nominee_details.member_id = memberResult.id;
+            console.log("member Id",memberResult.id)
+            req.body.business_details.forEach((item)=>{
+                item.member_id = memberResult.id;
+            })
+            req.body.family_details.forEach((item)=>{
+                item.member_id = memberResult.id;
+            })
+            req.body.nominee_details.forEach((item)=>{
+                item.member_id = memberResult.id;
+            })
             var businessPromise = api.bulkCreateT(sequelize, "Business", req.body.business_details, transaction);
             var familyPromise = api.bulkCreateT(sequelize, "Family", req.body.family_details, transaction);
             var nomineePromise = api.bulkCreateT(sequelize, "Nominee", req.body.nominee_details, transaction);
@@ -85,6 +92,9 @@ class Member {
         var member_condition = {}
         try {   
 
+            if (utils.isNotUndefined(req.body.id)) {
+                member_condition.id = req.body.id;
+            }
             if (utils.isNotUndefined(req.body.search)) {
                 member_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }, { mobile: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
