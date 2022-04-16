@@ -1,9 +1,11 @@
-var path = require('path')
+var path = require('path');
+
 var path_controller = path.normalize(__dirname + "/../controllers")
 var path_services = path.normalize(__dirname + "/../services")
-var index = require(path_services + '/index');
-var user = require(path_services + '/user');
-var member = require(path_services + '/member');
+const index = require(path_services + '/index');
+const user = require(path_services + '/user');
+const member = require(path_services + '/member');
+const collection = require(path_services +'/collection');
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -22,5 +24,8 @@ module.exports = function(app) {
     });
     app.post('/member/list',  function(req, res)  {
         member.listMember(req, res)
+    });
+    app.post('/collection/list',  function(req, res)  {
+        collection.listCollection(req, res)
     });
 }
