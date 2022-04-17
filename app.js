@@ -12,8 +12,8 @@ var express = require('express');
 var path = require('path');
 var compression = require('compression');
 var cors = require('cors')
-const swaggerUI = require("swagger-ui-express");
-const docs = require('./docs');
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger-output.json')
 var helmet = require('helmet');
 var moment = require('moment');
 var app = express();
@@ -103,7 +103,7 @@ app.use(function (req, res, next) {
 
     next();
 });
-app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 require('./routes/router')(app);
 require('./routes/generic')(app);
