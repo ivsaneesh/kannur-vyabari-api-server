@@ -261,7 +261,7 @@ class Api {
 
   //Find all using join
   async findAllAsync(sequelize, model, json) {
-    return await sequelize.models[model].findAll(json)
+    return await sequelize.models[model][json.pagination ? (json.pagination == 1 ? 'findAndCountAll' : 'findAll') : 'findAll'](json)
   }
 
   //create using async

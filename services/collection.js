@@ -1,7 +1,7 @@
 "use strict";
 var path = require('path')
 var moment = require('moment')
-var util = require("../helper/utils");
+var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
 class Collection {
@@ -41,15 +41,13 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
-    async createBulkCollection(collectionArray) {
-        var sequelize = req.app.get('sequelize')
-        var logger = req.app.get('logger')
+    async createBulkCollection(collectionArray,transaction,sequelize,logger) {
         try {
-            if (!req.body.collectionArray) {
+            if (!collectionArray) {
                 return { "status": "error", "message": "Collection Array is required!" };
             }
             // inserting collection
-            var result = await api.bulkCreateAsync(sequelize, "Collection", collectionArray);
+            var result = await api.bulkCreateT(sequelize, "Collection", collectionArray,transaction);
             return { "status": 'success', "data": result };
         }
         catch (err) {
@@ -66,16 +64,16 @@ class Collection {
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collection_condition = {}
         try {  
-            if (util.isNotUndefined(req.body.id)) {
+            if (utils.isNotUndefined(req.body.id)) {
                 collection_condition.id = req.body.id;
             } 
-            if (util.isNotUndefined(req.body.member_id)) {
+            if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
             } 
-            if (util.isNotUndefined(req.body.member_id)) {
+            if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.dead_member_id = req.body.dead_member_id;
             } 
-            if (util.isNotUndefined(req.body.paid)) {
+            if (utils.isNotUndefined(req.body.paid)) {
                 collection_condition.paid = req.body.paid;
             } 
             var json_obj = { where: collection_condition }

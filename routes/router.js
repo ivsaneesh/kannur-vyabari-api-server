@@ -6,6 +6,7 @@ const index = require(path_services + '/index');
 const user = require(path_services + '/user');
 const member = require(path_services + '/member');
 const collection = require(path_services +'/collection');
+const death = require(path_services +'/death');
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -27,5 +28,8 @@ module.exports = function(app) {
     });
     app.post('/collection/list',  function(req, res)  {
         collection.listCollection(req, res)
+    });
+    app.post('/death/create',  function(req, res)  {
+        death.createDeath(req, res)
     });
 }

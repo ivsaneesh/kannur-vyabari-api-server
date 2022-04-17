@@ -54,6 +54,7 @@ var db = function (app) {
 	this.models.Business = require('../model/business.js')(this.sequelize, this.Sequelize);
 	this.models.Nominee = require('../model/nominee.js')(this.sequelize, this.Sequelize);
 	this.models.Collection = require('../model/collection.js')(this.sequelize, this.Sequelize);
+	this.models.Death = require('../model/death.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
