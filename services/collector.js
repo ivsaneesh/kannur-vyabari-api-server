@@ -14,31 +14,28 @@ class Collector {
         var logger = req.app.get('logger')
         try { 
             if (!utils.isNotUndefined(req.body.first_name)) {
-                return { "status": "error", "message": "First name is required!" };
+                return res.json({ "status": "error", "message": "First name is required!" });
             }
-            if (!utils.isNotUndefined(req.body.mobile)) {
-                return { "status": "error", "message": "Mobile is required!" };
+            if (!utils.isValidMobile(req.body.mobile)) {
+                return res.json({ "status": "error", "message": "Mobile is required!" });
             }
             if (!utils.isNotUndefined(req.body.address)) {
-                return { "status": "error", "message": "address is required!" };
+                return res.json({ "status": "error", "message": "address is required!" });
             }
             if (!utils.isNotUndefined(req.body.aadhar)) {
-                return { "status": "error", "message": "aadhar is required!" };
+                return res.json({ "status": "error", "message": "aadhar is required!" });
             }
             if (!utils.isNotUndefined(req.body.area_id)) {
-                return { "status": "error", "message": "area id is required!" };
+                return res.json({ "status": "error", "message": "area id is required!" });
             }
-            if (!utils.isValidMobile(req.body.unit_id)) {
-                return { "status": "error", "message": "Unit id is required!" };
+            if (!utils.isNotUndefined(req.body.unit_id)) {
+                return res.json({ "status": "error", "message": "Unit id is required!" });
             }
-            if (!utils.isValidMobile(req.body.designation)) {
-                return { "status": "error", "message": "designation is required!" };
+            if (!utils.isNotUndefined(req.body.designation)) {
+                return res.json({ "status": "error", "message": "designation is required!" });
             }
-            if (!utils.isValidMobile(req.body.designation)) {
-                return { "status": "error", "message": "designation is required!" };
-            }
-            if (!utils.isValidMobile(req.body.details)) {
-                return { "status": "error", "message": "details is required!" };
+            if (!utils.isNotUndefined(req.body.details)) {
+                return res.json({ "status": "error", "message": "details is required!" });
             }
             var collector_data = {
                 'first_name': req.body.first_name ? req.body.first_name : null,
@@ -79,8 +76,8 @@ class Collector {
             if (utils.isNotUndefined(req.body.search)) {
                 collector_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
-            if (utils.isNotUndefined(req.body.division_id)) {
-                collector_condition.division_id = req.body.division_id;
+            if (utils.isNotUndefined(req.body.area_id)) {
+                collector_condition.area_id = req.body.area_id;
             }
             if (utils.isNotUndefined(req.body.unit_id)) {
                 collector_condition.unit_id = req.body.unit_id;

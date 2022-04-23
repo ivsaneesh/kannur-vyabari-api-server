@@ -8,6 +8,7 @@ const member = require(path_services + '/member');
 const collection = require(path_services +'/collection');
 const death = require(path_services +'/death');
 const collector = require(path_services + '/collector');
+const unit = require(path_services + '/unit');
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -34,9 +35,15 @@ module.exports = function(app) {
         death.createDeath(req, res)
     });
     app.post('/collector/create',  function(req, res)  {
-        collector.createDeath(req, res)
+        collector.createCollector(req, res)
     });
     app.post('/collector/list',  function(req, res)  {
         collector.listCollector(req, res)
+    });
+    app.post('/unit/create',  function(req, res)  {
+        unit.createUnit(req, res)
+    });
+    app.post('/unit/list',  function(req, res)  {
+        unit.listUnit(req, res)
     });
 }
