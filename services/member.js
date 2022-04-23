@@ -27,9 +27,9 @@ class Member {
                 return res.json({ "status": "error", "message": "nominee details is required!" });
             }
             if(!req.body.basic_details.created_on){
-                req.body.basic_details.active = 1;
                 req.body.basic_details.created_on = moment(new Date()).format("X");
             }
+            req.body.basic_details.active = 1;
             req.body.business_details.forEach((item)=>{
                 if(!item.created_on){
                     item.created_on = moment(new Date()).format("X");
