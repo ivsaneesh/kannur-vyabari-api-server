@@ -59,6 +59,7 @@ var db = function (app) {
 	this.models.Unit = require('../model/unit.js')(this.sequelize, this.Sequelize);
 	this.models.Area = require('../model/area.js')(this.sequelize, this.Sequelize);
 
+
 	//relations for user
 	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
 	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "Permission" });
