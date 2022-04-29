@@ -9,6 +9,7 @@ const collection = require(path_services +'/collection');
 const death = require(path_services +'/death');
 const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
+const area = require(path_services + '/area');
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -45,5 +46,11 @@ module.exports = function(app) {
     });
     app.post('/unit/list',  function(req, res)  {
         unit.listUnit(req, res)
+    });
+    app.post('/area/create',  function(req, res)  {
+        area.createArea(req, res)
+    });
+    app.post('/area/list',  function(req, res)  {
+        area.listArea(req, res)
     });
 }
