@@ -57,6 +57,8 @@ var db = function (app) {
 	this.models.Death = require('../model/death.js')(this.sequelize, this.Sequelize);
 	this.models.Collector = require('../model/collector.js')(this.sequelize, this.Sequelize);
 	this.models.Unit = require('../model/unit.js')(this.sequelize, this.Sequelize);
+	this.models.Area = require('../model/area.js')(this.sequelize, this.Sequelize);
+
 
 	//relations for user
 	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
