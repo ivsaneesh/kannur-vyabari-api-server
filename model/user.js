@@ -62,7 +62,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     block_reason: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     deleted: {
       type: DataTypes.INTEGER,
