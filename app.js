@@ -23,7 +23,7 @@ const session = require('express-session');
 var redis_store = require('connect-redis')(session);
 var cookie_parser = require('cookie-parser');
 var timeout = require('connect-timeout');
-
+const auth = require('./middleware/auth');
 var cluster = require('cluster')
 var num_CPUs = require('os').cpus().length
 app.use(compression());
@@ -104,7 +104,7 @@ app.use(function (req, res, next) {
     next();
 });
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
-
+app.all('*', auth);
 require('./routes/router')(app);
 require('./routes/generic')(app);
 require('./routes/status')(app);

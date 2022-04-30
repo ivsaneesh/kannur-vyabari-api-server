@@ -61,7 +61,7 @@ var db = function (app) {
 
 
 	//relations for user
-	this.models.User.hasMany(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermissions' });
+	this.models.User.hasOne(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermission' });
 	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "Permission" });
 	this.models.Member.hasMany(this.models.Business, { foreignKey: "member_id", as: "Business" });
 	this.models.Member.hasMany(this.models.Family, { foreignKey: "member_id", as: "Family" });

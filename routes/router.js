@@ -10,6 +10,7 @@ const death = require(path_services +'/death');
 const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
 const area = require(path_services + '/area');
+
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
@@ -20,10 +21,13 @@ module.exports = function(app) {
         logger.error("error message")
         index.home(req, res)
     });
+    app.post('/login',  function(req, res)  {
+        index.login(req, res)
+    });
     app.post('/user/register',  function(req, res)  {
         user.create(req, res)
     });
-    app.post('/member/register',  function(req, res)  {
+    app.post('/member/register', function(req, res)  {
         member.createMember(req, res)
     });
     app.post('/member/list',  function(req, res)  {
