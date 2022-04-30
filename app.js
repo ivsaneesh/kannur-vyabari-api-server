@@ -24,6 +24,7 @@ var redis_store = require('connect-redis')(session);
 var cookie_parser = require('cookie-parser');
 var timeout = require('connect-timeout');
 const auth = require('./middleware/auth');
+const fileUpload = require("express-fileupload");
 var cluster = require('cluster')
 var num_CPUs = require('os').cpus().length
 app.use(compression());
@@ -103,6 +104,7 @@ app.use(function (req, res, next) {
 
     next();
 });
+app.use(fileUpload());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 app.all('*', auth);
 require('./routes/router')(app);

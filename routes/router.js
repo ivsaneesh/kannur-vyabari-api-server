@@ -10,6 +10,7 @@ const death = require(path_services +'/death');
 const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
 const area = require(path_services + '/area');
+const upload = require(path_services + '/upload');
 
 module.exports = function(app) {
  
@@ -56,5 +57,8 @@ module.exports = function(app) {
     });
     app.post('/area/list',  function(req, res)  {
         area.listArea(req, res)
+    });
+    app.post('/upload',  function(req, res)  {
+        upload.uploadFile(req, res)
     });
 }
