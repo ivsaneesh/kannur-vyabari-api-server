@@ -66,6 +66,8 @@ var db = function (app) {
 	this.models.Member.hasMany(this.models.Business, { foreignKey: "member_id", as: "Business" });
 	this.models.Member.hasMany(this.models.Family, { foreignKey: "member_id", as: "Family" });
 	this.models.Member.hasMany(this.models.Nominee, { foreignKey: "member_id", as: "Nominee" });
+	this.models.Member.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
+	this.models.Member.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 	this.models.Collection.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
 
 
