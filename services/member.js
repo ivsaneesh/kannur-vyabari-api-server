@@ -4,6 +4,8 @@ var moment = require('moment')
 var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
+var path_services = path.normalize(__dirname + "/../services/")
+var sms = require(path_services + '/sendsms')
 class Member {
 
     constructor() {
@@ -73,6 +75,8 @@ class Member {
                 'Nominee': nomineeResult
             }
             await transaction.commit();
+            var msg = 'Hi '+memberResult.first_name +', you are successfully enrolled into Vypari Vyavasayi ekopana samithi'
+            var result = await sms.sendSMS(memberResult.mobile,msg)
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
@@ -114,7 +118,7 @@ class Member {
             if (utils.isNotUndefined(req.body.unit_id)) {
                 member_condition.unit_id = req.body.unit_id;
             }
-            var include = [{ model: sequelize.models.Business, as: "Business"},{ model: sequelize.models.Family, as: "Family"},{ model: sequelize.models.Nominee, as: "Nominee"}]
+            var include = [{ model: sequelize.models.Business, as: "Business"},{ model: sequelize.models.Family, as: "Family"},{ model: sequelize.models.Nominee, as: "Nominee"}, { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name' ] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name' ] }]
             var json_obj = { where: member_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
