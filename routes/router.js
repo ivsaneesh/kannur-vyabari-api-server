@@ -58,6 +58,12 @@ module.exports = function(app) {
     app.post('/unit/list',  function(req, res)  {
         unit.listUnit(req, res)
     });
+    app.put('/unit/update',  function(req, res)  {
+        unit.updateUnit(req, res)
+    });
+    app.delete('/unit/delete',  function(req, res)  {
+        unit.deleteUnit(req, res)
+    });
     app.post('/area/create',  function(req, res)  {
         area.createArea(req, res)
     });
@@ -66,6 +72,9 @@ module.exports = function(app) {
     });
     app.put('/area/update',  function(req, res)  {
         area.updateArea(req, res)
+    });
+    app.delete('/area/delete',  function(req, res)  {
+        area.deleteArea(req, res)
     });
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)
