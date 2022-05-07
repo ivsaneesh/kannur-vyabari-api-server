@@ -94,6 +94,23 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+    async collectionAmount(req, res) {
+        var transaction;
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            var json_obj = { where: { 'deleted': 0 }};
+            // fetch the amount that is not deleted
+            var result = await api.findOneAsync(sequelize, "CollectionAmount", json_obj);
+
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("collection Amount fetch Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
     async createCollectionAmount(req, res) {
         var transaction;
         var sequelize = req.app.get('sequelize')
