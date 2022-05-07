@@ -48,7 +48,19 @@ class Member {
                 }
             })
             transaction = await sequelize.sequelize.transaction();
-            // inserting user permission
+            // Creating member id
+            var lastMemberResult = await api.findOneAsync(sequelize, "Member", { order: [ [ 'id', 'DESC' ]]} );
+            var newRegNo = '';
+            if(lastMemberResult && lastMemberResult.register_number){
+                let splittedArr = lastMemberResult.register_number.split('M');
+                let next = parseInt(splittedArr[1], 10);
+                next = next+1;
+                newRegNo = 'M' + next;
+            } else { //First entry in the table
+                newRegNo = 'M1'
+            }
+            req.body.basic_details.register_number = newRegNo;
+            // inserting user permission }
             var memberResult = await api.createT(sequelize, "Member", req.body.basic_details, transaction);
             if(!memberResult){
                 transaction.rollback();
@@ -76,7 +88,7 @@ class Member {
             }
             await transaction.commit();
             var msg = 'Hi '+memberResult.first_name +', you are successfully enrolled into Vypari Vyavasayi ekopana samithi'
-            var result = await sms.sendSMS(memberResult.mobile,msg)
+            var smsResult = await sms.sendSMS(memberResult.mobile,msg)
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
