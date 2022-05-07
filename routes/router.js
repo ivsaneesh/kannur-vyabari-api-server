@@ -34,6 +34,9 @@ module.exports = function(app) {
     app.post('/member/list',  function(req, res)  {
         member.listMember(req, res)
     });
+    app.get('/collectionAmount',  function(req, res)  {
+        collection.collectionAmount(req, res)
+    });
     app.post('/collectionAmount/create',  function(req, res)  {
         collection.createCollectionAmount(req, res)
     });
@@ -60,6 +63,9 @@ module.exports = function(app) {
     });
     app.post('/area/list',  function(req, res)  {
         area.listArea(req, res)
+    });
+    app.put('/area/update',  function(req, res)  {
+        area.updateArea(req, res)
     });
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)

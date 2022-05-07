@@ -16,18 +16,6 @@ class Area {
             if (!utils.isNotUndefined(req.body.name)) {
                 return res.json({ "status": "error", "message": "Name is required!" });
             }
-            if (!utils.isNotUndefined(req.body.manager_id)) {
-                return res.json({ "status": "error", "message": "Manager id is required!" });
-            }
-            if (!utils.isNotUndefined(req.body.manager_type)) {
-                return res.json({ "status": "error", "message": "manager type is required!" });
-            }
-            if (!utils.isNotUndefined(req.body.address)) {
-                return res.json({ "status": "error", "message": "address is required!" });
-            }
-            if (!utils.isValidMobile(req.body.mobile)) {
-                return res.json({ "status": "error", "message": "mobile is required!" });
-            }
             // Creating area id
             var lastAreaResult = await api.findOneAsync(sequelize, "Area", { order: [ [ 'id', 'DESC' ]]} );
             var newRegNo = '';
@@ -46,7 +34,6 @@ class Area {
                 'mobile': req.body.mobile ? req.body.mobile : null,
                 'id_number': req.body.id_number ? req.body.id_number : null,
                 'manager_id': req.body.manager_id ? req.body.manager_id : null,
-                'area_id': req.body.area_id ? req.body.area_id : null,
                 'manager_type': req.body.manager_type ? req.body.manager_type : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
             }
@@ -94,6 +81,39 @@ class Area {
         }
         catch (err) {
             logger.error("Area List Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+    async updateArea(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try { 
+            if (!utils.isNotUndefined(req.body.area_id)) {
+                return res.json({ "status": "error", "message": "area id is required!" });
+            } 
+            const area_data = {}
+            if (utils.isNotUndefined(req.body.name)) area_data.name = req.body.name;
+            if (utils.isNotUndefined(req.body.address)) area_data.address = req.body.address;
+            if (utils.isNotUndefined(req.body.mobile)) area_data.mobile = req.body.mobile;
+            if (utils.isNotUndefined(req.body.manager_type)) area_data.manager_type = req.body.manager_type;
+            if (utils.isNotUndefined(req.body.manager_id)) area_data.manager_id = req.body.manager_id;
+            area_data.modified_on = moment(new Date()).format("X");
+          
+            var condition = { where: { 'id': req.body.area_id } };
+
+            // updating area
+            api.updateCustom(sequelize, 'Area', area_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data, "message": message })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Area Update Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
