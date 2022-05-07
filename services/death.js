@@ -36,7 +36,7 @@ class Death {
                 'datetime': req.body.date_time ? req.body.date_time : null,
                 'details': req.body.details ? req.body.details : null,
                 'venue': req.body.venue ? req.body.venue : null,
-                'last_time': req.body.last_time ? req.body.last_time : null,
+                'last_date': req.body.last_date ? req.body.last_date : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
             }
             var member_data = {
