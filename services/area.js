@@ -16,9 +16,6 @@ class Area {
             if (!utils.isNotUndefined(req.body.name)) {
                 return res.json({ "status": "error", "message": "Name is required!" });
             }
-            if (!utils.isNotUndefined(req.body.id_number)) {
-                return res.json({ "status": "error", "message": "Id number is required!" });
-            }
             if (!utils.isNotUndefined(req.body.manager_id)) {
                 return res.json({ "status": "error", "message": "Manager id is required!" });
             }
@@ -31,6 +28,18 @@ class Area {
             if (!utils.isValidMobile(req.body.mobile)) {
                 return res.json({ "status": "error", "message": "mobile is required!" });
             }
+            // Creating area id
+            var lastAreaResult = await api.findOneAsync(sequelize, "Area", { order: [ [ 'id', 'DESC' ]]} );
+            var newRegNo = '';
+            if(lastAreaResult && lastAreaResult.id_number){
+                let splittedArr = lastAreaResult.id_number.split('A');
+                let next = parseInt(splittedArr[1], 10);
+                next = next+1;
+                newRegNo = 'A' + next;
+            } else { //First entry in the table
+                newRegNo = 'A1'
+            }
+            req.body.id_number = newRegNo;
             var area_data = {
                 'name': req.body.name ? req.body.name : null,
                 'address': req.body.address ? req.body.address : null,

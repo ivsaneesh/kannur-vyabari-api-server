@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     register_number: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(150),
       allowNull: false,
       unique: "member_id"
     },
