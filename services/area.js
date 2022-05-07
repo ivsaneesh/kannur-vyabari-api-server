@@ -118,6 +118,35 @@ class Area {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+    async deleteArea(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try { 
+            if (!utils.isNotUndefined(req.body.area_id)) {
+                return res.json({ "status": "error", "message": "area id is required!" });
+            } 
+            const area_data = {}
+            area_data.deleted = 1;
+            area_data.modified_on = moment(new Date()).format("X");
+          
+            var condition = { where: { 'id': req.body.area_id } };
+
+            // updating area to deleted 1
+            api.updateCustom(sequelize, 'Area', area_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data, "message": message })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Area delete Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
 }
 
 
