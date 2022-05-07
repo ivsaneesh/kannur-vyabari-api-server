@@ -34,6 +34,9 @@ module.exports = function(app) {
     app.post('/member/list',  function(req, res)  {
         member.listMember(req, res)
     });
+    app.post('/collectionAmount/create',  function(req, res)  {
+        collection.createCollectionAmount(req, res)
+    });
     app.post('/collection/list',  function(req, res)  {
         collection.listCollection(req, res)
     });

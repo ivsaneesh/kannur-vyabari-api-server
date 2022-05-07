@@ -54,6 +54,7 @@ var db = function (app) {
 	this.models.Business = require('../model/business.js')(this.sequelize, this.Sequelize);
 	this.models.Nominee = require('../model/nominee.js')(this.sequelize, this.Sequelize);
 	this.models.Collection = require('../model/collection.js')(this.sequelize, this.Sequelize);
+	this.models.CollectionAmount = require('../model/collection_amount.js')(this.sequelize, this.Sequelize);
 	this.models.Death = require('../model/death.js')(this.sequelize, this.Sequelize);
 	this.models.Collector = require('../model/collector.js')(this.sequelize, this.Sequelize);
 	this.models.Unit = require('../model/unit.js')(this.sequelize, this.Sequelize);
@@ -69,6 +70,7 @@ var db = function (app) {
 	this.models.Member.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
 	this.models.Member.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 	this.models.Collection.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
+	this.models.Collection.belongsTo(this.models.CollectionAmount, { foreignKey: "amount_id", as: "CollectionAmount" });
 
 
 };

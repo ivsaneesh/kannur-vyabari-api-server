@@ -10,6 +10,7 @@ class Collection {
 
     }
     async createCollection(req, res) {
+        var transaction;
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
         try {
@@ -22,6 +23,7 @@ class Collection {
             if (!req.body.amount_id) {
                 return res.json({ "status": "error", "message": "amount id is required!" });
             }
+            transaction = await sequelize.sequelize.transaction();
             var collection_data = {
                 'member_id': req.body.member_id ? req.body.member_id : null,
                 'dead_member_id': req.body.dead_member_id ? req.body.dead_member_id : null,
@@ -88,6 +90,41 @@ class Collection {
         }
         catch (err) {
             logger.error("Collection List Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+    async createCollectionAmount(req, res) {
+        var transaction;
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            if (!req.body.amount) {
+                return res.json({ "status": "error", "message": "amount is required!" });
+            } 
+            var collection_data = {
+                'amount': req.body.amount ? req.body.amount : null,
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+            }
+            transaction = await sequelize.sequelize.transaction();
+
+            var update_data = {
+                'deleted': 1,
+                'deleted_on': moment(new Date()).format("X")
+            }
+            var update_condition = {
+                where: { 'deleted': 0 }
+            }
+            // updating all amount in the table to deleted before adding new amount
+            
+            var colledtion_amount_update = api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
+
+            // inserting new amount
+            var result = await api.createAsync(sequelize, "CollectionAmount", collection_data, transaction);
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("collection Amount Create Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
