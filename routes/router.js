@@ -25,15 +25,21 @@ module.exports = function(app) {
     app.post('/login',  function(req, res)  {
         index.login(req, res)
     });
+    /// user
     app.post('/user/register',  function(req, res)  {
         user.create(req, res)
     });
+    app.post('/user/list',  function(req, res)  {
+        user.listUser(req, res)
+    });
+    /// member
     app.post('/member/register', function(req, res)  {
         member.createMember(req, res)
     });
     app.post('/member/list',  function(req, res)  {
         member.listMember(req, res)
     });
+    /// collection
     app.get('/collectionAmount',  function(req, res)  {
         collection.collectionAmount(req, res)
     });
@@ -43,15 +49,18 @@ module.exports = function(app) {
     app.post('/collection/list',  function(req, res)  {
         collection.listCollection(req, res)
     });
+    /// death
     app.post('/death/create',  function(req, res)  {
         death.createDeath(req, res)
     });
+    /// collector
     app.post('/collector/create',  function(req, res)  {
         collector.createCollector(req, res)
     });
     app.post('/collector/list',  function(req, res)  {
         collector.listCollector(req, res)
     });
+    /// unit
     app.post('/unit/create',  function(req, res)  {
         unit.createUnit(req, res)
     });
@@ -64,6 +73,7 @@ module.exports = function(app) {
     app.delete('/unit/delete',  function(req, res)  {
         unit.deleteUnit(req, res)
     });
+    /// area
     app.post('/area/create',  function(req, res)  {
         area.createArea(req, res)
     });
@@ -76,6 +86,7 @@ module.exports = function(app) {
     app.delete('/area/delete',  function(req, res)  {
         area.deleteArea(req, res)
     });
+    ///upload
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)
     });
