@@ -32,7 +32,7 @@ app.use(helmet())
 
 app.use(cookie_parser())
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(timeout('300s'));
 
 /***********************************
@@ -144,7 +144,7 @@ if (process.env.NODE_ENV == "development") {
             var host = server.address().address;
             var port = server.address().port;
             console.log('info', server.timeout, 'server.timeout')
-            console.error('host',host);
+            console.error('host', host);
             console.log('info', 'Server app listening at http://' + host + ':' + port + ', ENV : ' + process.env.NODE_ENV);
 
         });

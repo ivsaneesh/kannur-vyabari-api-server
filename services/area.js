@@ -61,7 +61,7 @@ class Area {
                 area_condition.id = req.body.id;
             }
             if (utils.isNotUndefined(req.body.search)) {
-                area_condition = { [Op.or]: [{ name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
+                area_condition = { [Op.or]: [{ name: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.manager_id)) {
                 area_condition.manager_id = req.body.manager_id;
