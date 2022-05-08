@@ -17,11 +17,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     manager_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     manager_type: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     deleted: {
       type: DataTypes.INTEGER,
@@ -40,12 +40,16 @@ module.exports = function(sequelize, DataTypes) {
     },
     address: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     mobile: {
       type: DataTypes.STRING(20),
+      allowNull: true
+    },
+    area_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
-    }
+    }   
   }, {
     sequelize,
     tableName: 'unit',
