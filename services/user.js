@@ -83,6 +83,38 @@ class Users {
             return { "status": 'error', "message": sequelize.getErrors(err) }
         }
     }
+    async listUser(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        var offset = req.body.start ? req.body.start : 0
+        var limit = req.body.limit ? req.body.limit : 10
+        var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
+        var user_condition = {}
+        try {   
+
+            if (utils.isNotUndefined(req.body.id)) {
+                user_condition.id = req.body.id;
+            }
+            if (utils.isNotUndefined(req.body.search)) {
+                user_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }, { mobile: { [Op.like]: '%' + req.body.search + '%' } }] };
+            }
+            var json_obj = { where: user_condition }
+            json_obj.offset = offset
+            json_obj.limit = limit
+            json_obj.pagination = pagination
+            if (req.body.sort_column) {
+                json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
+            }
+            var result = await api.findAllAsync(sequelize, "User", json_obj);
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("User List Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    } 
 }
 
 
