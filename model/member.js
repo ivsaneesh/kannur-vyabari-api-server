@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('member', {
     id: {
       autoIncrement: true,
@@ -28,12 +28,16 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: false
     },
+    email: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     address: {
       type: DataTypes.TEXT,
       allowNull: false
     },
     aadhar: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     register_number: {

@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     aadhar: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     relation: {
@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     percentage: {
       type: DataTypes.FLOAT,
-      allowNull: false
+      allowNull: true
     },
     member_id: {
       type: DataTypes.INTEGER,

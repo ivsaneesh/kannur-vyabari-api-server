@@ -12,8 +12,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     mobile: {
-      type: DataTypes.INTEGER,
-      allowNull: true
+      type: DataTypes.STRING(20),
+      allowNull: false
     },
     address: {
       type: DataTypes.TEXT,
