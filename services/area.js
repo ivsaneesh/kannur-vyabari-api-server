@@ -12,27 +12,25 @@ class Area {
     async createArea(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try { 
+        try {
             if (!utils.isNotUndefined(req.body.name)) {
                 return res.json({ "status": "error", "message": "Name is required!" });
             }
-            // Creating area id
-            var lastAreaResult = await api.findOneAsync(sequelize, "Area", { order: [ [ 'id', 'DESC' ]]} );
-            var newRegNo = '';
-            if(lastAreaResult && lastAreaResult.id_number){
-                let splittedArr = lastAreaResult.id_number.split('A');
-                let next = parseInt(splittedArr[1], 10);
-                next = next+1;
-                newRegNo = 'A' + next;
-            } else { //First entry in the table
-                newRegNo = 'A1'
+            if (!utils.isNotUndefined(req.body.id_number)) {
+                return res.json({ "status": "error", "message": "Area id number is required!" });
             }
-            req.body.id_number = newRegNo;
+
+            // check if Area id number exist
+            var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
+            if (areaIdResult && areaIdResult.id_number) {
+                return res.json({ "status": "error", "message": "Area id number already exist!" });
+            }
+
             var area_data = {
                 'name': req.body.name ? req.body.name : null,
                 'address': req.body.address ? req.body.address : null,
                 'mobile': req.body.mobile ? req.body.mobile : null,
-                'id_number': req.body.id_number ? req.body.id_number : null,
+                'id_number': req.body.id_number,
                 'manager_id': req.body.manager_id ? req.body.manager_id : null,
                 'manager_type': req.body.manager_type ? req.body.manager_type : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
@@ -55,7 +53,7 @@ class Area {
         var limit = req.body.limit ? req.body.limit : 10
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var area_condition = {}
-        try {   
+        try {
 
             if (utils.isNotUndefined(req.body.id)) {
                 area_condition.id = req.body.id;
@@ -88,18 +86,41 @@ class Area {
     async updateArea(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try { 
+        try {
             if (!utils.isNotUndefined(req.body.area_id)) {
                 return res.json({ "status": "error", "message": "area id is required!" });
-            } 
+            }
+            // check if Area id number exist
+            var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
+            if (areaIdResult && areaIdResult.id_number) {
+                return res.json({ "status": "error", "message": "Area id number already exist!" });
+            }
             const area_data = {}
             if (utils.isNotUndefined(req.body.name)) area_data.name = req.body.name;
             if (utils.isNotUndefined(req.body.address)) area_data.address = req.body.address;
             if (utils.isNotUndefined(req.body.mobile)) area_data.mobile = req.body.mobile;
             if (utils.isNotUndefined(req.body.manager_type)) area_data.manager_type = req.body.manager_type;
             if (utils.isNotUndefined(req.body.manager_id)) area_data.manager_id = req.body.manager_id;
+            if (utils.isNotUndefined(req.body.id_number)) {
+                // check if Area id number exist
+                var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': req.body.Area_id } });
+                if (areaIdResult) {
+                    if (areaIdResult.id_number == req.body.id_number) {
+                        area_data.id_number = req.body.id_number;
+                    }
+                    else {
+                        var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
+                        if (areaIdResult && areaIdResult.id_number) {
+                            return res.json({ "status": "error", "message": "Area id number already exist!" });
+                        }
+                        area_data.id_number = req.body.id_number;
+                    }
+                } else {
+                    area_data.id_number = req.body.id_number;
+                }
+            }
             area_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.area_id } };
 
             // updating area
@@ -121,14 +142,14 @@ class Area {
     async deleteArea(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try { 
+        try {
             if (!utils.isNotUndefined(req.body.area_id)) {
                 return res.json({ "status": "error", "message": "area id is required!" });
-            } 
+            }
             const area_data = {}
             area_data.deleted = 1;
             area_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.area_id } };
 
             // updating area to deleted 1

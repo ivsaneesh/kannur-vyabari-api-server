@@ -28,7 +28,9 @@ const fileUpload = require("express-fileupload");
 var cluster = require('cluster')
 var num_CPUs = require('os').cpus().length
 app.use(compression());
-app.use(helmet())
+app.use(helmet({
+    crossOriginResourcePolicy: false,
+}));
 
 app.use(cookie_parser())
 

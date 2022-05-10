@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
     manager_aadhar: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(20),
       allowNull: false
     },
     manager_mobile: {

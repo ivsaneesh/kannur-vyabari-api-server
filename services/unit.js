@@ -12,25 +12,22 @@ class Unit {
     async createUnit(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try { 
+        try {
             if (!utils.isNotUndefined(req.body.name)) {
                 return res.json({ "status": "error", "message": "Name is required!" });
-            }   
+            }
             if (!utils.isNotUndefined(req.body.area_id)) {
                 return res.json({ "status": "error", "message": "Area id is required!" });
             }
-            // Creating area id
-            var lastUnitResult = await api.findOneAsync(sequelize, "Unit", { order: [ [ 'id', 'DESC' ]]} );
-            var newRegNo = '';
-            if(lastUnitResult && lastUnitResult.id_number){
-                let splittedArr = lastUnitResult.id_number.split('U');
-                let next = parseInt(splittedArr[1], 10);
-                next = next+1;
-                newRegNo = 'U' + next;
-            } else { //First entry in the table
-                newRegNo = 'U1'
+            if (!utils.isNotUndefined(req.body.id_number)) {
+                return res.json({ "status": "error", "message": "Unit id number is required!" });
             }
-            req.body.id_number = newRegNo;
+
+            // check if unit id number exist
+            var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number } });
+            if (unitIdResult && unitIdResult.id_number) {
+                return res.json({ "status": "error", "message": "Unit id number already exist!" });
+            }
             var unit_data = {
                 'name': req.body.name ? req.body.name : null,
                 'address': req.body.address ? req.body.address : null,
@@ -59,7 +56,7 @@ class Unit {
         var limit = req.body.limit ? req.body.limit : 10
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var unit_condition = {}
-        try {   
+        try {
 
             if (utils.isNotUndefined(req.body.id)) {
                 unit_condition.id = req.body.id;
@@ -88,7 +85,7 @@ class Unit {
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
-    } 
+    }
     async updateUnit(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -96,6 +93,7 @@ class Unit {
             if (!utils.isNotUndefined(req.body.unit_id)) {
                 return res.json({ "status": "error", "message": "Unit id is required!" });
             }
+
             const unit_data = {}
             if (utils.isNotUndefined(req.body.name)) unit_data.name = req.body.name;
             if (utils.isNotUndefined(req.body.address)) unit_data.address = req.body.address;
@@ -103,8 +101,26 @@ class Unit {
             if (utils.isNotUndefined(req.body.manager_type)) unit_data.manager_type = req.body.manager_type;
             if (utils.isNotUndefined(req.body.manager_id)) unit_data.manager_id = req.body.manager_id;
             if (utils.isNotUndefined(req.body.area_id)) unit_data.area_id = req.body.area_id;
+            if (utils.isNotUndefined(req.body.id_number)) {
+                // check if unit id number exist
+                var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': req.body.unit_id } });
+                if (unitIdResult) {
+                    if (unitIdResult.id_number == req.body.id_number) {
+                        unit_data.id_number = req.body.id_number;
+                    }
+                    else {
+                        var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number } });
+                        if (unitIdResult && unitIdResult.id_number) {
+                            return res.json({ "status": "error", "message": "Unit id number already exist!" });
+                        }
+                        area_data.id_number = req.body.id_number;
+                    }
+                } else {
+                    unit_data.id_number = req.body.id_number;
+                }
+            }
             unit_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.unit_id } };
 
             // updating unit
@@ -122,7 +138,7 @@ class Unit {
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
-    } 
+    }
     async deleteUnit(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -133,7 +149,7 @@ class Unit {
             const unit_data = {}
             unit_data.deleted = 1;
             unit_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.unit_id } };
 
             // updating unit to deleted to 1
