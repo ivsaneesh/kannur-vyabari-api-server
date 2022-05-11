@@ -23,7 +23,7 @@ class Area {
             // check if Area id number exist
             var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
             if (areaIdResult && areaIdResult.id_number) {
-                return res.json({ "status": "error", "message": "Area id number already exist!" });
+                return res.json({ "status": "error", "message": "Area code already exist!" });
             }
 
             var area_data = {
@@ -93,7 +93,7 @@ class Area {
             // check if Area id number exist
             var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
             if (areaIdResult && areaIdResult.id_number) {
-                return res.json({ "status": "error", "message": "Area id number already exist!" });
+                return res.json({ "status": "error", "message": "Area code already exist!" });
             }
             const area_data = {}
             if (utils.isNotUndefined(req.body.name)) area_data.name = req.body.name;
@@ -111,7 +111,7 @@ class Area {
                     else {
                         var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
                         if (areaIdResult && areaIdResult.id_number) {
-                            return res.json({ "status": "error", "message": "Area id number already exist!" });
+                            return res.json({ "status": "error", "message": "Area code already exist!" });
                         }
                         area_data.id_number = req.body.id_number;
                     }
