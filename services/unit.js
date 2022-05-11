@@ -26,7 +26,7 @@ class Unit {
             // check if unit id number exist
             var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number } });
             if (unitIdResult && unitIdResult.id_number) {
-                return res.json({ "status": "error", "message": "Unit id number already exist!" });
+                return res.json({ "status": "error", "message": "Unit code already exist!" });
             }
             var unit_data = {
                 'name': req.body.name ? req.body.name : null,
@@ -111,7 +111,7 @@ class Unit {
                     else {
                         var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number } });
                         if (unitIdResult && unitIdResult.id_number) {
-                            return res.json({ "status": "error", "message": "Unit id number already exist!" });
+                            return res.json({ "status": "error", "message": "Unit code already exist!" });
                         }
                         area_data.id_number = req.body.id_number;
                     }
