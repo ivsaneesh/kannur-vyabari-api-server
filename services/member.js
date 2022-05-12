@@ -6,6 +6,7 @@ var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
 var path_services = path.normalize(__dirname + "/../services/")
 var sms = require(path_services + '/sendsms')
+
 class Member {
 
     constructor() {
@@ -145,7 +146,23 @@ class Member {
                 json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
             }
             var result = await api.findAllAsync(sequelize, "Member", json_obj);
-            return res.json({ "status": 'success', "data": result });
+
+            var today = new Date();
+            var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+            var date65 = moment(date).format('YYYY-MM-DD');
+
+            let newResult = [];
+            // check plus member
+            for (let index = 0; index < result.length; ++index) {
+                var dob = moment(result[index].date_of_birth).format('YYYY-MM-DD');
+                if (date65 < dob) {
+                    result[index].setDataValue('plus_member', 0);
+                }
+                else {
+                    result[index].setDataValue('plus_member', 1);
+                }
+            }
+            return res.json({ "status": 'success', "data": await result });
         }
         catch (err) {
             logger.error("Member List Exception :---->")

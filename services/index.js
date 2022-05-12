@@ -68,7 +68,7 @@ class Index {
     }
 
     logout(req, res) {
-        sess.setLogout(req);
+        // sess.setLogout(req);
         return res.json({ "status": "success" })
     }
 
