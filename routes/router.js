@@ -25,6 +25,9 @@ module.exports = function(app) {
     app.post('/login',  function(req, res)  {
         index.login(req, res)
     });
+    app.post('/logout',  function(req, res)  {
+        index.logout(req, res)
+    });
     /// user
     app.post('/user/register',  function(req, res)  {
         user.create(req, res)
