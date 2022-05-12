@@ -113,7 +113,7 @@ class Unit {
                         if (unitIdResult && unitIdResult.id_number) {
                             return res.json({ "status": "error", "message": "Unit code already exist!" });
                         }
-                        area_data.id_number = req.body.id_number;
+                        unit_data.id_number = req.body.id_number;
                     }
                 } else {
                     unit_data.id_number = req.body.id_number;

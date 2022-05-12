@@ -103,7 +103,7 @@ class Area {
             if (utils.isNotUndefined(req.body.manager_id)) area_data.manager_id = req.body.manager_id;
             if (utils.isNotUndefined(req.body.id_number)) {
                 // check if Area id number exist
-                var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': req.body.Area_id } });
+                var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': req.body.area_id } });
                 if (areaIdResult) {
                     if (areaIdResult.id_number == req.body.id_number) {
                         area_data.id_number = req.body.id_number;
