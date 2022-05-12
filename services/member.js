@@ -137,6 +137,9 @@ class Member {
             if (utils.isNotUndefined(req.body.unit_id)) {
                 member_condition.unit_id = req.body.unit_id;
             }
+            if (utils.isNotUndefined(req.body.dead)) {
+                member_condition.dead = req.body.dead == 0 ? 0 : 1;
+            }
             var include = [{ model: sequelize.models.Business, as: "Business" }, { model: sequelize.models.Family, as: "Family" }, { model: sequelize.models.Nominee, as: "Nominee" }, { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }]
             var json_obj = { where: member_condition, include: include }
             json_obj.offset = offset
@@ -149,12 +152,11 @@ class Member {
 
             var today = new Date();
             var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-            var date65 = moment(date).format('YYYY-MM-DD');
+            var date65 = moment(date).format("X");
 
-            let newResult = [];
             // check plus member
             for (let index = 0; index < result.length; ++index) {
-                var dob = moment(result[index].date_of_birth).format('YYYY-MM-DD');
+                var dob = result[index].date_of_birth;
                 if (date65 < dob) {
                     result[index].setDataValue('plus_member', 0);
                 }

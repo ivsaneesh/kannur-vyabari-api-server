@@ -51,7 +51,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     details: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     modified_on: {
       type: DataTypes.INTEGER,
