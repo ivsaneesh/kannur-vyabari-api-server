@@ -67,6 +67,8 @@ class Area {
             if (utils.isNotUndefined(req.body.id_number)) {
                 area_condition.id_number = req.body.id_number;
             }
+            area_condition.deleted = 0;
+
             var json_obj = { where: area_condition }
             json_obj.offset = offset
             json_obj.limit = limit

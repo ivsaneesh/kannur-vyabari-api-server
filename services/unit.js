@@ -70,6 +70,7 @@ class Unit {
             if (utils.isNotUndefined(req.body.id_number)) {
                 unit_condition.id_number = req.body.id_number;
             }
+            unit_condition.deleted = 0;
             var json_obj = { where: unit_condition }
             json_obj.offset = offset
             json_obj.limit = limit
