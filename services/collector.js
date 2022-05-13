@@ -34,9 +34,6 @@ class Collector {
             if (!utils.isNotUndefined(req.body.designation)) {
                 return res.json({ "status": "error", "message": "designation is required!" });
             }
-            if (!utils.isNotUndefined(req.body.details)) {
-                return res.json({ "status": "error", "message": "details is required!" });
-            }
             var collector_data = {
                 'first_name': req.body.first_name ? req.body.first_name : null,
                 'middle_name': req.body.middle_name ? req.body.middle_name : null,
