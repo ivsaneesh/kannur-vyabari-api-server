@@ -34,7 +34,7 @@ app.use(helmet({
 
 app.use(cookie_parser())
 
-app.use(cors({ origin: '*', credentials: true }));
+app.use(cors({credentials: true }));
 app.use(timeout('300s'));
 
 /***********************************
