@@ -31,9 +31,6 @@ class Collector {
             if (!utils.isNotUndefined(req.body.unit_id)) {
                 return res.json({ "status": "error", "message": "Unit id is required!" });
             }
-            if (!utils.isNotUndefined(req.body.designation)) {
-                return res.json({ "status": "error", "message": "designation is required!" });
-            }
             var collector_data = {
                 'first_name': req.body.first_name ? req.body.first_name : null,
                 'middle_name': req.body.middle_name ? req.body.middle_name : null,
@@ -71,7 +68,7 @@ class Collector {
                 collector_condition.id = req.body.id;
             }
             if (utils.isNotUndefined(req.body.search)) {
-                collector_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
+                collector_condition = { [Op.or]: [{ mobile: { [Op.like]: '%' + req.body.search + '%' } },{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.area_id)) {
                 collector_condition.area_id = req.body.area_id;
