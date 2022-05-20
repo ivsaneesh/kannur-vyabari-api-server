@@ -137,6 +137,9 @@ class Member {
             if (utils.isNotUndefined(req.body.unit_id)) {
                 member_condition.unit_id = req.body.unit_id;
             }
+            if (utils.isNotUndefined(req.body.area_id)) {
+                member_condition.area_id = req.body.area_id;
+            }
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }

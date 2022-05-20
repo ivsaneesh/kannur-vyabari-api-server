@@ -76,7 +76,8 @@ class Collector {
             if (utils.isNotUndefined(req.body.unit_id)) {
                 collector_condition.unit_id = req.body.unit_id;
             }
-            var json_obj = { where: collector_condition }
+            var include = [{ model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }];
+            var json_obj = { where: collector_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
             json_obj.pagination = pagination
