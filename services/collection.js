@@ -72,7 +72,7 @@ class Collection {
             if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
             } 
-            if (utils.isNotUndefined(req.body.member_id)) {
+            if (utils.isNotUndefined(req.body.dead_member_id)) {
                 collection_condition.dead_member_id = req.body.dead_member_id;
             } 
             if (utils.isNotUndefined(req.body.paid)) {
