@@ -55,6 +55,9 @@ module.exports = function(app) {
     app.post('/collection/list',  function(req, res)  {
         collection.listCollection(req, res)
     });
+    app.put('/collection/update',  function(req, res)  {
+        collection.updateCollection(req, res)
+    });
     /// death
     app.post('/death/create',  function(req, res)  {
         death.createDeath(req, res)
@@ -65,6 +68,9 @@ module.exports = function(app) {
     });
     app.post('/collector/list',  function(req, res)  {
         collector.listCollector(req, res)
+    });
+    app.put('/collector/update',  function(req, res)  {
+        collector.updateCollector(req, res)
     });
     /// unit
     app.post('/unit/create',  function(req, res)  {
