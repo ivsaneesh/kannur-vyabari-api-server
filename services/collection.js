@@ -146,6 +146,46 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+    async updateCollection(req, res) {
+        const sequelize = req.app.get('sequelize')
+        const logger = req.app.get('logger')
+        try {
+            if (!utils.isNotUndefined(req.body.collection_id)) {
+                return res.json({ "status": "error", "message": "collection id is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.collector_id)) {
+                return res.json({ "status": "error", "message": "collector id is required!" });
+            }
+            if (!Array.isArray(req.body.collection_id)) {
+                return res.json({ "status": "error", "message": "collection id must be array!" });
+            }
+            var collectorIdResult = await api.findOneAsync(sequelize, "Collector", { where: { 'id': req.body.collector_id} });
+                if (!collectorIdResult) {
+                    return res.json({ "status": "error", "message": "There is no collector with this collector id" });
+                }
+            const collection_data = {}
+            if (utils.isNotUndefined(req.body.paid)) collection_data.paid = req.body.paid;
+            collection_data.collector_id = req.body.collector_id;
+            collection_data.modified_on = moment(new Date()).format("X");
+
+            var condition = { where: { 'id': req.body.collection_id } };
+
+            // updating collection
+            api.updateCustom(sequelize, 'Collection', collection_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Collection Update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
 }
 
 
