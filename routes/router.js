@@ -11,6 +11,7 @@ const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
 const area = require(path_services + '/area');
 const upload = require(path_services + '/upload');
+const report = require(path_services + '/report');
 
 module.exports = function(app) {
  
@@ -101,5 +102,9 @@ module.exports = function(app) {
     ///upload
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)
+    });
+    //report
+    app.post('/report/death', function(req, res)  {
+        report.deathReport(req, res)
     });
 }
