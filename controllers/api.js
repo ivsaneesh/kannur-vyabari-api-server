@@ -274,6 +274,11 @@ class Api {
     return await sequelize.models[model].create(json)
   }
 
+  //update using async
+  async updateAsync(sequelize, model, columns, condition) {
+    return await sequelize.models[model].update(columns, condition)
+  }
+
   //create using async
   async bulkCreateAsync(sequelize, model, json) {
     return await sequelize.models[model].bulkCreate(json)

@@ -11,6 +11,7 @@ const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
 const area = require(path_services + '/area');
 const upload = require(path_services + '/upload');
+const report = require(path_services + '/report');
 
 module.exports = function(app) {
  
@@ -42,6 +43,9 @@ module.exports = function(app) {
     app.post('/member/list',  function(req, res)  {
         member.listMember(req, res)
     });
+    app.put('/member/update',  function(req, res)  {
+        member.updateMember(req, res)
+    });
     /// collection
     app.get('/collectionAmount',  function(req, res)  {
         collection.collectionAmount(req, res)
@@ -51,6 +55,9 @@ module.exports = function(app) {
     });
     app.post('/collection/list',  function(req, res)  {
         collection.listCollection(req, res)
+    });
+    app.put('/collection/update',  function(req, res)  {
+        collection.updateCollection(req, res)
     });
     /// death
     app.post('/death/create',  function(req, res)  {
@@ -62,6 +69,9 @@ module.exports = function(app) {
     });
     app.post('/collector/list',  function(req, res)  {
         collector.listCollector(req, res)
+    });
+    app.put('/collector/update',  function(req, res)  {
+        collector.updateCollector(req, res)
     });
     /// unit
     app.post('/unit/create',  function(req, res)  {
@@ -92,5 +102,9 @@ module.exports = function(app) {
     ///upload
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)
+    });
+    //report
+    app.post('/report/death', function(req, res)  {
+        report.deathReport(req, res)
     });
 }
