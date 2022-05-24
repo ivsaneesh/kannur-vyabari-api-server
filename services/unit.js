@@ -74,7 +74,7 @@ class Unit {
                 unit_condition.area_id = req.body.area_id;
             }
             unit_condition.deleted = 0;
-            var include = [{ model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }];
+            var include = [{ model: sequelize.models.Area, as: "Area", attributes: ['id', 'name', 'id_number'] }];
             var json_obj = { where: unit_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
