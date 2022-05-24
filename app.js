@@ -29,6 +29,7 @@ var cluster = require('cluster')
 var num_CPUs = require('os').cpus().length
 app.use(compression());
 app.use(helmet({
+    // on production change crossOriginResourcePolicy to true
     crossOriginResourcePolicy: false,
 }));
 

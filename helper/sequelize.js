@@ -76,6 +76,7 @@ var db = function (app) {
 	this.models.Collector.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
 	this.models.Collector.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 
+	this.models.Unit.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 };
 module.exports = db;
 
