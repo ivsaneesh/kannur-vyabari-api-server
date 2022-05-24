@@ -29,7 +29,7 @@ var cluster = require('cluster')
 var num_CPUs = require('os').cpus().length
 app.use(compression());
 app.use(helmet({
-    crossOriginResourcePolicy: true,
+    crossOriginResourcePolicy: false,
 }));
 
 app.use(cookie_parser())
