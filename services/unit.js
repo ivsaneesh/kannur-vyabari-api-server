@@ -70,6 +70,9 @@ class Unit {
             if (utils.isNotUndefined(req.body.id_number)) {
                 unit_condition.id_number = req.body.id_number;
             }
+            if (utils.isNotUndefined(req.body.area_id)) {
+                unit_condition.area_id = req.body.area_id;
+            }
             unit_condition.deleted = 0;
             var json_obj = { where: unit_condition }
             json_obj.offset = offset
