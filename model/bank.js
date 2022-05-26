@@ -17,15 +17,15 @@ module.exports = function(sequelize, DataTypes) {
     },
     ifsc_code: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: true
     },
     branch: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: true
     },
     details: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     created_on: {
       type: DataTypes.INTEGER,

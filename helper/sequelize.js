@@ -59,6 +59,7 @@ var db = function (app) {
 	this.models.Collector = require('../model/collector.js')(this.sequelize, this.Sequelize);
 	this.models.Unit = require('../model/unit.js')(this.sequelize, this.Sequelize);
 	this.models.Area = require('../model/area.js')(this.sequelize, this.Sequelize);
+	this.models.Bank = require('../model/bank.js')(this.sequelize, this.Sequelize);
 
 
 	//relations for user
