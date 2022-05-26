@@ -93,6 +93,51 @@ class Collector {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+    async updateCollector(req, res) {
+        const sequelize = req.app.get('sequelize')
+        const logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        try {
+            if (!utils.isNotUndefined(req.body.collector_id)) {
+                return res.json({ "status": "error", "message": "collector id is required!" });
+            }
+            if(req.body.mobile){
+                var collectorMobileResult = await api.findOneAsync(sequelize, "Collector", { where: { 'mobile': req.body.mobile, 'id': { [Op.not]: req.body.collector_id }  } });
+                if (collectorMobileResult && collectorMobileResult.mobile) {
+                    return res.json({ "status": "error", "message": "Mobile already exist for another collector!" });
+                }
+            }
+            const collector_data = {}
+            if (utils.isNotUndefined(req.body.first_name)) collector_data.first_name = req.body.first_name;
+            if (utils.isNotUndefined(req.body.middle_name)) collector_data.middle_name = req.body.middle_name;
+            if (utils.isNotUndefined(req.body.last_name)) collector_data.last_name = req.body.last_name;
+            if (utils.isNotUndefined(req.body.address)) collector_data.address = req.body.address;
+            if (utils.isNotUndefined(req.body.mobile)) collector_data.mobile = req.body.mobile;
+            if (utils.isNotUndefined(req.body.aadhar)) collector_data.aadhar = req.body.aadhar;
+            if (utils.isNotUndefined(req.body.area_id)) collector_data.area_id = req.body.area_id;
+            if (utils.isNotUndefined(req.body.unit_id)) collector_data.unit_id = req.body.unit_id;
+            if (utils.isNotUndefined(req.body.designation)) collector_data.designation = req.body.designation;
+            if (utils.isNotUndefined(req.body.details)) collector_data.details = req.body.details;
+            collector_data.modified_on = moment(new Date()).format("X");
+
+            var condition = { where: { 'id': req.body.collector_id } };
+
+            // updating collector
+            api.updateCustom(sequelize, 'Collector', collector_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Collector Update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
 }
 
 
