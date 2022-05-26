@@ -83,6 +83,8 @@ class Bank {
             json_obj.offset = offset;
             json_obj.limit = limit;
             json_obj.pagination = pagination;
+            var exclude = ['created_on', 'modified_on', 'deleted']
+            json_obj.attributes = { exclude: exclude };
             if (req.body.sort_column) {
                 json_obj.order = [
                     [
@@ -186,6 +188,90 @@ class Bank {
             );
         } catch (err) {
             logger.error("Bank delete Exception :---->");
+            logger.error(err);
+            return res.json({ status: "error", message: sequelize.getErrors(err) });
+        }
+    }
+
+    // bank transaction
+    async createBankTrans(req, res) {
+        var sequelize = req.app.get("sequelize");
+        var logger = req.app.get("logger");
+        try {
+            if (!utils.isNotUndefined(req.body.bank_id)) {
+                return res.json({ status: "error", message: "Bank id is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.amount)) {
+                return res.json({ status: "error", message: "Amount is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.action)) {
+                return res.json({ status: "error", message: "Action is required!" });
+            }
+
+            var bank_data = {
+                action: req.body.action,
+                amount: req.body.amount,
+                bank_id: req.body.bank_id,
+                remark:req.body.remark ? req.body.remark : null,
+                created_on: req.body.created_on
+                    ? req.body.created_on
+                    : moment(new Date()).format("X"),
+            };
+
+            var bankResult = await api.createAsync(sequelize, "BankTransaction", bank_data);
+            return res.json({ status: "success", data: bankResult });
+        } catch (err) {
+            logger.error("Bank Transaction Create Exception :---->");
+            logger.error(err);
+            return res.json({ status: "error", message: sequelize.getErrors(err) });
+        }
+    }
+
+    async listBankTrans(req, res) {
+        var sequelize = req.app.get("sequelize");
+        var logger = req.app.get("logger");
+        const Op = sequelize.Sequelize.Op;
+        var offset = req.body.start ? req.body.start : 0;
+        var limit = req.body.limit ? req.body.limit : 10;
+        var pagination = req.body.pagination
+            ? req.body.pagination == 1
+                ? 1
+                : 0
+            : 0;
+        var bank_condition = {};
+        try {
+            if (utils.isNotUndefined(req.body.id)) {
+                bank_condition.id = req.body.id;
+            }
+            if (utils.isNotUndefined(req.body.amount)) {
+                bank_condition.amount = req.body.amount;
+            }
+            if (utils.isNotUndefined(req.body.action)) {
+                bank_condition.action = req.body.action;
+            }
+            if (utils.isNotUndefined(req.body.bank_id)) {
+                bank_condition.bank_id = req.body.bank_id;
+            }
+            bank_condition.deleted = 0;
+
+            var json_obj = { where: bank_condition };
+            json_obj.offset = offset;
+            json_obj.limit = limit;
+            json_obj.pagination = pagination;
+            var exclude = ['modified_on', 'deleted']
+            json_obj.attributes = { exclude: exclude };
+            if (req.body.sort_column) {
+                json_obj.order = [
+                    [
+                        req.body.sort_column,
+                        req.body.sort_order ? req.body.sort_order : "ASC",
+                    ],
+                ];
+            }
+            var result = await api.findAllAsync(sequelize, "BankTransaction", json_obj);
+            return res.json({ status: "success", data: result });
+        } catch (err) {
+            logger.error("Bank Transcation List Exception :---->");
             logger.error(err);
             return res.json({ status: "error", message: sequelize.getErrors(err) });
         }
