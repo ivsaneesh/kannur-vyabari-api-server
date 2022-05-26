@@ -10,6 +10,7 @@ const death = require(path_services +'/death');
 const collector = require(path_services + '/collector');
 const unit = require(path_services + '/unit');
 const area = require(path_services + '/area');
+const bank = require(path_services + '/bank');
 const upload = require(path_services + '/upload');
 const report = require(path_services + '/report');
 
@@ -98,6 +99,19 @@ module.exports = function(app) {
     });
     app.delete('/area/delete',  function(req, res)  {
         area.deleteArea(req, res)
+    });
+    /// bank
+    app.post('/bank/create',  function(req, res)  {
+        bank.createBank(req, res)
+    });
+    app.post('/bank/list',  function(req, res)  {
+        bank.listBank(req, res)
+    });
+    app.put('/bank/update',  function(req, res)  {
+        bank.updateBank(req, res)
+    });
+    app.delete('/bank/delete',  function(req, res)  {
+        bank.deleteBank(req, res)
     });
     ///upload
     app.post('/upload',  function(req, res)  {
