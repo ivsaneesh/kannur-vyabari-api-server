@@ -113,6 +113,13 @@ module.exports = function(app) {
     app.delete('/bank/delete',  function(req, res)  {
         bank.deleteBank(req, res)
     });
+    /// bank transcation
+    app.post('/bankTrans/create',  function(req, res)  {
+        bank.createBankTrans(req, res)
+    });
+    app.post('/bankTrans/list',  function(req, res)  {
+        bank.listBankTrans(req, res)
+    });
     ///upload
     app.post('/upload',  function(req, res)  {
         upload.uploadFile(req, res)

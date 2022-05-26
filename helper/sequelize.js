@@ -60,6 +60,7 @@ var db = function (app) {
 	this.models.Unit = require('../model/unit.js')(this.sequelize, this.Sequelize);
 	this.models.Area = require('../model/area.js')(this.sequelize, this.Sequelize);
 	this.models.Bank = require('../model/bank.js')(this.sequelize, this.Sequelize);
+	this.models.BankTransaction = require('../model/bank_transaction.js')(this.sequelize, this.Sequelize);
 
 
 	//relations for user
@@ -78,6 +79,9 @@ var db = function (app) {
 	this.models.Collector.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 
 	this.models.Unit.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
+
+	//relations for bank
+	this.models.BankTransaction.belongsTo(this.models.Bank, { foreignKey: "bank_id", as: "Bank" });
 };
 module.exports = db;
 
