@@ -15,11 +15,9 @@ class Report {
         var logger = req.app.get('logger')
         const mysql = req.app.get('mysql')
         try {
-            if (!utils.isNotUndefined(req.body.year)) {
-                return res.json({ "status": "error", "message": "Year is required!" });
-            }
             var month_query = `SELECT
                             DATE_FORMAT(FROM_UNIXTIME(datetime), '%M') month,
+                            DATE_FORMAT(FROM_UNIXTIME(datetime), '%Y') year,
                             COUNT(MONTH(FROM_UNIXTIME(datetime))) dead,
                             COUNT(
                                 DATE_FORMAT(
@@ -35,11 +33,11 @@ class Report {
                             ) as below30
                         FROM
                             death d
-                            left join member m on d.member_id = m.id
-                        WHERE
-                            YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}
-                        GROUP BY
-                            FROM_UNIXTIME(datetime);`
+                            left join member m on d.member_id = m.id`;
+                        if(req.body.year){
+                            month_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
+                        }
+                        month_query += ` GROUP BY FROM_UNIXTIME(datetime);`;
             var year_query = `SELECT
                                 DATE_FORMAT(FROM_UNIXTIME(datetime), '%Y') year,
                                 COUNT(YEAR(FROM_UNIXTIME(datetime))) dead,
@@ -57,11 +55,11 @@ class Report {
                                 ) as below30
                             FROM
                                 death d
-                                left join member m on d.member_id = m.id
-                            WHERE
-                                YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}
-                            GROUP BY
-                                YEAR(FROM_UNIXTIME(datetime));`
+                                left join member m on d.member_id = m.id`;
+                            if(req.body.year){
+                                year_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
+                            }
+                            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(datetime));`;
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
@@ -90,9 +88,18 @@ class Report {
                     return res.json({ "status": 'error', "message": 'Something broken!' });
                 }
                 // final callback
-                var newResult = results[1][0];
-                newResult['months'] = results[0];
-                return res.json({ "status": 'success', "data": newResult });
+                var yearResult = results[1];
+                var monthResult = results[0];
+                yearResult.forEach(yearItem => {
+                    yearItem["months"] = []
+                    monthResult.forEach(monthItem => {
+                        if(yearItem.year == monthItem.year){
+                            delete monthItem.year;
+                            yearItem["months"].push(monthItem)
+                        }
+                    })
+                });
+                return res.json({ "status": 'success', "data": yearResult });
             });
             
             
