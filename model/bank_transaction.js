@@ -19,6 +19,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    transaction_date: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
     remark: {
       type: DataTypes.STRING(200),
       allowNull: true
