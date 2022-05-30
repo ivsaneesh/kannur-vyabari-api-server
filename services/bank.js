@@ -207,12 +207,16 @@ class Bank {
             if (!utils.isNotUndefined(req.body.action)) {
                 return res.json({ status: "error", message: "Action is required!" });
             }
+            if (!utils.isNotUndefined(req.body.transaction_date)) {
+                return res.json({ status: "error", message: "Transaction date is required!" });
+            }
 
             var bank_data = {
                 action: req.body.action,
                 amount: req.body.amount,
                 bank_id: req.body.bank_id,
-                remark:req.body.remark ? req.body.remark : null,
+                transaction_date: req.body.transaction_date,
+                remark: req.body.remark ? req.body.remark : null,
                 created_on: req.body.created_on
                     ? req.body.created_on
                     : moment(new Date()).format("X"),
@@ -252,9 +256,13 @@ class Bank {
             if (utils.isNotUndefined(req.body.bank_id)) {
                 bank_condition.bank_id = req.body.bank_id;
             }
+            if (utils.isNotUndefined(req.body.transaction_date)) {
+                bank_condition.transaction_date = req.body.transaction_date;
+            }
             bank_condition.deleted = 0;
 
-            var json_obj = { where: bank_condition };
+            var include = [{ model: sequelize.models.Bank, as: "Bank", attributes: ['id', 'name', 'account_number', 'ifsc_code', 'branch'] }];
+            var json_obj = { where: bank_condition, include: include };
             json_obj.offset = offset;
             json_obj.limit = limit;
             json_obj.pagination = pagination;
