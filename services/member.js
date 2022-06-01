@@ -85,7 +85,7 @@ class Member {
             })
             var businessPromise = api.bulkCreateT(sequelize, "Business", req.body.business_details, transaction);
             var familyPromise = api.bulkCreateT(sequelize, "Family", req.body.family_details, transaction);
-            var nomineePromise = api.createT(sequelize, "Nominee", req.body.nominee_details, transaction);
+            var nomineePromise = api.bulkCreateT(sequelize, "Nominee", req.body.nominee_details, transaction);
             let [businessResult, familyResult, nomineeResult] = await Promise.all([businessPromise, familyPromise, nomineePromise]);
             var result = {
                 'Member': memberResult,
