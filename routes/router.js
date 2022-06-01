@@ -128,4 +128,7 @@ module.exports = function(app) {
     app.post('/report/death', function(req, res)  {
         report.deathReport(req, res)
     });
+    app.post('/report/collection', function(req, res)  {
+        report.collectionReport(req, res)
+    });
 }
