@@ -88,7 +88,7 @@ class Users {
         var logger = req.app.get('logger')
         const Op = sequelize.Sequelize.Op
         var offset = req.body.start ? req.body.start : 0
-        var limit = req.body.limit ? req.body.limit : 10
+        var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var user_condition = {}
         try {   

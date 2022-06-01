@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     full_name: {
       type: DataTypes.STRING(300),
-      allowNull: false
+      allowNull: true
     },
     aadhar: {
       type: DataTypes.STRING(20),
@@ -17,11 +17,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     relation: {
       type: DataTypes.STRING(50),
-      allowNull: false
+      allowNull: true
     },
     mobile: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
       defaultValue: "0"
     },
     member_id: {
