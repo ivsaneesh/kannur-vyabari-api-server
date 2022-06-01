@@ -62,7 +62,7 @@ class Api {
 
         case "findAll":
           var start = req.body.start ? req.body.start : 0
-          var limit = req.body.limit ? req.body.limit : 10
+          var limit = req.body.limit ? req.body.limit : 10000
           var json_data = { where: json_obj, "offset": start, "limit": limit }
           if (req.body.sort_column) {
             json_data.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]

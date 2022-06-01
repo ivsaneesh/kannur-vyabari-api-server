@@ -111,7 +111,7 @@ class Member {
         const Op = sequelize.Sequelize.Op
         const fn = sequelize.Sequelize.fn
         var offset = req.body.start ? req.body.start : 0
-        var limit = req.body.limit ? req.body.limit : 10
+        var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var member_condition = {}
         try {

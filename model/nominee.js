@@ -13,7 +13,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     aadhar: {
       type: DataTypes.STRING(20),
-      allowNull: false
+      allowNull: true
     },
     relation: {
       type: DataTypes.STRING(50),
@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     mobile: {
       type: DataTypes.STRING(20),
-      allowNull: false,
+      allowNull: true,
       defaultValue: "0"
     },
     percentage: {
