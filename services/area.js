@@ -87,13 +87,14 @@ class Area {
     }
     async updateArea(req, res) {
         var sequelize = req.app.get('sequelize')
+        const Op = sequelize.Sequelize.Op;
         var logger = req.app.get('logger')
         try {
             if (!utils.isNotUndefined(req.body.area_id)) {
                 return res.json({ "status": "error", "message": "area id is required!" });
             }
             // check if Area id number exist
-            var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
+            var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number, 'deleted': 0, 'id': { [Op.not]: req.body.area_id } } });
             if (areaIdResult && areaIdResult.id_number) {
                 return res.json({ "status": "error", "message": "Area code already exist!" });
             }
@@ -111,7 +112,7 @@ class Area {
                         area_data.id_number = req.body.id_number;
                     }
                     else {
-                        var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number } });
+                        var areaIdResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': req.body.id_number, 'deleted': 0, } });
                         if (areaIdResult && areaIdResult.id_number) {
                             return res.json({ "status": "error", "message": "Area code already exist!" });
                         }
