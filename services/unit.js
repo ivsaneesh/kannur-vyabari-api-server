@@ -114,7 +114,7 @@ class Unit {
                         unit_data.id_number = req.body.id_number;
                     }
                     else {
-                        var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number } });
+                        var unitIdResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': req.body.id_number, 'deleted': 0, } });
                         if (unitIdResult && unitIdResult.id_number) {
                             return res.json({ "status": "error", "message": "Unit code already exist!" });
                         }

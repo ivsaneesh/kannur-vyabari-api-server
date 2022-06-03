@@ -113,9 +113,10 @@ class Bank {
             // check if Bank detail exist
             var bankIdResult = await api.findOneAsync(sequelize, "Bank", {
                 where: {
-                    name: req.body.name,
-                    account_number: req.body.account_number,
-                    id: { [Op.not]: req.body.bank_id },
+                    'deleted': 0,
+                    'id': { [Op.not]: req.body.bank_id },
+                    'name': req.body.name,
+                    'account_number': req.body.account_number,
                 },
             });
             if (bankIdResult && bankIdResult.id_number) {
@@ -259,7 +260,9 @@ class Bank {
             if (utils.isNotUndefined(req.body.transaction_date)) {
                 bank_condition.transaction_date = req.body.transaction_date;
             }
-            bank_condition.deleted = 0;
+            if (utils.isNotUndefined(req.body.deleted)) {
+                bank_condition.deleted = req.body.deleted;
+            }
 
             var include = [{ model: sequelize.models.Bank, as: "Bank", attributes: ['id', 'name', 'account_number', 'ifsc_code', 'branch'] }];
             var json_obj = { where: bank_condition, include: include };
