@@ -59,12 +59,12 @@ class Member {
             var lastMemberResult = await api.findOneAsync(sequelize, "Member", { order: [['id', 'DESC']] });
             var newRegNo = '';
             if (lastMemberResult && lastMemberResult.register_number) {
-                let splittedArr = lastMemberResult.register_number.slice(6);
+                let splittedArr = lastMemberResult.register_number.slice(8);
                 let next = parseInt(splittedArr, 10);
                 next = next + 1;
-                newRegNo = areaIdNumberResult.id_number + unitIdNumberResult.id_number + next;
+                newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(next);
             } else { //First entry in the table
-                newRegNo = areaIdNumberResult.id_number + unitIdNumberResult.id_number + '1'
+                newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + '00001'
             }
             req.body.basic_details.register_number = newRegNo;
             // inserting user permission }
@@ -206,7 +206,7 @@ class Member {
                 member_data.modified_on = moment(new Date()).format("X");
                 let condition = { where: { 'id': req.body.member_id } };
                 // updating member
-                try{
+                try {
                     member_result = await api.updateAsync(sequelize, 'Member', member_data, condition)
                 }
                 catch (error) {
@@ -246,7 +246,7 @@ class Member {
                         catch (error) {
                             business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-                        
+
                     }
                 })
                 isBusinessUpdate = true;
@@ -270,7 +270,7 @@ class Member {
                         catch (error) {
                             family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-                            
+
                     }
                     else {
                         try {
@@ -307,7 +307,7 @@ class Member {
                     catch (error) {
                         nominee_result = error;
                     }
-                    
+
                 }
                 isNomineeUpdate = true;
             }
@@ -327,9 +327,76 @@ class Member {
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
-            logger.error("unit update Exception :---->")
+            logger.error("Member update Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
+    async changeMemberId(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            const Op = sequelize.Sequelize.Op
+            const fn = sequelize.Sequelize.fn
+            var offset = req.body.start ? req.body.start : 0
+            var limit = req.body.limit ? req.body.limit : 10000
+            var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
+            var member_condition = {}
+
+            var json_obj = {};
+            json_obj.offset = offset
+            json_obj.limit = limit
+            json_obj.pagination = pagination
+            var result = await api.findAllAsync(sequelize, "Member", json_obj);
+
+
+            for (let index = 0; index < result.length; ++index) {
+                if (result[index].register_number.length < 11) {
+
+                    // get unit id_number
+                    var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result[index].unit_id } });
+                    // get area id_number
+                    var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result[index].area_id } });
+                    
+
+                    var condition = { where: { 'id': result[index].id } };
+
+                    var oldReg = result[index].register_number;
+                    var number = oldReg.substring(6);
+                    var newReg = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(number);
+
+                    const member_data = {}
+                    member_data.register_number = newReg;
+
+                    api.updateCustom(sequelize, 'Member', member_data, condition, function (status, data, message) {
+                        console.log("result ", result[index].id);
+                    });
+                }
+            }
+            var newresult = await api.findAllAsync(sequelize, "Member", json_obj);
+            return res.json({ "status": 'success', "data": await newresult });
+        }
+        catch (err) {
+            logger.error("member register id Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
+    appendzero(num) {
+
+        switch (num.toString().length) {
+            case 1:
+                return '0000' + num;
+            case 2:
+                return '000' + num;
+            case 3:
+                return '00' + num;
+            case 4:
+                return '0' + num;
+            case 5:
+                return num;
         }
     }
 }

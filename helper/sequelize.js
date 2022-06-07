@@ -61,6 +61,7 @@ var db = function (app) {
 	this.models.Area = require('../model/area.js')(this.sequelize, this.Sequelize);
 	this.models.Bank = require('../model/bank.js')(this.sequelize, this.Sequelize);
 	this.models.BankTransaction = require('../model/bank_transaction.js')(this.sequelize, this.Sequelize);
+	this.models.ExternalEntity = require('../model/external_entity.js')(this.sequelize, this.Sequelize);
 
 
 	//relations for user

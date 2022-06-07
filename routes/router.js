@@ -13,6 +13,7 @@ const area = require(path_services + '/area');
 const bank = require(path_services + '/bank');
 const upload = require(path_services + '/upload');
 const report = require(path_services + '/report');
+const entity = require(path_services + '/external_entity');
 
 module.exports = function(app) {
  
@@ -143,4 +144,23 @@ module.exports = function(app) {
     app.post('/report/payout/district', function(req, res)  {
         report.districtPayoutReport(req, res)
     });
+  
+    // external entity
+    app.post('/entity/create', function(req, res)  {
+        entity.createExternalEntity(req, res)
+    }); 
+    app.post('/entity/list', function(req, res)  {
+        entity.listExternalEntity(req, res)
+    }); 
+    app.put('/entity/update', function(req, res)  {
+        entity.updateExternalEntity(req, res)
+    }); 
+    app.delete('/entity/delete', function(req, res)  {
+        entity.deleteExternalEntity(req, res)
+    });
+    
+    
+    app.post('/changeMemberId', function(req, res)  {
+        member.changeMemberId(req, res)
+    }); 
 }
