@@ -132,6 +132,19 @@ module.exports = function(app) {
     app.post('/report/collection', function(req, res)  {
         report.collectionReport(req, res)
     });
+    app.post('/report/payout/member', function(req, res)  {
+        report.memberPayoutReport(req, res)
+    });
+    app.post('/report/payout/area', function(req, res)  {
+        report.areaPayoutReport(req, res)
+    });
+    app.post('/report/payout/unit', function(req, res)  {
+        report.unitPayoutReport(req, res)
+    });
+    app.post('/report/payout/district', function(req, res)  {
+        report.districtPayoutReport(req, res)
+    });
+  
     // external entity
     app.post('/entity/create', function(req, res)  {
         entity.createExternalEntity(req, res)
