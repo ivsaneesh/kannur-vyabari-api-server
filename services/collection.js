@@ -100,6 +100,8 @@ class Collection {
         var logger = req.app.get('logger')
         try {
             var json_obj = { where: { 'deleted': 0 }};
+            var exclude = ['deleted_on', 'deleted']
+            json_obj.attributes = { exclude: exclude };
             // fetch the amount that is not deleted
             var result = await api.findOneAsync(sequelize, "CollectionAmount", json_obj);
 
