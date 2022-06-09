@@ -66,6 +66,7 @@ var db = function (app) {
 	this.models.RegistrationFeeCollected = require('../model/registration_fee_collected.js')(this.sequelize, this.Sequelize);
 
 
+
 	//relations for user
 	this.models.User.hasOne(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermission' });
 	this.models.UserPermissions.belongsTo(this.models.Permission, { foreignKey: "permission_id", as: "Permission" });
