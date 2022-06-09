@@ -62,6 +62,8 @@ var db = function (app) {
 	this.models.Bank = require('../model/bank.js')(this.sequelize, this.Sequelize);
 	this.models.BankTransaction = require('../model/bank_transaction.js')(this.sequelize, this.Sequelize);
 	this.models.ExternalEntity = require('../model/external_entity.js')(this.sequelize, this.Sequelize);
+	this.models.RegistrationFee = require('../model/registration_fee.js')(this.sequelize, this.Sequelize);
+	this.models.RegistrationFeeCollected = require('../model/registration_fee_collected.js')(this.sequelize, this.Sequelize);
 
 
 	//relations for user
@@ -72,6 +74,7 @@ var db = function (app) {
 	this.models.Member.hasMany(this.models.Nominee, { foreignKey: "member_id", as: "Nominee" });
 	this.models.Member.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
 	this.models.Member.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
+	this.models.Member.hasOne(this.models.RegistrationFeeCollected, { foreignKey: "member_id", as: 'RegistrationFeeCollected' });
 	this.models.Collection.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
 	this.models.Collection.belongsTo(this.models.CollectionAmount, { foreignKey: "amount_id", as: "CollectionAmount" });
 
@@ -83,6 +86,9 @@ var db = function (app) {
 
 	//relations for bank
 	this.models.BankTransaction.belongsTo(this.models.Bank, { foreignKey: "bank_id", as: "Bank" });
+
+	// registration fee
+	this.models.RegistrationFeeCollected.belongsTo(this.models.RegistrationFee, { foreignKey: "registration_fee_id", as: "RegistrationFee" });
 };
 module.exports = db;
 

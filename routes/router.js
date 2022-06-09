@@ -14,6 +14,7 @@ const bank = require(path_services + '/bank');
 const upload = require(path_services + '/upload');
 const report = require(path_services + '/report');
 const entity = require(path_services + '/external_entity');
+const registratioFee = require(path_services + '/registration_fee');
 
 module.exports = function(app) {
  
@@ -158,7 +159,17 @@ module.exports = function(app) {
     app.delete('/entity/delete', function(req, res)  {
         entity.deleteExternalEntity(req, res)
     });
-    
+    // registration fee
+    app.post('/regitratioFee/create', function(req, res)  {
+        entity.createRegistratioFee(req, res)
+    }); 
+    app.post('/regitratioFee/list', function(req, res)  {
+        entity.listRegistratioFee(req, res)
+    });
+    app.delete('/regitratioFee/delete', function(req, res)  {
+        entity.deleteRegistratioFee(req, res)
+    }); 
+  
     
     app.post('/changeMemberId', function(req, res)  {
         member.changeMemberId(req, res)
