@@ -65,6 +65,7 @@ var db = function (app) {
 	this.models.RegistrationFee = require('../model/registration_fee.js')(this.sequelize, this.Sequelize);
 	this.models.RegistrationFeeCollected = require('../model/registration_fee_collected.js')(this.sequelize, this.Sequelize);
 	this.models.Offers = require('../model/offers.js')(this.sequelize, this.Sequelize);
+	this.models.OfferGiven = require('../model/offer_given.js')(this.sequelize, this.Sequelize);
 
 
 
@@ -91,6 +92,12 @@ var db = function (app) {
 
 	// registration fee
 	this.models.RegistrationFeeCollected.belongsTo(this.models.RegistrationFee, { foreignKey: "registration_fee_id", as: "RegistrationFee" });
+
+	// offer
+	this.models.OfferGiven.belongsTo(this.models.Offers, { foreignKey: "offer_id", as: "Offers" });
+
+	/// external entity
+	this.models.ExternalEntity.hasMany(this.models.OfferGiven, { foreignKey: "external_entity_id", as: "OfferGiven" });
 };
 module.exports = db;
 

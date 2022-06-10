@@ -49,7 +49,7 @@ class ExternalEntity {
                 entity_condition.id = req.body.id;
             }
             if (utils.isNotUndefined(req.body.search)) {
-                entity_condition = { [Op.or]: [{ full_name: { [Op.like]: '%' + req.body.search + '%' }, type: { [Op.like]: '%' + req.body.search + '%' } }] };
+                entity_condition = { [Op.or]: [{ full_name: { [Op.like]: '%' + req.body.search + '%' } }, { type: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.aadhar)) {
                 entity_condition.aadhar = req.body.aadhar;

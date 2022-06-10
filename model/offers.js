@@ -17,7 +17,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     value: {
       type: DataTypes.FLOAT,
-      allowNull: false,
+      allowNull: true,
       defaultValue: null
     },
     created_on: {
