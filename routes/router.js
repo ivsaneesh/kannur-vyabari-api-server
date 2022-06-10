@@ -16,6 +16,7 @@ const report = require(path_services + '/report');
 const entity = require(path_services + '/external_entity');
 const registratioFee = require(path_services + '/registration_fee');
 
+
 module.exports = function(app) {
  
     app.get('/',  function(req, res)  {
