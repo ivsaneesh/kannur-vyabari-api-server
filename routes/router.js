@@ -15,6 +15,7 @@ const upload = require(path_services + '/upload');
 const report = require(path_services + '/report');
 const entity = require(path_services + '/external_entity');
 const registratioFee = require(path_services + '/registration_fee');
+const offer = require(path_services + '/offer');
 
 
 module.exports = function(app) {
@@ -162,26 +163,26 @@ module.exports = function(app) {
     });
     // registration fee
     app.post('/regitratioFee/create', function(req, res)  {
-        entity.createRegistratioFee(req, res)
+        registratioFee.createRegistratioFee(req, res)
     }); 
     app.post('/regitratioFee/list', function(req, res)  {
-        entity.listRegistratioFee(req, res)
+        registratioFee.listRegistratioFee(req, res)
     });
     app.delete('/regitratioFee/delete', function(req, res)  {
-        entity.deleteRegistratioFee(req, res)
+        registratioFee.deleteRegistratioFee(req, res)
     });
     /// offer
     app.post('/offer/create', function(req, res)  {
-        entity.createOffer(req, res)
+        offer.createOffer(req, res)
     }); 
     app.post('/offer/list', function(req, res)  {
-        entity.listOffer(req, res)
+        offer.listOffer(req, res)
     }); 
     app.put('/offer/update', function(req, res)  {
-        entity.updateOffer(req, res)
+        offer.updateOffer(req, res)
     }); 
     app.delete('/offer/delete', function(req, res)  {
-        entity.deleteOffer(req, res)
+        offer.deleteOffer(req, res)
     });
   
     
