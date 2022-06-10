@@ -64,6 +64,7 @@ var db = function (app) {
 	this.models.ExternalEntity = require('../model/external_entity.js')(this.sequelize, this.Sequelize);
 	this.models.RegistrationFee = require('../model/registration_fee.js')(this.sequelize, this.Sequelize);
 	this.models.RegistrationFeeCollected = require('../model/registration_fee_collected.js')(this.sequelize, this.Sequelize);
+	this.models.Offers = require('../model/offers.js')(this.sequelize, this.Sequelize);
 
 
 	//relations for user
