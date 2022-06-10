@@ -169,7 +169,20 @@ module.exports = function(app) {
     });
     app.delete('/regitratioFee/delete', function(req, res)  {
         entity.deleteRegistratioFee(req, res)
+    });
+    /// offer
+    app.post('/offer/create', function(req, res)  {
+        entity.createOffer(req, res)
     }); 
+    app.post('/offer/list', function(req, res)  {
+        entity.listOffer(req, res)
+    }); 
+    app.put('/offer/update', function(req, res)  {
+        entity.updateOffer(req, res)
+    }); 
+    app.delete('/offer/delete', function(req, res)  {
+        entity.deleteOffer(req, res)
+    });
   
     
     app.post('/changeMemberId', function(req, res)  {
