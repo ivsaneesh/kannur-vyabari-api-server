@@ -33,17 +33,22 @@ class Member {
                 req.body.basic_details.created_on = moment(new Date()).format("X");
             }
             req.body.basic_details.active = 1;
+            /// create user id
+            req.body.basic_details.created_by = req.user.user_id;
             req.body.business_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
             })
             req.body.family_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
             })
             req.body.nominee_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
@@ -94,12 +99,27 @@ class Member {
                 'Nominee': nomineeResult
             }
             await transaction.commit();
+
+            // registration fee collected from member 
+            var registrationFeeResult = await api.findOneAsync(sequelize, "RegistrationFee", {
+                where: { deleted: '0' },
+            });
+            var registrationFeeId = 1;
+            /// inserting registration fee to registrationfeecollected table
+            var collected_data = {
+                'member_id': memberResult.id,
+                'registration_fee_id': registrationFeeResult != null ? registrationFeeResult.id : registrationFeeId,
+                'created_by': req.user.user_id,
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+            }
+            var collectedResult = await api.createAsync(sequelize, "RegistrationFeeCollected", collected_data);
+
             var msg = 'Hi ' + memberResult.first_name + ', you are successfully enrolled into Vypari Vyavasayi ekopana samithi'
             var smsResult = await sms.sendSMS(memberResult.mobile, msg)
-            return res.json({ "status": 'success', "data": result });
+            return res.json({ "status": 'success', "data": registrationFeeResult });
         }
         catch (err) {
-            transaction.rollback();
+            // transaction.rollback();
             logger.error("User Create Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
@@ -143,7 +163,12 @@ class Member {
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }
-            var include = [{ model: sequelize.models.Business, as: "Business" }, { model: sequelize.models.Family, as: "Family" }, { model: sequelize.models.Nominee, as: "Nominee" }, { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }]
+            var include = [{ model: sequelize.models.Business, as: "Business" },
+            { model: sequelize.models.Family, as: "Family" },
+            { model: sequelize.models.Nominee, as: "Nominee" },
+            { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] },
+            { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] },
+            { model: sequelize.models.RegistrationFeeCollected, as: "RegistrationFeeCollected", attributes: ['id'], include: [{ model: sequelize.models.RegistrationFee, as: "RegistrationFee", attributes: ['id', 'amount'] }] }];
             var json_obj = { where: member_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
@@ -204,6 +229,7 @@ class Member {
                 if (utils.isNotUndefined(req.body.basic_details.photo)) member_data.photo = req.body.basic_details.photo;
                 if (utils.isNotUndefined(req.body.basic_details.form_photo)) member_data.form_photo = req.body.basic_details.form_photo;
                 member_data.modified_on = moment(new Date()).format("X");
+                member_data.modified_by = req.user.user_id;
                 let condition = { where: { 'id': req.body.member_id } };
                 // updating member
                 try {
@@ -228,6 +254,7 @@ class Member {
                         if (utils.isNotUndefined(req.body.business_details.gst_number)) business_data.gst_number = req.body.business_details.gst_number;
                         if (utils.isNotUndefined(req.body.business_details.registration_number)) business_data.registration_number = req.body.business_details.registration_number;
                         business_data.modified_on = moment(new Date()).format("X");
+                        business_data.modified_by = req.user.user_id;
                         let condition = { where: { 'id': businessItem.id } };
                         // updating member
                         try {
@@ -261,6 +288,7 @@ class Member {
                         if (utils.isNotUndefined(req.body.family_details.relation)) family_data.relation = req.body.family_details.relation;
                         if (utils.isNotUndefined(req.body.family_details.mobile)) family_data.mobile = req.body.family_details.mobile;
                         family_data.modified_on = moment(new Date()).format("X");
+                        family_data.modified_by = req.user.user_id;
                         let condition = { where: { 'id': familyItem.id } };
                         // updating member
                         try {
@@ -299,6 +327,7 @@ class Member {
                     if (utils.isNotUndefined(req.body.nominee_details.relation)) nominee_data.relation = req.body.nominee_details.relation;
                     if (utils.isNotUndefined(req.body.nominee_details.percentage)) nominee_data.percentage = req.body.nominee_details.percentage;
                     nominee_data.modified_on = moment(new Date()).format("X");
+                    nominee_data.modified_by = req.user.user_id;
                     let condition = { where: { 'id': req.body.nominee_id } };
                     // updating nominee
                     try {
@@ -358,7 +387,6 @@ class Member {
                     var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result[index].unit_id } });
                     // get area id_number
                     var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result[index].area_id } });
-                    
 
                     var condition = { where: { 'id': result[index].id } };
 

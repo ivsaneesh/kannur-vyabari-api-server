@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('collector_payout', {
     id: {
       autoIncrement: true,
@@ -10,11 +10,6 @@ module.exports = function(sequelize, DataTypes) {
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false
-    },
-    credit_debit: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
     },
     collector_id: {
       type: DataTypes.INTEGER,
@@ -42,6 +37,16 @@ module.exports = function(sequelize, DataTypes) {
     cheque_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
     }
   }, {
     sequelize,

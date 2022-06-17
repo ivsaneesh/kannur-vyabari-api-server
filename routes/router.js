@@ -41,6 +41,12 @@ module.exports = function(app) {
     app.post('/user/list',  function(req, res)  {
         user.listUser(req, res)
     });
+    app.put('/user/update',  function(req, res)  {
+        user.updateUser(req, res)
+    });
+    app.delete('/user/delete',  function(req, res)  {
+        user.deleteUser(req, res)
+    });
     /// member
     app.post('/member/register', function(req, res)  {
         member.createMember(req, res)

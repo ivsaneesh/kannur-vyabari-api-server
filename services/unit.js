@@ -36,7 +36,8 @@ class Unit {
                 'manager_id': req.body.manager_id ? req.body.manager_id : null,
                 'area_id': req.body.area_id,
                 'manager_type': req.body.manager_type ? req.body.manager_type : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
             }
             // inserting user permission
             var unitResult = await api.createAsync(sequelize, "Unit", unit_data);
@@ -125,6 +126,7 @@ class Unit {
                 }
             }
             unit_data.modified_on = moment(new Date()).format("X");
+            unit_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.unit_id } };
 
@@ -154,6 +156,7 @@ class Unit {
             const unit_data = {}
             unit_data.deleted = 1;
             unit_data.modified_on = moment(new Date()).format("X");
+            unit_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.unit_id } };
 

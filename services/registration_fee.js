@@ -18,7 +18,8 @@ class RegistrationFee {
 
             var fee_data = {
                 'amount': req.body.amount,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
             }
             var feeResult = await api.createAsync(sequelize, "RegistrationFee", fee_data);
             return res.json({ "status": 'success', "data": feeResult });
@@ -42,7 +43,7 @@ class RegistrationFee {
 
             if (utils.isNotUndefined(req.body.id)) {
                 fee_condition.id = req.body.id;
-            } 
+            }
             if (utils.isNotUndefined(req.body.amount)) {
                 fee_condition.amount = req.body.amount;
             }
@@ -67,7 +68,7 @@ class RegistrationFee {
         }
     }
 
-    
+
     async deleteRegistratioFee(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -78,6 +79,7 @@ class RegistrationFee {
             const fee_data = {}
             fee_data.deleted = 1;
             fee_data.modified_on = moment(new Date()).format("X");
+            fee_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.entity_id } };
 

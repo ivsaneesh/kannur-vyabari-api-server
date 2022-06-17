@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('charity', {
     id: {
       autoIncrement: true,
@@ -38,6 +38,16 @@ module.exports = function(sequelize, DataTypes) {
     details: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
     }
   }, {
     sequelize,

@@ -30,11 +30,13 @@ class Collection {
                 'collector_id': req.body.collector_id ? req.body.collector_id : null,
                 'collector_type': req.body.collector_type ? req.body.collector_type : null,
                 'amount_id': req.body.amount_id ? req.body.amount_id : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
+
             }
             // inserting user permission
             var result = await api.createAsync(sequelize, "Collection", collection_data, transaction);
-            
+
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
@@ -43,13 +45,13 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
-    async createBulkCollection(collectionArray,transaction,sequelize,logger) {
+    async createBulkCollection(collectionArray, transaction, sequelize, logger) {
         try {
             if (!collectionArray) {
                 return { "status": "error", "message": "Collection Array is required!" };
             }
             // inserting collection
-            var result = await api.bulkCreateT(sequelize, "Collection", collectionArray,transaction);
+            var result = await api.bulkCreateT(sequelize, "Collection", collectionArray, transaction);
             return { "status": 'success', "data": result };
         }
         catch (err) {
@@ -65,19 +67,19 @@ class Collection {
         var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collection_condition = {}
-        try {  
+        try {
             if (utils.isNotUndefined(req.body.id)) {
                 collection_condition.id = req.body.id;
-            } 
+            }
             if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
-            } 
+            }
             if (utils.isNotUndefined(req.body.dead_member_id)) {
                 collection_condition.dead_member_id = req.body.dead_member_id;
-            } 
+            }
             if (utils.isNotUndefined(req.body.paid)) {
                 collection_condition.paid = req.body.paid;
-            } 
+            }
             var json_obj = { where: collection_condition }
             json_obj.offset = offset
             json_obj.limit = limit
@@ -99,7 +101,7 @@ class Collection {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
         try {
-            var json_obj = { where: { 'deleted': 0 }};
+            var json_obj = { where: { 'deleted': 0 } };
             var exclude = ['deleted_on', 'deleted']
             json_obj.attributes = { exclude: exclude };
             // fetch the amount that is not deleted
@@ -120,22 +122,25 @@ class Collection {
         try {
             if (!req.body.amount) {
                 return res.json({ "status": "error", "message": "amount is required!" });
-            } 
+            }
             var collection_data = {
                 'amount': req.body.amount ? req.body.amount : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
+
             }
             transaction = await sequelize.sequelize.transaction();
 
             var update_data = {
                 'deleted': 1,
-                'deleted_on': moment(new Date()).format("X")
+                'deleted_on': moment(new Date()).format("X"),
+                'deleted_by': req.user.user_id,
             }
             var update_condition = {
                 where: { 'deleted': 0 }
             }
             // updating all amount in the table to deleted before adding new amount
-            
+
             var colledtion_amount_update = api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
 
             // inserting new amount
@@ -161,14 +166,15 @@ class Collection {
             if (!Array.isArray(req.body.collection_id)) {
                 return res.json({ "status": "error", "message": "collection id must be array!" });
             }
-            var collectorIdResult = await api.findOneAsync(sequelize, "Collector", { where: { 'id': req.body.collector_id} });
-                if (!collectorIdResult) {
-                    return res.json({ "status": "error", "message": "There is no collector with this collector id" });
-                }
+            var collectorIdResult = await api.findOneAsync(sequelize, "Collector", { where: { 'id': req.body.collector_id } });
+            if (!collectorIdResult) {
+                return res.json({ "status": "error", "message": "There is no collector with this collector id" });
+            }
             const collection_data = {}
             if (utils.isNotUndefined(req.body.paid)) collection_data.paid = req.body.paid;
             collection_data.collector_id = req.body.collector_id;
             collection_data.modified_on = moment(new Date()).format("X");
+            collection_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.collection_id } };
 

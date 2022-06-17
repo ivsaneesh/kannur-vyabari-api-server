@@ -12,7 +12,7 @@ class Collector {
     async createCollector(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
-        try { 
+        try {
             if (!utils.isNotUndefined(req.body.first_name)) {
                 return res.json({ "status": "error", "message": "First name is required!" });
             }
@@ -42,7 +42,9 @@ class Collector {
                 'unit_id': req.body.unit_id ? req.body.unit_id : null,
                 'designation': req.body.designation ? req.body.designation : null,
                 'details': req.body.details ? req.body.details : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
+
             }
             // inserting user permission
             var collectorResult = await api.createAsync(sequelize, "Collector", collector_data);
@@ -62,13 +64,13 @@ class Collector {
         var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collector_condition = {}
-        try {   
+        try {
 
             if (utils.isNotUndefined(req.body.id)) {
                 collector_condition.id = req.body.id;
             }
             if (utils.isNotUndefined(req.body.search)) {
-                collector_condition = { [Op.or]: [{ mobile: { [Op.like]: '%' + req.body.search + '%' } },{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
+                collector_condition = { [Op.or]: [{ mobile: { [Op.like]: '%' + req.body.search + '%' } }, { first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.area_id)) {
                 collector_condition.area_id = req.body.area_id;
@@ -101,8 +103,8 @@ class Collector {
             if (!utils.isNotUndefined(req.body.collector_id)) {
                 return res.json({ "status": "error", "message": "collector id is required!" });
             }
-            if(req.body.mobile){
-                var collectorMobileResult = await api.findOneAsync(sequelize, "Collector", { where: { 'mobile': req.body.mobile, 'id': { [Op.not]: req.body.collector_id }  } });
+            if (req.body.mobile) {
+                var collectorMobileResult = await api.findOneAsync(sequelize, "Collector", { where: { 'mobile': req.body.mobile, 'id': { [Op.not]: req.body.collector_id } } });
                 if (collectorMobileResult && collectorMobileResult.mobile) {
                     return res.json({ "status": "error", "message": "Mobile already exist for another collector!" });
                 }
@@ -119,6 +121,7 @@ class Collector {
             if (utils.isNotUndefined(req.body.designation)) collector_data.designation = req.body.designation;
             if (utils.isNotUndefined(req.body.details)) collector_data.details = req.body.details;
             collector_data.modified_on = moment(new Date()).format("X");
+            collector_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.collector_id } };
 

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('sms', {
     id: {
       autoIncrement: true,
@@ -33,6 +33,16 @@ module.exports = function(sequelize, DataTypes) {
     type_data: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
     }
   }, {
     sequelize,

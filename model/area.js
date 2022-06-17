@@ -45,6 +45,16 @@ module.exports = function(sequelize, DataTypes) {
     mobile: {
       type: DataTypes.STRING(20),
       allowNull: true
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: null
     }
   }, {
     sequelize,

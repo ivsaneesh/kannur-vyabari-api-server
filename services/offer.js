@@ -26,7 +26,8 @@ class Offer {
                 'name': req.body.name,
                 'type': req.body.type,
                 'value': req.body.value ? req.body.value : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
             }
 
 
@@ -36,7 +37,8 @@ class Offer {
                     'offer_id': data.id,
                     'external_entity_id': req.body.external_entity_id,
                     'expiry_date': req.body.expiry_date ? req.body.expiry_date : 0,
-                    'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                    'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                    'created_by': req.user.user_id,
                 }
                 api.create(sequelize, "OfferGiven", offer_given_data, function (status, data, message) {
                     return res.json({ "status": 'success', "data": offerResult });
@@ -116,6 +118,7 @@ class Offer {
             if (utils.isNotUndefined(req.body.type)) offer_data.type = req.body.type;
 
             offer_data.modified_on = moment(new Date()).format("X");
+            offer_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.offer_id } };
 
