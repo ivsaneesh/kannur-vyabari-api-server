@@ -242,31 +242,18 @@ class Member {
             }
             var business_result = [];
             if (req.body.business_details && Array.isArray(req.body.business_details) && req.body.business_details.length > 0) {
-                await req.body.business_details.forEach(async (businessItem) => {
-                    if (businessItem.id) {
-                        let business_data = {}
-                        if (utils.isNotUndefined(req.body.business_details.name)) business_data.name = req.body.business_details.name;
-                        if (utils.isNotUndefined(req.body.business_details.address)) business_data.address = req.body.business_details.address;
-                        if (utils.isNotUndefined(req.body.business_details.mobile)) business_data.mobile = req.body.business_details.mobile;
-                        if (utils.isNotUndefined(req.body.business_details.latitude)) business_data.latitude = req.body.business_details.latitude;
-                        if (utils.isNotUndefined(req.body.business_details.longitude)) business_data.longitude = req.body.business_details.longitude;
-                        if (utils.isNotUndefined(req.body.business_details.description)) business_data.description = req.body.business_details.description;
-                        if (utils.isNotUndefined(req.body.business_details.gst_number)) business_data.gst_number = req.body.business_details.gst_number;
-                        if (utils.isNotUndefined(req.body.business_details.registration_number)) business_data.registration_number = req.body.business_details.registration_number;
-                        business_data.modified_on = moment(new Date()).format("X");
-                        business_data.modified_by = req.user.user_id;
-                        let condition = { where: { 'id': businessItem.id } };
-                        // updating member
+                // delete all business details with the memberId
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Business', 'member_id', memberID, async (status, data, message) => {
+
+                    // insert or create new business
+                    await req.body.business_details.forEach(async (businessItem) => {
+
                         try {
-                            let result = await api.updateAsync(sequelize, 'Business', business_data, condition)
-                            business_result.push({ "status": 'success', "data": result });
-                        }
-                        catch (error) {
-                            business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
-                        }
-                    }
-                    else {
-                        try {
+                            businessItem.member_id = req.body.member_id;
+                            businessItem.created_by = req.user.user_id;
+                            businessItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
+
                             let result = await api.createAsync(sequelize, 'Business', businessItem);
                             business_result.push({ "status": 'success', "data": result });
                         }
@@ -274,70 +261,57 @@ class Member {
                             business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
 
-                    }
-                })
+                    });
+                });
                 isBusinessUpdate = true;
             }
             var family_result = [];
             if (req.body.family_details && Array.isArray(req.body.family_details) && req.body.family_details.length > 0) {
-                await req.body.family_details.forEach(async (familyItem) => {
-                    if (familyItem.id) {
-                        let family_data = {}
-                        if (utils.isNotUndefined(req.body.family_details.full_name)) family_data.full_name = req.body.family_details.full_name;
-                        if (utils.isNotUndefined(req.body.family_details.aadhar)) family_data.aadhar = req.body.family_details.aadhar;
-                        if (utils.isNotUndefined(req.body.family_details.relation)) family_data.relation = req.body.family_details.relation;
-                        if (utils.isNotUndefined(req.body.family_details.mobile)) family_data.mobile = req.body.family_details.mobile;
-                        family_data.modified_on = moment(new Date()).format("X");
-                        family_data.modified_by = req.user.user_id;
-                        let condition = { where: { 'id': familyItem.id } };
-                        // updating member
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Family', 'member_id', memberID, async (status, data, message) => {
+                    await req.body.family_details.forEach(async (familyItem) => {
                         try {
-                            let result = await api.updateAsync(sequelize, 'Family', family_data, condition)
-                            family_result.push({ "status": 'success', "data": result });
-                        }
-                        catch (error) {
-                            family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
-                        }
+                            familyItem.member_id = req.body.member_id;
+                            familyItem.created_by = req.user.user_id;
+                            familyItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
 
-                    }
-                    else {
-                        try {
                             let result = await api.createAsync(sequelize, 'Family', familyItem)
                             family_result.push({ "status": 'success', "data": result });
                         }
                         catch (error) {
                             family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-                    }
-                })
+                        // }
+                    });
+                });
                 isFamilyUpdate = true;
             }
             var nominee_result = {};
             var nominee_error = '';
 
-            if (req.body.nominee_details && Object.keys(req.body.nominee_details).length > 0) {
-                if (!utils.isNotUndefined(req.body.nominee_details.id)) {
-                    nominee_error = "Nominee id is required!";
-                }
-                else {
-                    let nominee_data = {}
-                    if (utils.isNotUndefined(req.body.nominee_details.full_name)) nominee_data.full_name = req.body.nominee_details.full_name;
-                    if (utils.isNotUndefined(req.body.nominee_details.aadhar)) nominee_data.aadhar = req.body.nominee_details.aadhar;
-                    if (utils.isNotUndefined(req.body.nominee_details.mobile)) nominee_data.mobile = req.body.nominee_details.mobile;
-                    if (utils.isNotUndefined(req.body.nominee_details.relation)) nominee_data.relation = req.body.nominee_details.relation;
-                    if (utils.isNotUndefined(req.body.nominee_details.percentage)) nominee_data.percentage = req.body.nominee_details.percentage;
-                    nominee_data.modified_on = moment(new Date()).format("X");
-                    nominee_data.modified_by = req.user.user_id;
-                    let condition = { where: { 'id': req.body.nominee_id } };
-                    // updating nominee
-                    try {
-                        nominee_result = await api.updateAsync(sequelize, 'Nominee', nominee_data, condition);
-                    }
-                    catch (error) {
-                        nominee_result = error;
-                    }
+            if (req.body.nominee_details && Array.isArray(req.body.nominee_details) && req.body.nominee_details.length > 0) {
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Nominee', 'member_id', memberID, async (status, data, message) => {
+                    await req.body.nominee_details.forEach(async (nomineeItem) => {
 
-                }
+                        // updating nominee
+                        try {
+                            nomineeItem.member_id = req.body.member_id;
+                            nomineeItem.created_by = req.user.user_id;
+                            nomineeItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
+
+                            console.log('nomineeItem >>> '   , nomineeItem)
+                            nominee_result = await api.createAsync(sequelize, 'Nominee', nomineeItem);
+                        }
+                        catch (error) {
+                            nominee_result = error;
+                            console.log("NOMINEE ERROR >>>> ",error );
+                        }
+                    });
+                });
+
+
+                // }
                 isNomineeUpdate = true;
             }
             var result = {}

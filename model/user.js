@@ -71,12 +71,12 @@ module.exports = function (sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       defaultValue: null
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       defaultValue: null
     }
   }, {
