@@ -260,7 +260,6 @@ class Member {
                         catch (error) {
                             business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-
                     });
                 });
                 isBusinessUpdate = true;
@@ -269,6 +268,7 @@ class Member {
             if (req.body.family_details && Array.isArray(req.body.family_details) && req.body.family_details.length > 0) {
                 let memberID = req.body.member_id;
                 await api.delete(sequelize, 'Family', 'member_id', memberID, async (status, data, message) => {
+                    // insert or create new family
                     await req.body.family_details.forEach(async (familyItem) => {
                         try {
                             familyItem.member_id = req.body.member_id;
@@ -281,7 +281,6 @@ class Member {
                         catch (error) {
                             family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-                        // }
                     });
                 });
                 isFamilyUpdate = true;
@@ -292,26 +291,21 @@ class Member {
             if (req.body.nominee_details && Array.isArray(req.body.nominee_details) && req.body.nominee_details.length > 0) {
                 let memberID = req.body.member_id;
                 await api.delete(sequelize, 'Nominee', 'member_id', memberID, async (status, data, message) => {
+                    // insert or create new family
                     await req.body.nominee_details.forEach(async (nomineeItem) => {
-
-                        // updating nominee
                         try {
                             nomineeItem.member_id = req.body.member_id;
                             nomineeItem.created_by = req.user.user_id;
                             nomineeItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
-
-                            console.log('nomineeItem >>> '   , nomineeItem)
                             nominee_result = await api.createAsync(sequelize, 'Nominee', nomineeItem);
                         }
                         catch (error) {
                             nominee_result = error;
-                            console.log("NOMINEE ERROR >>>> ",error );
+                            console.log("NOMINEE ERROR >>>> ", error);
                         }
                     });
                 });
 
-
-                // }
                 isNomineeUpdate = true;
             }
             var result = {}
