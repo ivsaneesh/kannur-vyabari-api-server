@@ -41,6 +41,8 @@ class Bank {
                 created_on: req.body.created_on
                     ? req.body.created_on
                     : moment(new Date()).format("X"),
+                created_by: req.user.user_id,
+
             };
 
             var bankResult = await api.createAsync(sequelize, "Bank", bank_data);
@@ -137,6 +139,7 @@ class Bank {
                 bank_data.details = req.body.details;
 
             bank_data.modified_on = moment(new Date()).format("X");
+            bank_data.modified_by = req.user.user_id;
 
             var condition = { where: { id: req.body.bank_id } };
 
@@ -170,6 +173,7 @@ class Bank {
             const bank_data = {};
             bank_data.deleted = 1;
             bank_data.modified_on = moment(new Date()).format("X");
+            bank_data.modified_by = req.user.user_id;
 
             var condition = { where: { id: req.body.bank_id } };
 
@@ -221,6 +225,8 @@ class Bank {
                 created_on: req.body.created_on
                     ? req.body.created_on
                     : moment(new Date()).format("X"),
+                created_by: req.user.user_id,
+
             };
 
             var bankResult = await api.createAsync(sequelize, "BankTransaction", bank_data);

@@ -33,17 +33,22 @@ class Member {
                 req.body.basic_details.created_on = moment(new Date()).format("X");
             }
             req.body.basic_details.active = 1;
+            /// create user id
+            req.body.basic_details.created_by = req.user.user_id;
             req.body.business_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
             })
             req.body.family_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
             })
             req.body.nominee_details.forEach((item) => {
+                item.created_by = req.user.user_id;
                 if (!item.created_on) {
                     item.created_on = moment(new Date()).format("X");
                 }
@@ -94,12 +99,27 @@ class Member {
                 'Nominee': nomineeResult
             }
             await transaction.commit();
+
+            // registration fee collected from member 
+            var registrationFeeResult = await api.findOneAsync(sequelize, "RegistrationFee", {
+                where: { deleted: '0' },
+            });
+            var registrationFeeId = 1;
+            /// inserting registration fee to registrationfeecollected table
+            var collected_data = {
+                'member_id': memberResult.id,
+                'registration_fee_id': registrationFeeResult != null ? registrationFeeResult.id : registrationFeeId,
+                'created_by': req.user.user_id,
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+            }
+            var collectedResult = await api.createAsync(sequelize, "RegistrationFeeCollected", collected_data);
+
             var msg = 'Hi ' + memberResult.first_name + ', you are successfully enrolled into Vypari Vyavasayi ekopana samithi'
             var smsResult = await sms.sendSMS(memberResult.mobile, msg)
-            return res.json({ "status": 'success', "data": result });
+            return res.json({ "status": 'success', "data": registrationFeeResult });
         }
         catch (err) {
-            transaction.rollback();
+            // transaction.rollback();
             logger.error("User Create Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
@@ -143,7 +163,12 @@ class Member {
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }
-            var include = [{ model: sequelize.models.Business, as: "Business" }, { model: sequelize.models.Family, as: "Family" }, { model: sequelize.models.Nominee, as: "Nominee" }, { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }]
+            var include = [{ model: sequelize.models.Business, as: "Business" },
+            { model: sequelize.models.Family, as: "Family" },
+            { model: sequelize.models.Nominee, as: "Nominee" },
+            { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] },
+            { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] },
+            { model: sequelize.models.RegistrationFeeCollected, as: "RegistrationFeeCollected", attributes: ['id'], include: [{ model: sequelize.models.RegistrationFee, as: "RegistrationFee", attributes: ['id', 'amount'] }] }];
             var json_obj = { where: member_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
@@ -204,6 +229,7 @@ class Member {
                 if (utils.isNotUndefined(req.body.basic_details.photo)) member_data.photo = req.body.basic_details.photo;
                 if (utils.isNotUndefined(req.body.basic_details.form_photo)) member_data.form_photo = req.body.basic_details.form_photo;
                 member_data.modified_on = moment(new Date()).format("X");
+                member_data.modified_by = req.user.user_id;
                 let condition = { where: { 'id': req.body.member_id } };
                 // updating member
                 try {
@@ -216,30 +242,18 @@ class Member {
             }
             var business_result = [];
             if (req.body.business_details && Array.isArray(req.body.business_details) && req.body.business_details.length > 0) {
-                await req.body.business_details.forEach(async (businessItem) => {
-                    if (businessItem.id) {
-                        let business_data = {}
-                        if (utils.isNotUndefined(req.body.business_details.name)) business_data.name = req.body.business_details.name;
-                        if (utils.isNotUndefined(req.body.business_details.address)) business_data.address = req.body.business_details.address;
-                        if (utils.isNotUndefined(req.body.business_details.mobile)) business_data.mobile = req.body.business_details.mobile;
-                        if (utils.isNotUndefined(req.body.business_details.latitude)) business_data.latitude = req.body.business_details.latitude;
-                        if (utils.isNotUndefined(req.body.business_details.longitude)) business_data.longitude = req.body.business_details.longitude;
-                        if (utils.isNotUndefined(req.body.business_details.description)) business_data.description = req.body.business_details.description;
-                        if (utils.isNotUndefined(req.body.business_details.gst_number)) business_data.gst_number = req.body.business_details.gst_number;
-                        if (utils.isNotUndefined(req.body.business_details.registration_number)) business_data.registration_number = req.body.business_details.registration_number;
-                        business_data.modified_on = moment(new Date()).format("X");
-                        let condition = { where: { 'id': businessItem.id } };
-                        // updating member
+                // delete all business details with the memberId
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Business', 'member_id', memberID, async (status, data, message) => {
+
+                    // insert or create new business
+                    await req.body.business_details.forEach(async (businessItem) => {
+
                         try {
-                            let result = await api.updateAsync(sequelize, 'Business', business_data, condition)
-                            business_result.push({ "status": 'success', "data": result });
-                        }
-                        catch (error) {
-                            business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
-                        }
-                    }
-                    else {
-                        try {
+                            businessItem.member_id = req.body.member_id;
+                            businessItem.created_by = req.user.user_id;
+                            businessItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
+
                             let result = await api.createAsync(sequelize, 'Business', businessItem);
                             business_result.push({ "status": 'success', "data": result });
                         }
@@ -247,68 +261,57 @@ class Member {
                             business_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
 
-                    }
-                })
+                    });
+                });
                 isBusinessUpdate = true;
             }
             var family_result = [];
             if (req.body.family_details && Array.isArray(req.body.family_details) && req.body.family_details.length > 0) {
-                await req.body.family_details.forEach(async (familyItem) => {
-                    if (familyItem.id) {
-                        let family_data = {}
-                        if (utils.isNotUndefined(req.body.family_details.full_name)) family_data.full_name = req.body.family_details.full_name;
-                        if (utils.isNotUndefined(req.body.family_details.aadhar)) family_data.aadhar = req.body.family_details.aadhar;
-                        if (utils.isNotUndefined(req.body.family_details.relation)) family_data.relation = req.body.family_details.relation;
-                        if (utils.isNotUndefined(req.body.family_details.mobile)) family_data.mobile = req.body.family_details.mobile;
-                        family_data.modified_on = moment(new Date()).format("X");
-                        let condition = { where: { 'id': familyItem.id } };
-                        // updating member
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Family', 'member_id', memberID, async (status, data, message) => {
+                    await req.body.family_details.forEach(async (familyItem) => {
                         try {
-                            let result = await api.updateAsync(sequelize, 'Family', family_data, condition)
-                            family_result.push({ "status": 'success', "data": result });
-                        }
-                        catch (error) {
-                            family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
-                        }
+                            familyItem.member_id = req.body.member_id;
+                            familyItem.created_by = req.user.user_id;
+                            familyItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
 
-                    }
-                    else {
-                        try {
                             let result = await api.createAsync(sequelize, 'Family', familyItem)
                             family_result.push({ "status": 'success', "data": result });
                         }
                         catch (error) {
                             family_result.push({ "status": 'error', "message": sequelize.getErrors(error) });
                         }
-                    }
-                })
+                        // }
+                    });
+                });
                 isFamilyUpdate = true;
             }
             var nominee_result = {};
             var nominee_error = '';
 
-            if (req.body.nominee_details && Object.keys(req.body.nominee_details).length > 0) {
-                if (!utils.isNotUndefined(req.body.nominee_details.id)) {
-                    nominee_error = "Nominee id is required!";
-                }
-                else {
-                    let nominee_data = {}
-                    if (utils.isNotUndefined(req.body.nominee_details.full_name)) nominee_data.full_name = req.body.nominee_details.full_name;
-                    if (utils.isNotUndefined(req.body.nominee_details.aadhar)) nominee_data.aadhar = req.body.nominee_details.aadhar;
-                    if (utils.isNotUndefined(req.body.nominee_details.mobile)) nominee_data.mobile = req.body.nominee_details.mobile;
-                    if (utils.isNotUndefined(req.body.nominee_details.relation)) nominee_data.relation = req.body.nominee_details.relation;
-                    if (utils.isNotUndefined(req.body.nominee_details.percentage)) nominee_data.percentage = req.body.nominee_details.percentage;
-                    nominee_data.modified_on = moment(new Date()).format("X");
-                    let condition = { where: { 'id': req.body.nominee_id } };
-                    // updating nominee
-                    try {
-                        nominee_result = await api.updateAsync(sequelize, 'Nominee', nominee_data, condition);
-                    }
-                    catch (error) {
-                        nominee_result = error;
-                    }
+            if (req.body.nominee_details && Array.isArray(req.body.nominee_details) && req.body.nominee_details.length > 0) {
+                let memberID = req.body.member_id;
+                await api.delete(sequelize, 'Nominee', 'member_id', memberID, async (status, data, message) => {
+                    await req.body.nominee_details.forEach(async (nomineeItem) => {
 
-                }
+                        // updating nominee
+                        try {
+                            nomineeItem.member_id = req.body.member_id;
+                            nomineeItem.created_by = req.user.user_id;
+                            nomineeItem.created_on = req.body.created_on ? req.body.created_on : moment(new Date()).format("X");
+
+                            console.log('nomineeItem >>> '   , nomineeItem)
+                            nominee_result = await api.createAsync(sequelize, 'Nominee', nomineeItem);
+                        }
+                        catch (error) {
+                            nominee_result = error;
+                            console.log("NOMINEE ERROR >>>> ",error );
+                        }
+                    });
+                });
+
+
+                // }
                 isNomineeUpdate = true;
             }
             var result = {}
@@ -358,7 +361,6 @@ class Member {
                     var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result[index].unit_id } });
                     // get area id_number
                     var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result[index].area_id } });
-                    
 
                     var condition = { where: { 'id': result[index].id } };
 

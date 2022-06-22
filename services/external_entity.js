@@ -23,7 +23,9 @@ class ExternalEntity {
                 'full_name': req.body.full_name,
                 'type': req.body.type,
                 'aadhar': req.body.aadhar ? req.body.aadhar : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
+
             }
             var entityResult = await api.createAsync(sequelize, "ExternalEntity", entity_data);
             return res.json({ "status": 'success', "data": entityResult });
@@ -89,6 +91,7 @@ class ExternalEntity {
             if (utils.isNotUndefined(req.body.type)) entity_data.type = req.body.type;
 
             entity_data.modified_on = moment(new Date()).format("X");
+            entity_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.entity_id } };
 
@@ -118,6 +121,7 @@ class ExternalEntity {
             const entity_data = {}
             entity_data.deleted = 1;
             entity_data.modified_on = moment(new Date()).format("X");
+            entity_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.entity_id } };
 
