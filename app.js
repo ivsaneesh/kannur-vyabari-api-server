@@ -33,9 +33,13 @@ app.use(helmet({
     crossOriginResourcePolicy: true,
 }));
 
+app.use(helmet({ crossOriginResourcePolicy: { policy: "same-site" } }));
+
 app.use(cookie_parser())
 
-app.use(cors({credentials: true, origin:'http://cms.kvvskannurdc.in/' }));
+const originDomain = 'http://cms.kvvskannurdc.in/';
+app.use(cors({ credentials: false, origin: originDomain }));
+
 app.use(timeout('300s'));
 
 /***********************************
@@ -90,16 +94,10 @@ app.use(session({
 }));
 
 
-/**************************
-access logs with rotation
-***************************/
-
-/**************************
-end access logs with rotation
-***************************/
 app.options('*', cors())
 
 app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", originDomain);
     // intercept OPTIONS method
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
