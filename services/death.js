@@ -37,20 +37,22 @@ class Death {
                 'details': req.body.details ? req.body.details : null,
                 'venue': req.body.venue ? req.body.venue : null,
                 'last_date': req.body.last_date ? req.body.last_date : null,
-                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                'created_by': req.user.user_id,
+
             }
             var member_data = {
                 'active': 0,
                 'dead': 1
             }
-            var member_condition={where:{'id': req.body.member_id}}
+            var member_condition = { where: { 'id': req.body.member_id } }
             transaction = await sequelize.sequelize.transaction();
             // inserting user permission
             var death_create = api.createT(sequelize, "Death", death_data, transaction);
             var member_update = api.updateCustomT(sequelize, "Member", member_data, member_condition, transaction);
             let [death_create_result, member_update_result] = await Promise.all([death_create, member_update]);
-            if(death_create_result){
-                var json_obj = { where: { dead: 0, active: 1}, attributes:[ 'id' ]   }
+            if (death_create_result) {
+                var json_obj = { where: { dead: 0, active: 1 }, attributes: ['id'] }
                 var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
                 var collection_array = [];
                 member_result.forEach((member) => {
@@ -58,12 +60,14 @@ class Death {
                         member_id: member.id,
                         dead_member_id: death_create_result.id,
                         collector_type: req.body.collector_type ? req.body.collector_type : null,
-                        amount_id : req.body.amount_id ? req.body.amount_id : null,
+                        amount_id: req.body.amount_id ? req.body.amount_id : null,
                         paid: 0,
-                        created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
+                        created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                        created_by: req.user.user_id,
+
                     })
                 })
-            await collection.createBulkCollection(collection_array,transaction,sequelize,logger)
+                await collection.createBulkCollection(collection_array, transaction, sequelize, logger)
             }
             await transaction.commit();
             return res.json({ "status": 'success', "data": death_create_result });
@@ -81,14 +85,14 @@ class Death {
         var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collection_condition = {}
-        try {  
+        try {
             if (utils.isNotUndefined(req.body.id)) {
                 collection_condition.id = req.body.id;
-            } 
+            }
             if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
-            } 
-            var include = [{ model: sequelize.models.Business, as: "Business"},{ model: sequelize.models.Family, as: "Family"},{ model: sequelize.models.Nominee, as: "Nominee"}]
+            }
+            var include = [{ model: sequelize.models.Business, as: "Business" }, { model: sequelize.models.Family, as: "Family" }, { model: sequelize.models.Nominee, as: "Nominee" }]
             var json_obj = { where: collection_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit

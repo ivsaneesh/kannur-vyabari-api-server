@@ -95,6 +95,16 @@ module.exports = function (sequelize, DataTypes) {
     in_active_reason: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
     }
   }, {
     sequelize,

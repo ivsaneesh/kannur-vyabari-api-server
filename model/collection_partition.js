@@ -1,31 +1,26 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('family', {
+  return sequelize.define('collection_partition', {
     id: {
       autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    full_name: {
-      type: DataTypes.STRING(300),
-      allowNull: true
+    type: {
+      type: DataTypes.STRING(30),
+      allowNull: false
     },
-    aadhar: {
-      type: DataTypes.STRING(20),
-      allowNull: true
-    },
-    relation: {
-      type: DataTypes.STRING(50),
-      allowNull: true
-    },
-    mobile: {
-      type: DataTypes.STRING(20),
-      allowNull: true,
-      defaultValue: "0"
-    },
-    member_id: {
+    type_id: {
       type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    dead_member_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    amount: {
+      type: DataTypes.FLOAT,
       allowNull: false
     },
     created_on: {
@@ -34,6 +29,15 @@ module.exports = function (sequelize, DataTypes) {
       defaultValue: 0
     },
     modified_on: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    amount_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    paid: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0
@@ -50,7 +54,7 @@ module.exports = function (sequelize, DataTypes) {
     }
   }, {
     sequelize,
-    tableName: 'family',
+    tableName: 'collection_partition',
     timestamps: false,
     indexes: [
       {

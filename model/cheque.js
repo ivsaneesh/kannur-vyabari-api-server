@@ -46,6 +46,16 @@ module.exports = function(sequelize, DataTypes) {
     bank_id: {
       type: DataTypes.INTEGER,
       allowNull: false
+    },
+    created_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
+    },
+    modified_by: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: null
     }
   }, {
     sequelize,

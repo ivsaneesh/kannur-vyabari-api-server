@@ -33,6 +33,7 @@ class Area {
                 'id_number': req.body.id_number,
                 'manager_id': req.body.manager_id ? req.body.manager_id : null,
                 'manager_type': req.body.manager_type ? req.body.manager_type : null,
+                'created_by': req.user.user_id,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X")
             }
             // inserting user permission
@@ -123,7 +124,7 @@ class Area {
                 }
             }
             area_data.modified_on = moment(new Date()).format("X");
-
+            area_data.modified_by = req.user.user_id;
             var condition = { where: { 'id': req.body.area_id } };
 
             // updating area
@@ -152,6 +153,7 @@ class Area {
             const area_data = {}
             area_data.deleted = 1;
             area_data.modified_on = moment(new Date()).format("X");
+            area_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'id': req.body.area_id } };
 

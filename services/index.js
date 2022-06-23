@@ -51,7 +51,7 @@ class Index {
                 { user_id: userData.id, username: userData.username, permission: userData.UserPermission.permission_id },
                 req.app["env_configs"]["jwtsecret"],
                 {
-                    expiresIn: "2h",
+                    expiresIn: "8h",
                 }
             );
             var result = {
