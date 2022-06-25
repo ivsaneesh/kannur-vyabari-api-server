@@ -16,6 +16,7 @@ const report = require(path_services + '/report');
 const entity = require(path_services + '/external_entity');
 const registratioFee = require(path_services + '/registration_fee');
 const offer = require(path_services + '/offer');
+const dashboard = require(path_services +'/dashboard');
 
 
 module.exports = function(app) {
@@ -190,6 +191,10 @@ module.exports = function(app) {
     app.delete('/offer/delete', function(req, res)  {
         offer.deleteOffer(req, res)
     });
+    // dashboard
+    app.get('/dashboard', function(req, res)  {
+        dashboard.dashboardCount(req, res)
+    }); 
   
     
     app.post('/changeMemberId', function(req, res)  {

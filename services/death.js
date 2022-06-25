@@ -22,15 +22,27 @@ class Death {
             if (!req.body.date_time) {
                 return res.json({ "status": "error", "message": "date is required!" });
             }
-            if (!req.body.details) {
-                return res.json({ "status": "error", "message": "details is required!" });
+            // if (!req.body.details) {
+            //     return res.json({ "status": "error", "message": "details is required!" });
+            // }
+            // if (!req.body.venue) {
+            //     return res.json({ "status": "error", "message": "venue is required!" });
+            // }
+            // if (!req.body.amount_id) {
+            //     return res.json({ "status": "error", "message": "amount id is required!" });
+            // }
+
+
+            // fetch active collection amount
+            var amount_condition = { where: { 'deleted': 0 } }
+            var amountResult = await api.findOneAsync(sequelize, "CollectionAmount", amount_condition);
+            if (!amountResult && !amountResult.id) {
+                return res.json({ "status": "error", "message": "Active amount not exist. Create new collection amount" });
             }
-            if (!req.body.venue) {
-                return res.json({ "status": "error", "message": "venue is required!" });
+            else{
+                console.log(amountResult);
             }
-            if (!req.body.amount_id) {
-                return res.json({ "status": "error", "message": "amount id is required!" });
-            }
+
             var death_data = {
                 'member_id': req.body.member_id ? req.body.member_id : null,
                 'datetime': req.body.date_time ? req.body.date_time : null,
@@ -60,7 +72,7 @@ class Death {
                         member_id: member.id,
                         dead_member_id: death_create_result.id,
                         collector_type: req.body.collector_type ? req.body.collector_type : null,
-                        amount_id: req.body.amount_id ? req.body.amount_id : null,
+                        amount_id: amountResult.id,
                         paid: 0,
                         created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
                         created_by: req.user.user_id,

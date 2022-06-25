@@ -17,15 +17,15 @@ module.exports = function (sequelize, DataTypes) {
     },
     details: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     venue: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     last_date: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       defaultValue: 0
     },
     created_on: {

@@ -156,15 +156,19 @@ class Collection {
     async updateCollection(req, res) {
         const sequelize = req.app.get('sequelize')
         const logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
         try {
-            if (!utils.isNotUndefined(req.body.collection_id)) {
-                return res.json({ "status": "error", "message": "collection id is required!" });
+            if (!utils.isNotUndefined(req.body.member_id)) {
+                return res.json({ "status": "error", "message": "member_id is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.dead_member_id)) {
+                return res.json({ "status": "error", "message": "dead_member_id is required!" });
             }
             if (!utils.isNotUndefined(req.body.collector_id)) {
                 return res.json({ "status": "error", "message": "collector id is required!" });
             }
-            if (!Array.isArray(req.body.collection_id)) {
-                return res.json({ "status": "error", "message": "collection id must be array!" });
+            if (!Array.isArray(req.body.member_id)) {
+                return res.json({ "status": "error", "message": "member_id must be array!" });
             }
             var collectorIdResult = await api.findOneAsync(sequelize, "Collector", { where: { 'id': req.body.collector_id } });
             if (!collectorIdResult) {
@@ -176,7 +180,7 @@ class Collection {
             collection_data.modified_on = moment(new Date()).format("X");
             collection_data.modified_by = req.user.user_id;
 
-            var condition = { where: { 'id': req.body.collection_id } };
+            var condition = { where: { 'dead_member_id': req.body.dead_member_id, 'member_id': { [Op.in]: req.body.member_id } } };
 
             // updating collection
             api.updateCustom(sequelize, 'Collection', collection_data, condition, function (status, data, message) {
