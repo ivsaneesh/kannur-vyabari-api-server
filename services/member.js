@@ -163,9 +163,10 @@ class Member {
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }
-            var include = [{ model: sequelize.models.Business, as: "Business" },
-            { model: sequelize.models.Family, as: "Family" },
-            { model: sequelize.models.Nominee, as: "Nominee" },
+            var include = [
+                // { model: sequelize.models.Business, as: "Business" },
+            // { model: sequelize.models.Family, as: "Family" },
+            // { model: sequelize.models.Nominee, as: "Nominee" },
             { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] },
             { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] },
             { model: sequelize.models.RegistrationFeeCollected, as: "RegistrationFeeCollected", attributes: ['id'], include: [{ model: sequelize.models.RegistrationFee, as: "RegistrationFee", attributes: ['id', 'amount'] }] }];

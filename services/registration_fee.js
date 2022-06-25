@@ -16,6 +16,17 @@ class RegistrationFee {
                 return res.json({ "status": "error", "message": "Amount is required!" });
             }
 
+            var update_data = {
+                'deleted': 1,
+                'deleted_on': moment(new Date()).format("X"),
+                'modified_by': req.user.user_id,
+            }
+            var update_condition = {
+                where: { 'deleted': 0 }
+            }
+            var registration_fee_update = api.updateCustomT(sequelize, "RegistrationFee", update_data, update_condition, transaction);
+
+            // inserting new amount
             var fee_data = {
                 'amount': req.body.amount,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
