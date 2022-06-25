@@ -3,5 +3,4 @@ node_modules/
 !/logger/logger.js
 /public
 package-lock.json
-app.js
 config/env.json
