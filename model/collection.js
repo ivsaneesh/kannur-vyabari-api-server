@@ -17,7 +17,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     collector_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     created_on: {
       type: DataTypes.INTEGER,
