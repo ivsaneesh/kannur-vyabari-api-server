@@ -53,7 +53,7 @@ module.exports = function(app) {
         member.createMember(req, res)
     });
     app.post('/member/list',  function(req, res)  {
-        member.listMember(req, res)
+        smember.listMember(req, res)
     });
     app.put('/member/update',  function(req, res)  {
         member.updateMember(req, res)

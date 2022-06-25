@@ -91,6 +91,69 @@ class Unit {
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
+    } 
+    async updateUnit(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            if (!utils.isNotUndefined(req.body.unit_id)) {
+                return res.json({ "status": "error", "message": "Unit id is required!" });
+            }
+            const unit_data = {}
+            if (utils.isNotUndefined(req.body.name)) unit_data.name = req.body.name;
+            if (utils.isNotUndefined(req.body.address)) unit_data.address = req.body.address;
+            if (utils.isNotUndefined(req.body.mobile)) unit_data.mobile = req.body.mobile;
+            if (utils.isNotUndefined(req.body.manager_type)) unit_data.manager_type = req.body.manager_type;
+            if (utils.isNotUndefined(req.body.manager_id)) unit_data.manager_id = req.body.manager_id;
+            if (utils.isNotUndefined(req.body.area_id)) unit_data.area_id = req.body.area_id;
+            unit_data.modified_on = moment(new Date()).format("X");
+          
+            var condition = { where: { 'id': req.body.unit_id } };
+
+            // updating unit
+            api.updateCustom(sequelize, 'Unit', unit_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data, "message": message })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("unit update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    } 
+    async deleteUnit(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            if (!utils.isNotUndefined(req.body.unit_id)) {
+                return res.json({ "status": "error", "message": "Unit id is required!" });
+            }
+            const unit_data = {}
+            unit_data.deleted = 1;
+            unit_data.modified_on = moment(new Date()).format("X");
+          
+            var condition = { where: { 'id': req.body.unit_id } };
+
+            // updating unit to deleted to 1
+            api.updateCustom(sequelize, 'Unit', unit_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data, "message": message })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Unit delete Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
     }
     async updateUnit(req, res) {
         var sequelize = req.app.get('sequelize')
