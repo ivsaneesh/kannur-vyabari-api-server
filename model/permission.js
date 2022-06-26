@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('permission', {
     id: {
       autoIncrement: true,
@@ -8,19 +8,9 @@ module.exports = function (sequelize, DataTypes) {
       primaryKey: true
     },
     name: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(100),
       allowNull: false,
       unique: "name"
-    },
-    created_by: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
-    },
-    modified_by: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
     }
   }, {
     sequelize,

@@ -17,6 +17,7 @@ const entity = require(path_services + '/external_entity');
 const registratioFee = require(path_services + '/registration_fee');
 const offer = require(path_services + '/offer');
 const dashboard = require(path_services +'/dashboard');
+const payout = require(path_services + '/payout');
 
 
 module.exports = function(app) {
@@ -200,4 +201,36 @@ module.exports = function(app) {
     app.post('/changeMemberId', function(req, res)  {
         member.changeMemberId(req, res)
     }); 
+    //Payout
+    app.post('/payout/member/create', function(req, res)  {
+        payout.createMemberPayout(req, res)
+    }); 
+    app.post('/payout/member/list', function(req, res)  {
+        payout.listMemberPayout(req, res)
+    });
+    app.post('/payout/unit/create', function(req, res)  {
+        payout.createUnitPayout(req, res)
+    }); 
+    app.post('/payout/unit/list', function(req, res)  {
+        payout.listUnitPayout(req, res)
+    });
+    app.post('/payout/area/create', function(req, res)  {
+        payout.createAreaPayout(req, res)
+    }); 
+    app.post('/payout/area/list', function(req, res)  {
+        payout.listAreaPayout(req, res)
+    });
+    app.post('/payout/district/create', function(req, res)  {
+        payout.createDistrictPayout(req, res)
+    }); 
+    app.post('/payout/district/list', function(req, res)  {
+        payout.listDistrictPayout(req, res)
+    });
+    app.post('/payout/collector/create', function(req, res)  {
+        payout.createCollectorPayout(req, res)
+    }); 
+    app.post('/payout/collector/list', function(req, res)  {
+        payout.listCollectorPayout(req, res)
+    });
+    
 }

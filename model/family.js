@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('family', {
     id: {
       autoIncrement: true,
@@ -21,8 +21,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     mobile: {
       type: DataTypes.STRING(20),
-      allowNull: true,
-      defaultValue: "0"
+      allowNull: true
     },
     member_id: {
       type: DataTypes.INTEGER,
@@ -40,13 +39,11 @@ module.exports = function (sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     }
   }, {
     sequelize,

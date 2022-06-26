@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('area_payout', {
     id: {
       autoIncrement: true,
@@ -9,6 +9,10 @@ module.exports = function (sequelize, DataTypes) {
     },
     amount: {
       type: DataTypes.FLOAT,
+      allowNull: false
+    },
+    area_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     created_on: {
@@ -36,13 +40,12 @@ module.exports = function (sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: false,
+      defaultValue: 0
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     }
   }, {
     sequelize,

@@ -70,7 +70,7 @@ class Death {
                 member_result.forEach((member) => {
                     collection_array.push({
                         member_id: member.id,
-                        dead_member_id: death_create_result.id,
+                        dead_member_id: req.body.member_id,
                         collector_type: req.body.collector_type ? req.body.collector_type : null,
                         amount_id: amountResult.id,
                         paid: 0,
