@@ -170,6 +170,9 @@ class Collection {
             if (!Array.isArray(req.body.member_id)) {
                 return res.json({ "status": "error", "message": "member_id must be array!" });
             }
+            if (req.body.member_id.length < 1) {
+                return res.json({ "status": "error", "message": "member_id array can not be null" });
+            }
             var collectorIdResult = await api.findOneAsync(sequelize, "Collector", { where: { 'id': req.body.collector_id } });
             if (!collectorIdResult) {
                 return res.json({ "status": "error", "message": "There is no collector with this collector id" });
@@ -181,13 +184,58 @@ class Collection {
             collection_data.modified_by = req.user.user_id;
 
             var condition = { where: { 'dead_member_id': req.body.dead_member_id, 'member_id': { [Op.in]: req.body.member_id } } };
-
+            var collectionData = await api.findOneAsync(sequelize, "Collection", condition);
+            var amountData = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'id': collectionData.amount_id } });
             // updating collection
-            api.updateCustom(sequelize, 'Collection', collection_data, condition, function (status, data, message) {
+            api.updateCustom(sequelize, 'Collection', collection_data, condition, async function (status, data, message) {
                 if (status == 'error') {
                     return res.json({ "status": status, "message": message })
                 }
                 else {
+                    if (utils.isNotUndefined(req.body.paid) && req.body.paid == 1){
+                        req.body.member_id.forEach(async (item) => {
+                            let partitionArray = [];
+                            let memberData = await api.findOneAsync(sequelize, "Member", { where: { 'id': item } });
+                            let partitionUnitData = {
+                                type: "Unit",
+                                type_id: memberData.unit_id,
+                                dead_member_id: req.body.dead_member_id,
+                                amount: Math.round((2 / 100) * amountData.amount),
+                                created_on: moment(new Date()).format("X"),
+                                created_by: req.user.user_id
+                            }
+                            partitionArray.push(partitionUnitData);
+                            let partitionAreaData = {
+                                type: "Area",
+                                type_id: memberData.area_id,
+                                dead_member_id: req.body.dead_member_id,
+                                amount: Math.round((2 / 100) * amountData.amount),
+                                created_on: moment(new Date()).format("X"),
+                                created_by: req.user.user_id
+                            }
+                            partitionArray.push(partitionAreaData);
+                            let partitionDistrictData = {
+                                type: "Area",
+                                type_id: 0,
+                                dead_member_id: req.body.dead_member_id,
+                                amount: Math.round((2 / 100) * amountData.amount),
+                                created_on: moment(new Date()).format("X"),
+                                created_by: req.user.user_id
+                            }
+                            partitionArray.push(partitionDistrictData);
+                            let partitionCollectorData = {
+                                type: "Collector",
+                                type_id: req.body.collector_id,
+                                dead_member_id: req.body.dead_member_id,
+                                amount: Math.round((4 / 100) * amountData.amount),
+                                created_on: moment(new Date()).format("X"),
+                                created_by: req.user.user_id
+                            }
+                            partitionArray.push(partitionCollectorData);
+                            await api.bulkCreateAsync(sequelize, 'CollectionPartition', partitionArray)
+                        })
+                    }
+                    
                     return res.json({ "status": status, "data": data })
                 }
             });

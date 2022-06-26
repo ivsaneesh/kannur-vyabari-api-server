@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('unit', {
     id: {
       autoIncrement: true,
@@ -14,6 +14,11 @@ module.exports = function (sequelize, DataTypes) {
     id_number: {
       type: DataTypes.STRING(50),
       allowNull: false
+    },
+    area_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
     },
     manager_id: {
       type: DataTypes.INTEGER,
@@ -46,19 +51,13 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING(20),
       allowNull: true
     },
-    area_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     }
   }, {
     sequelize,

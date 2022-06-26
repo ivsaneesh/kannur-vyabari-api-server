@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function (sequelize, DataTypes) {
+module.exports = function(sequelize, DataTypes) {
   return sequelize.define('offers', {
     id: {
       autoIncrement: true,
@@ -17,8 +17,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     value: {
       type: DataTypes.FLOAT,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     },
     created_on: {
       type: DataTypes.INTEGER,
@@ -42,13 +41,11 @@ module.exports = function (sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     }
   }, {
     sequelize,

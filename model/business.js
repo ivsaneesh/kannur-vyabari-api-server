@@ -42,6 +42,7 @@ module.exports = function(sequelize, DataTypes) {
     member_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      defaultValue: 0
     },
     created_on: {
       type: DataTypes.INTEGER,
@@ -55,13 +56,11 @@ module.exports = function(sequelize, DataTypes) {
     },
     created_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: true,
-      defaultValue: null
+      allowNull: true
     }
   }, {
     sequelize,

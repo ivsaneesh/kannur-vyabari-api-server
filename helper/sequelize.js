@@ -66,8 +66,12 @@ var db = function (app) {
 	this.models.RegistrationFeeCollected = require('../model/registration_fee_collected.js')(this.sequelize, this.Sequelize);
 	this.models.Offers = require('../model/offers.js')(this.sequelize, this.Sequelize);
 	this.models.OfferGiven = require('../model/offer_given.js')(this.sequelize, this.Sequelize);
-
-
+	this.models.MemberPayout = require('../model/member_payout.js')(this.sequelize, this.Sequelize);
+	this.models.CollectorPayout = require('../model/collector_payout.js')(this.sequelize, this.Sequelize);
+	this.models.UnitPayout = require('../model/unit_payout.js')(this.sequelize, this.Sequelize);
+	this.models.AreaPayout = require('../model/area_payout.js')(this.sequelize, this.Sequelize);
+	this.models.DistrictPayout = require('../model/district_payout.js')(this.sequelize, this.Sequelize);
+	this.models.CollectionPartition = require('../model/collection_partition.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasOne(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermission' });
