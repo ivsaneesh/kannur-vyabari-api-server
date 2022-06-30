@@ -59,6 +59,9 @@ module.exports = function(app) {
     app.put('/member/update',  function(req, res)  {
         member.updateMember(req, res)
     });
+    app.delete('/member/delete',  function(req, res)  {
+        member.deleteMember(req, res)
+    });
     /// collection
     app.get('/collectionAmount',  function(req, res)  {
         collection.collectionAmount(req, res)
@@ -85,6 +88,9 @@ module.exports = function(app) {
     });
     app.put('/collector/update',  function(req, res)  {
         collector.updateCollector(req, res)
+    });
+    app.delete('/collector/delete',  function(req, res)  {
+        collector.deleteCollector(req, res)
     });
     /// unit
     app.post('/unit/create',  function(req, res)  {

@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('collector', {
     id: {
       autoIncrement: true,
@@ -64,6 +64,11 @@ module.exports = function(sequelize, DataTypes) {
     modified_by: {
       type: DataTypes.INTEGER,
       allowNull: true
+    },
+    deleted: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 0
     }
   }, {
     sequelize,

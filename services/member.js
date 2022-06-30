@@ -333,6 +333,36 @@ class Member {
         }
     }
 
+    async deleteMember(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            if (!utils.isNotUndefined(req.body.member_id)) {
+                return res.json({ "status": "error", "message": "Member id is required!" });
+            }
+            var condition = { where: { 'id': req.body.member_id } };
+            const member_data = {}
+            member_data.deleted = 1;
+            member_data.modified_on = moment(new Date()).format("X");
+            member_data.modified_by = req.user.user_id;
+
+            // deleteing member by setting deleted to 1
+            api.updateCustom(sequelize, 'Member', member_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Member delete Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
     async changeMemberId(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -383,6 +413,7 @@ class Member {
         }
     }
 
+    /// member_registraion id need to uppend some extra zeros
     appendzero(num) {
 
         switch (num.toString().length) {

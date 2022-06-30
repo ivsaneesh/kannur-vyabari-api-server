@@ -78,6 +78,9 @@ class Collector {
             if (utils.isNotUndefined(req.body.unit_id)) {
                 collector_condition.unit_id = req.body.unit_id;
             }
+            if (utils.isNotUndefined(req.body.deleted)) {
+                collector_condition.deleted = req.body.deleted == 0 ? 0 : 1;
+            }
             var include = [{ model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }];
             var json_obj = { where: collector_condition, include: include }
             json_obj.offset = offset
@@ -137,6 +140,38 @@ class Collector {
         }
         catch (err) {
             logger.error("Collector Update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
+    async deleteCollector(req, res) {
+        const sequelize = req.app.get('sequelize')
+        const logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        try {
+            if (!utils.isNotUndefined(req.body.collector_id)) {
+                return res.json({ "status": "error", "message": "collector id is required!" });
+            }
+            const collector_data = {}
+            collector_data.deleted = 1;
+            collector_data.modified_on = moment(new Date()).format("X");
+            collector_data.modified_by = req.user.user_id;
+
+            var condition = { where: { 'id': req.body.collector_id } };
+
+            // deleteing collector by setting deleted to 1
+            api.updateCustom(sequelize, 'Collector', collector_data, condition, function (status, data, message) {
+                if (status == 'error') {
+                    return res.json({ "status": status, "message": message })
+                }
+                else {
+                    return res.json({ "status": status, "data": data })
+                }
+            });
+        }
+        catch (err) {
+            logger.error("Collector delete Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
