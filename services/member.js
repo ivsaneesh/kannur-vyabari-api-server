@@ -163,6 +163,9 @@ class Member {
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }
+            if (utils.isNotUndefined(req.body.created_by)) {
+                member_condition.created_by = req.body.created_by;
+            }
             var include = [{ model: sequelize.models.Business, as: "Business" },
             { model: sequelize.models.Family, as: "Family" },
             { model: sequelize.models.Nominee, as: "Nominee" },
