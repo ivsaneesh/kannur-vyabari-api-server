@@ -67,6 +67,7 @@ class Collection {
         var limit = req.body.limit ? req.body.limit : 10000
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collection_condition = {}
+        var member_condition = {}
         try {
             if (utils.isNotUndefined(req.body.id)) {
                 collection_condition.id = req.body.id;
@@ -81,6 +82,17 @@ class Collection {
                 collection_condition.paid = req.body.paid;
             }
             var json_obj = { where: collection_condition }
+
+            if (utils.isNotUndefined(req.body.unit_id)) {
+                member_condition.unit_id = req.body.unit_id;
+                var include = [{
+                    model: sequelize.models.Member, as: "Member",
+                    where: member_condition,
+                    attributes: ['id', 'first_name', 'middle_name', 'last_name', 'register_number', 'mobile', 'photo']
+                },];
+                json_obj.include = include;
+            }
+
             json_obj.offset = offset
             json_obj.limit = limit
             json_obj.pagination = pagination
@@ -192,7 +204,7 @@ class Collection {
                     return res.json({ "status": status, "message": message })
                 }
                 else {
-                    if (utils.isNotUndefined(req.body.paid) && req.body.paid == 1){
+                    if (utils.isNotUndefined(req.body.paid) && req.body.paid == 1) {
                         req.body.member_id.forEach(async (item) => {
                             let partitionArray = [];
                             let memberData = await api.findOneAsync(sequelize, "Member", { where: { 'id': item } });
@@ -235,7 +247,7 @@ class Collection {
                             await api.bulkCreateAsync(sequelize, 'CollectionPartition', partitionArray)
                         })
                     }
-                    
+
                     return res.json({ "status": status, "data": data })
                 }
             });

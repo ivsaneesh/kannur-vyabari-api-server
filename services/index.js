@@ -48,12 +48,14 @@ class Index {
             console.log("---",req.app["env_configs"]["jwtsecret"])
             // Create token
             const token = jwt.sign(
-                { user_id: userData.id, username: userData.username, permission: userData.UserPermission.permission_id },
+                { user_id: userData.id, username: userData.username, permission: userData.UserPermission.permission_id, type: userData.type },
                 req.app["env_configs"]["jwtsecret"],
                 {
                     expiresIn: "8h",
                 }
-            );
+            ); 
+            userData.setDataValue('password', 0);
+
             var result = {
                 'User': userData,
                 'Token': token

@@ -101,6 +101,7 @@ class Users {
             if (utils.isNotUndefined(req.body.search)) {
                 user_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }, { mobile: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
+            user_condition.deleted = 0;
             var json_obj = { where: user_condition }
             json_obj.offset = offset
             json_obj.limit = limit
@@ -133,6 +134,7 @@ class Users {
             if (utils.isNotUndefined(req.body.email)) user_data.email = req.body.email;
             if (utils.isNotUndefined(req.body.mobile)) user_data.mobile = req.body.mobile;
             if (utils.isNotUndefined(req.body.type)) user_data.type = req.body.type;
+            if (utils.isNotUndefined(req.body.password)) user_data.password = await bcrypt.hash(req.body.password, 10);
 
             if (utils.isNotUndefined(req.body.block_reason)) user_data.block_reason = req.body.block_reason;
             if (utils.isNotUndefined(req.body.blocked)) {
