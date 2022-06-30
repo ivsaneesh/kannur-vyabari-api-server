@@ -30,12 +30,12 @@ var num_CPUs = require('os').cpus().length
 app.use(compression());
 app.use(helmet({
     // on production change crossOriginResourcePolicy to true
-    crossOriginResourcePolicy: true,
+    crossOriginResourcePolicy: false,
 }));
 
 app.use(cookie_parser())
 
-app.use(cors({credentials: true, origin: 'http://cms.kvvskannurdc.in/' }));
+app.use(cors({credentials: true, origin: ['http://cms.kvvskannurdc.in/','http://localhost/kannur/'] }));
 app.use(timeout('300s'));
 
 /***********************************

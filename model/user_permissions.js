@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     modified_by: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     }
   }, {
     sequelize,
