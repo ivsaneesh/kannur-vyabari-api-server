@@ -72,6 +72,8 @@ var db = function (app) {
 	this.models.AreaPayout = require('../model/area_payout.js')(this.sequelize, this.Sequelize);
 	this.models.DistrictPayout = require('../model/district_payout.js')(this.sequelize, this.Sequelize);
 	this.models.CollectionPartition = require('../model/collection_partition.js')(this.sequelize, this.Sequelize);
+	this.models.WalletCredit = require('../model/wallet_credit.js')(this.sequelize, this.Sequelize);
+	this.models.WalletDebit = require('../model/wallet_debit.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasOne(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermission' });
@@ -79,6 +81,8 @@ var db = function (app) {
 	this.models.Member.hasMany(this.models.Business, { foreignKey: "member_id", as: "Business" });
 	this.models.Member.hasMany(this.models.Family, { foreignKey: "member_id", as: "Family" });
 	this.models.Member.hasMany(this.models.Nominee, { foreignKey: "member_id", as: "Nominee" });
+	this.models.Member.hasMany(this.models.WalletCredit, { foreignKey: "member_id", as: "WalletCredit" });
+	this.models.Member.hasMany(this.models.WalletDebit, { foreignKey: "member_id", as: "WalletDebit" });
 	this.models.Member.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
 	this.models.Member.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });
 	this.models.Member.hasOne(this.models.RegistrationFeeCollected, { foreignKey: "member_id", as: 'RegistrationFeeCollected' });
@@ -102,6 +106,11 @@ var db = function (app) {
 
 	/// external entity
 	this.models.ExternalEntity.hasMany(this.models.OfferGiven, { foreignKey: "external_entity_id", as: "OfferGiven" });
+
+	/// wallet
+	this.models.WalletCredit.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
+	this.models.WalletDebit.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
+
 };
 module.exports = db;
 

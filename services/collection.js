@@ -92,6 +92,13 @@ class Collection {
                 },];
                 json_obj.include = include;
             }
+            else{
+                var include = [{
+                    model: sequelize.models.Member, as: "Member",
+                    attributes: ['id', 'first_name', 'middle_name', 'last_name', 'register_number', 'mobile', 'photo']
+                },];
+                json_obj.include = include;
+            }
 
             json_obj.offset = offset
             json_obj.limit = limit

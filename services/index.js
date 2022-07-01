@@ -45,7 +45,7 @@ class Index {
                 logger.error("User perission record not found for user")
                 return res.json({ "status": "error", "message": "Something broken!" })
             }
-            console.log("---",req.app["env_configs"]["jwtsecret"])
+            console.log("---", req.app["env_configs"]["jwtsecret"])
             // Create token
             const token = jwt.sign(
                 { user_id: userData.id, username: userData.username, permission: userData.UserPermission.permission_id, type: userData.type },
@@ -53,8 +53,8 @@ class Index {
                 {
                     expiresIn: "8h",
                 }
-            ); 
-            userData.setDataValue('password', 0);
+            );
+            userData.setDataValue('password', '');
 
             var result = {
                 'User': userData,
