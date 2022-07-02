@@ -293,25 +293,21 @@ module.exports = function(app) {
         payout.listCollectorPayout(req, res)
     });
     /// wallet
-    app.post('/wallet/debit/create', function(req, res)  {
+    app.post('/wallet/create', function(req, res)  {
         if(req.user.type.includes('admin'))
-        wallet.debitWallet(req, res)
-    });
-    app.post('/wallet/credit/create', function(req, res)  {
-        if(req.user.type.includes('admin'))
-        wallet.creditWallet(req, res)
+        wallet.addToWallet(req, res)
     }); 
     app.post('/wallet/credit/list', function(req, res)  {
         if(req.user.type.includes('admin'))
         wallet.listCreditWallet(req, res)
     });
-    app.post('/wallet/debit/list', function(req, res)  {
+    app.post('/wallet/transcation', function(req, res)  {
         if(req.user.type.includes('admin'))
-        wallet.listDebitWallet(req, res)
+        wallet.listWalletTranscation(req, res)
     });
     app.post('/wallet/list', function(req, res)  {
         if(req.user.type.includes('admin'))
-        wallet.listWallet(req, res)
+        wallet.listMemberWallet(req, res)
     });
     
 }

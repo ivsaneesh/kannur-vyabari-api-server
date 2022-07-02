@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('wallet_credit', {
+    return sequelize.define('wallet', {
         id: {
             autoIncrement: true,
             type: DataTypes.INTEGER,
@@ -14,6 +14,11 @@ module.exports = function (sequelize, DataTypes) {
         amount: {
             type: DataTypes.FLOAT,
             allowNull: false
+        },
+        credit_debit: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
         },
         type: {
             type: DataTypes.STRING(50),
@@ -43,7 +48,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         sequelize,
-        tableName: 'wallet_credit',
+        tableName: 'wallet',
         timestamps: false,
         indexes: [
             {

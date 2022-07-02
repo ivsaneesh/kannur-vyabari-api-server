@@ -319,6 +319,17 @@ class Api {
     })
   }
 
+    //Find sum
+    findSum(sequelize, model, json, cb) {
+      sequelize.models[model]['sum'](json).then(function (data) {
+        return cb("success", data, "")
+      }).catch(function (err) {
+        // handle error;
+        console.log(err)
+        return cb("error", {}, sequelize.getErrors(err))
+      })
+    }
+
 
 
 }
