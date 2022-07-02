@@ -18,6 +18,7 @@ const registratioFee = require(path_services + '/registration_fee');
 const offer = require(path_services + '/offer');
 const dashboard = require(path_services +'/dashboard');
 const payout = require(path_services + '/payout');
+const wallet = require(path_services + '/wallet');
 
 
 module.exports = function(app) {
@@ -290,6 +291,27 @@ module.exports = function(app) {
     app.post('/payout/collector/list', function(req, res)  {
         if(req.user.type.includes('admin'))
         payout.listCollectorPayout(req, res)
+    });
+    /// wallet
+    app.post('/wallet/debit/create', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        wallet.debitWallet(req, res)
+    });
+    app.post('/wallet/credit/create', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        wallet.creditWallet(req, res)
+    }); 
+    app.post('/wallet/credit/list', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        wallet.listCreditWallet(req, res)
+    });
+    app.post('/wallet/debit/list', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        wallet.listDebitWallet(req, res)
+    });
+    app.post('/wallet/list', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        wallet.listWallet(req, res)
     });
     
 }

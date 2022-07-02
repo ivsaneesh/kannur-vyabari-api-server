@@ -116,7 +116,8 @@ class Member {
 
             var msg = 'Hi ' + memberResult.first_name + ', you are successfully enrolled into Vypari Vyavasayi ekopana samithi'
             var smsResult = await sms.sendSMS(memberResult.mobile, msg)
-            return res.json({ "status": 'success', "data": registrationFeeResult });
+            result.registrationFee = registrationFeeResult;
+            return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
             // transaction.rollback();
