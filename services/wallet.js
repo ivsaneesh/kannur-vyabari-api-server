@@ -113,15 +113,28 @@ class Wallet {
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
                 }
+                var balance = 0;
+                if (utils.isNotUndefined(results[0][0]['total'])) {
+                    balance = results[0][0]['total'];
+                    if (utils.isNotUndefined(results[1][0]['total'])) {
+                        balance = results[0][0]['total'] - results[1][0]['total'];
+                    }
+                }
+                else {
+                    if (utils.isNotUndefined(results[1][0]['total'])) {
+                        balance = results[1][0]['total'];
+                    }
+                }
 
-                var result = { "transcation": wallet_result, "credit_total": results[0][0], "debit_total": results[1][0] };
+                var result = {
+                    "transcation": wallet_result,
+                    "credit_total":utils.isNotUndefined(results[0][0]['total']) ? results[0][0]['total'] : 0,
+                    "debit_total": utils.isNotUndefined(results[1][0])['total'] ? results[1][0]['total'] : 0,
+                    "balance": balance
+                };
                 // console.log("result >>> ", results);
                 return res.json({ "status": 'success', "data": result });
             });
-
-
-
-
         }
         catch (err) {
             logger.error("listCreditWallet Exception :---->")
@@ -150,8 +163,9 @@ class Wallet {
                 wallet_condition.dead = req.body.dead;
             }
             var include = [
-                { model: sequelize.models.Wallet, as: "Wallet",
-                 attributes: ['id', 'member_id', 'amount','credit_debit', 'type', 'details', 'created_on'] 
+                {
+                    model: sequelize.models.Wallet, as: "Wallet",
+                    attributes: ['id', 'member_id', 'amount', 'credit_debit', 'type', 'details', 'created_on']
                 },
             ];
 
