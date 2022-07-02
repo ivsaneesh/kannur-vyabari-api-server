@@ -163,6 +163,9 @@ class Member {
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             }
+            if (utils.isNotUndefined(req.body.migrated)) {
+                member_condition.migrated = req.body.migrated;
+            }
             if (utils.isNotUndefined(req.body.created_by)) {
                 member_condition.created_by = req.body.created_by;
             }
@@ -231,6 +234,7 @@ class Member {
                 if (utils.isNotUndefined(req.body.basic_details.designation)) member_data.designation = req.body.basic_details.designation;
                 if (utils.isNotUndefined(req.body.basic_details.photo)) member_data.photo = req.body.basic_details.photo;
                 if (utils.isNotUndefined(req.body.basic_details.form_photo)) member_data.form_photo = req.body.basic_details.form_photo;
+                if (utils.isNotUndefined(req.body.basic_details.migrated)) member_data.migrated = req.body.basic_details.migrated;
                 member_data.modified_on = moment(new Date()).format("X");
                 member_data.modified_by = req.user.user_id;
                 let condition = { where: { 'id': req.body.member_id } };

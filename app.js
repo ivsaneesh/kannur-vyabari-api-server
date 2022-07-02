@@ -35,7 +35,7 @@ app.use(helmet({
 
 app.use(cookie_parser())
 
-app.use(cors({credentials: true, origin: ['http://cms.kvvskannurdc.in/','http://localhost/kannur/'] }));
+app.use(cors({ credentials: true, origin: ['http://cms.kvvskannurdc.in/', 'http://localhost/kannur/'] }));
 app.use(timeout('300s'));
 
 /***********************************

@@ -45,6 +45,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       unique: "member_id"
     },
+    migrated: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
     area_id: {
       type: DataTypes.INTEGER,
       allowNull: false,

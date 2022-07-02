@@ -92,7 +92,7 @@ class Collection {
                 },];
                 json_obj.include = include;
             }
-            else{
+            else {
                 var include = [{
                     model: sequelize.models.Member, as: "Member",
                     attributes: ['id', 'first_name', 'middle_name', 'last_name', 'register_number', 'mobile', 'photo']
