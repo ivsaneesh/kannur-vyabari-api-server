@@ -71,7 +71,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     form_photo: {
       type: DataTypes.TEXT,
-      allowNull: false
+      allowNull: true
     },
     created_on: {
       type: DataTypes.INTEGER,
