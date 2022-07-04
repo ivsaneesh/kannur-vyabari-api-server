@@ -9,9 +9,11 @@ class RegistrationFee {
     constructor() { }
 
     async createRegistratioFee(req, res) {
+        var transaction;
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
         try {
+            transaction = await sequelize.sequelize.transaction();
             if (!utils.isNotUndefined(req.body.amount)) {
                 return res.json({ "status": "error", "message": "Amount is required!" });
             }

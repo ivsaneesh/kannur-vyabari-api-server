@@ -132,7 +132,7 @@ class Wallet {
                     "debit_total": utils.isNotUndefined(results[1][0])['total'] ? results[1][0]['total'] : 0,
                     "balance": balance
                 };
-                // console.log("result >>> ", results);
+                // console.log("result >>> ", result);
                 return res.json({ "status": 'success', "data": result });
             });
         }
