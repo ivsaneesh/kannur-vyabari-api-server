@@ -60,11 +60,7 @@ class Bank {
         const Op = sequelize.Sequelize.Op;
         var offset = req.body.start ? req.body.start : 0;
         var limit = req.body.limit ? req.body.limit : 10000;
-        var pagination = req.body.pagination
-            ? req.body.pagination == 1
-                ? 1
-                : 0
-            : 0;
+        var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var bank_condition = {};
         try {
             if (utils.isNotUndefined(req.body.id)) {
@@ -209,6 +205,9 @@ class Bank {
             if (!utils.isNotUndefined(req.body.amount)) {
                 return res.json({ status: "error", message: "Amount is required!" });
             }
+            if (req.body.amount <= 0) {
+                return res.json({ status: "error", message: "Amount sholud be greater than 0!" });
+            }
             if (!utils.isNotUndefined(req.body.action)) {
                 return res.json({ status: "error", message: "Action is required!" });
             }
@@ -244,11 +243,7 @@ class Bank {
         const Op = sequelize.Sequelize.Op;
         var offset = req.body.start ? req.body.start : 0;
         var limit = req.body.limit ? req.body.limit : 10000;
-        var pagination = req.body.pagination
-            ? req.body.pagination == 1
-                ? 1
-                : 0
-            : 0;
+        var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0;
         var bank_condition = {};
         try {
             if (utils.isNotUndefined(req.body.id)) {

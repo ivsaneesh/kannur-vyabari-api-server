@@ -20,7 +20,7 @@ class SMS {
                 .then(message => {return true;}).catch(err => {return false});
         }
         catch (err) {
-            console.log("Error uploadFile >>>> " + err);
+            console.log("Error sendSMS >>>> " + err);
             return false;
         }
     }

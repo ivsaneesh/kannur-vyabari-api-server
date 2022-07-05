@@ -329,6 +329,10 @@ class Member {
             if (isNomineeUpdate == true) {
                 result['Nominee'] = nominee_error != '' ? { "status": 'error', "message": nominee_error } : { "status": 'success', "data": nominee_result };
             }
+
+            /// update member registration number
+            await this.updateMemberRegistrationId(sequelize, req.body.member_id);
+
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
@@ -389,23 +393,24 @@ class Member {
             for (let index = 0; index < result.length; ++index) {
                 if (result[index].register_number.length < 11) {
 
-                    // get unit id_number
-                    var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result[index].unit_id } });
-                    // get area id_number
-                    var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result[index].area_id } });
+                    this.updateMemberRegistrationId(sequelize, result[index].id);
+                    // // get unit id_number
+                    // var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result[index].unit_id } });
+                    // // get area id_number
+                    // var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result[index].area_id } });
 
-                    var condition = { where: { 'id': result[index].id } };
+                    // var condition = { where: { 'id': result[index].id } };
 
-                    var oldReg = result[index].register_number;
-                    var number = oldReg.substring(6);
-                    var newReg = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(number);
+                    // var oldReg = result[index].register_number;
+                    // var number = oldReg.substring(6);
+                    // var newReg = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(number);
 
-                    const member_data = {}
-                    member_data.register_number = newReg;
+                    // const member_data = {}
+                    // member_data.register_number = newReg;
 
-                    api.updateCustom(sequelize, 'Member', member_data, condition, function (status, data, message) {
-                        console.log("result ", result[index].id);
-                    });
+                    // api.updateCustom(sequelize, 'Member', member_data, condition, function (status, data, message) {
+                    //     console.log("result ", result[index].id);
+                    // });
                 }
             }
             var newresult = await api.findAllAsync(sequelize, "Member", json_obj);
@@ -417,6 +422,32 @@ class Member {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+
+    /// update member registration number 
+    async updateMemberRegistrationId(sequelize, memberId) {
+        if (utils.isNotUndefined(memberId)) {
+            let condition = { where: { 'id': memberId } };
+
+            var result = await api.findOneAsync(sequelize, "Member", condition);
+
+            // get unit id_number
+            var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id': result.unit_id } });
+            // get area id_number
+            var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id': result.area_id } });
+
+            var oldReg = result.register_number;
+            var number = oldReg.substring(8);
+            var newReg = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(number);
+
+            const member_data = {}
+            member_data.register_number = newReg;
+
+            await api.updateCustom(sequelize, 'Member', member_data, condition, function (status, data, message) {
+                console.log("Registration number ", memberId);
+            });
+        }
+    }
+
 
     /// member_registraion id need to uppend some extra zeros
     appendzero(num) {
