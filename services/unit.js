@@ -83,6 +83,9 @@ class Unit {
             if (req.body.sort_column) {
                 json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
             }
+            else {
+                json_obj.order = [['name', "ASC"]]
+            }
             var result = await api.findAllAsync(sequelize, "Unit", json_obj);
             return res.json({ "status": 'success', "data": result });
         }
@@ -91,7 +94,7 @@ class Unit {
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
-    } 
+    }
     async updateUnit(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -107,7 +110,7 @@ class Unit {
             if (utils.isNotUndefined(req.body.manager_id)) unit_data.manager_id = req.body.manager_id;
             if (utils.isNotUndefined(req.body.area_id)) unit_data.area_id = req.body.area_id;
             unit_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.unit_id } };
 
             // updating unit
@@ -125,7 +128,7 @@ class Unit {
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
-    } 
+    }
     async deleteUnit(req, res) {
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
@@ -136,7 +139,7 @@ class Unit {
             const unit_data = {}
             unit_data.deleted = 1;
             unit_data.modified_on = moment(new Date()).format("X");
-          
+
             var condition = { where: { 'id': req.body.unit_id } };
 
             // updating unit to deleted to 1

@@ -77,6 +77,9 @@ class Area {
             if (req.body.sort_column) {
                 json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
             }
+            else {
+                json_obj.order = [['name', "ASC"]]
+            }
             var result = await api.findAllAsync(sequelize, "Area", json_obj);
             return res.json({ "status": 'success', "data": result });
         }
