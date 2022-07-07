@@ -189,14 +189,19 @@ class Member {
             var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
             var date65 = moment(date).format("X");
 
+            var resultValue = result;
+            if (req.body.pagination == 1) {
+                resultValue = result.rows;
+            }
+
             // check plus member
-            for (let index = 0; index < result.length; ++index) {
-                var dob = result[index].date_of_birth;
+            for (let index = 0; index < resultValue.length; ++index) {
+                var dob = resultValue[index].date_of_birth;
                 if (date65 < dob) {
-                    result[index].setDataValue('plus_member', 0);
+                    resultValue[index].setDataValue('plus_member', 0);
                 }
                 else {
-                    result[index].setDataValue('plus_member', 1);
+                    resultValue[index].setDataValue('plus_member', 1);
                 }
             }
             return res.json({ "status": 'success', "data": await result });
