@@ -33,10 +33,10 @@ class Report {
                         FROM
                             death d
                             left join member m on d.member_id = m.id`;
-                        if(req.body.year){
-                            month_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
-                        }
-                        month_query += ` GROUP BY YEAR(FROM_UNIXTIME(datetime)),
+            if (req.body.year) {
+                month_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
+            }
+            month_query += ` GROUP BY YEAR(FROM_UNIXTIME(datetime)),
                                                 MONTH(FROM_UNIXTIME(datetime));`;
             var year_query = `SELECT
                                 DATE_FORMAT(FROM_UNIXTIME(datetime), '%Y') year,
@@ -56,33 +56,33 @@ class Report {
                             FROM
                                 death d
                                 left join member m on d.member_id = m.id`;
-                            if(req.body.year){
-                                year_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
-                            }
-                            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(datetime));`;
+            if (req.body.year) {
+                year_query += ` WHERE YEAR(FROM_UNIXTIME(d.datetime)) = ${req.body.year}`;
+            }
+            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(datetime));`;
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("Death Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -93,7 +93,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -101,8 +101,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("Death Report Exception :---->")
@@ -125,10 +125,10 @@ class Report {
                                 FROM
                                     collection c
                                     left join collection_amount ca on c.amount_id = ca.id`;
-                        if(req.body.year){
-                            month_query += ` WHERE YEAR(FROM_UNIXTIME(c.created_on)) = ${req.body.year}`;
-                        }
-                        month_query += ` GROUP BY YEAR(FROM_UNIXTIME(c.created_on)),
+            if (req.body.year) {
+                month_query += ` WHERE YEAR(FROM_UNIXTIME(c.created_on)) = ${req.body.year}`;
+            }
+            month_query += ` GROUP BY YEAR(FROM_UNIXTIME(c.created_on)),
                                                 MONTH(FROM_UNIXTIME(c.created_on));`;
             var year_query = `SELECT
                                 DATE_FORMAT(FROM_UNIXTIME(c.created_on), '%Y') year,
@@ -138,33 +138,33 @@ class Report {
                             FROM
                                 collection c
                                 left join collection_amount ca on c.amount_id = ca.id`;
-                            if(req.body.year){
-                                year_query += ` WHERE YEAR(FROM_UNIXTIME(c.created_on)) = ${req.body.year}`;
-                            }
-                            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(c.created_on));`;
+            if (req.body.year) {
+                year_query += ` WHERE YEAR(FROM_UNIXTIME(c.created_on)) = ${req.body.year}`;
+            }
+            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(c.created_on));`;
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("Death Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -175,7 +175,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -183,8 +183,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("Collection Report Exception :---->")
@@ -205,17 +205,17 @@ class Report {
                                 FROM
                                     member_payout mp
                                     left join member m on mp.member_id = m.id`;
-                        var where_array = []
-                        if(req.body.area_id){
-                            where_array.push(`m.area_id = ${req.body.area_id}`);
-                        }
-                        if(req.body.unit_id){
-                            where_array.push(`m.unit_id = ${req.body.unit_id}`);
-                        }
-                        if(where_array.length > 0){
-                            month_query += ` WHERE ` + where_array.join(" AND ")
-                        }
-                        month_query += ` GROUP BY YEAR(FROM_UNIXTIME(mp.payout_date)),
+            var where_array = []
+            if (req.body.area_id) {
+                where_array.push(`m.area_id = ${req.body.area_id}`);
+            }
+            if (req.body.unit_id) {
+                where_array.push(`m.unit_id = ${req.body.unit_id}`);
+            }
+            if (where_array.length > 0) {
+                month_query += ` WHERE ` + where_array.join(" AND ")
+            }
+            month_query += ` GROUP BY YEAR(FROM_UNIXTIME(mp.payout_date)),
                                                 MONTH(FROM_UNIXTIME(mp.payout_date));`;
             var year_query = `SELECT
                                 DATE_FORMAT(FROM_UNIXTIME(mp.payout_date), '%Y') year,
@@ -224,40 +224,40 @@ class Report {
                             FROM
                                 member_payout mp
                                 left join member m on mp.member_id = m.id`;
-                                var where_array = []
-                                if(req.body.area_id){
-                                    where_array.push(`m.area_id = ${req.body.area_id}`);
-                                }
-                                if(req.body.unit_id){
-                                    where_array.push(`m.unit_id = ${req.body.unit_id}`);
-                                }
-                                if(where_array.length > 0){
-                                    year_query += ` WHERE ` + where_array.join(" AND ")
-                                }
-                                year_query += ` GROUP BY YEAR(FROM_UNIXTIME(mp.payout_date))`;
+            var where_array = []
+            if (req.body.area_id) {
+                where_array.push(`m.area_id = ${req.body.area_id}`);
+            }
+            if (req.body.unit_id) {
+                where_array.push(`m.unit_id = ${req.body.unit_id}`);
+            }
+            if (where_array.length > 0) {
+                year_query += ` WHERE ` + where_array.join(" AND ")
+            }
+            year_query += ` GROUP BY YEAR(FROM_UNIXTIME(mp.payout_date))`;
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("member payout Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -268,7 +268,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -276,8 +276,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("Member Payout Report Exception :---->")
@@ -309,26 +309,26 @@ class Report {
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("area payout Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -339,7 +339,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -347,8 +347,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("Area Payout Report Exception :---->")
@@ -380,26 +380,26 @@ class Report {
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("unit payout Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -410,7 +410,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -418,8 +418,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("Unit Payout Report Exception :---->")
@@ -451,26 +451,26 @@ class Report {
             async.parallel([
                 function (callback) {
                     mysql.query(month_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
                 , function (callback) {
                     mysql.query(year_query, (error, data) => {
-                        if(error){
-                            callback(error,null)
-                        }else{
+                        if (error) {
+                            callback(error, null)
+                        } else {
                             callback(null, data)
                         }
-                        
+
                     })
                 }
             ], function (err, results) {
-                if(err){
+                if (err) {
                     logger.error("district payout Report Exception :---->")
                     logger.error(err)
                     return res.json({ "status": 'error', "message": 'Something broken!' });
@@ -481,7 +481,7 @@ class Report {
                 yearResult.forEach(yearItem => {
                     yearItem["months"] = []
                     monthResult.forEach(monthItem => {
-                        if(yearItem.year == monthItem.year){
+                        if (yearItem.year == monthItem.year) {
                             delete monthItem.year;
                             yearItem["months"].push(monthItem)
                         }
@@ -489,8 +489,8 @@ class Report {
                 });
                 return res.json({ "status": 'success', "data": yearResult });
             });
-            
-            
+
+
         }
         catch (err) {
             logger.error("District Payout Report Exception :---->")
@@ -498,8 +498,38 @@ class Report {
             return res.json({ "status": 'error', "message": 'Something broken!' })
         }
     }
-}
 
+    async dataEntryReport(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        const fn = sequelize.Sequelize.fn
+        var user_condition = {}
+        try {
+
+            var include = {
+                model: sequelize.models.Member, as: "Member",
+                attributes: [[fn('COUNT', sequelize.Sequelize.col('register_number')), 'count'],],
+            };
+
+            var json_obj = {
+                where: user_condition, include: include,
+                attributes: ['id', 'first_name', 'middle_name', 'last_name', 'email', 'mobile', 'type', 'blocked', 'deleted'],
+                group: ['User.id']
+            }
+
+            var result = await api.findAllAsync(sequelize, "User", json_obj);
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("User List Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+
+    }
+
+}
 
 module.exports = new Report()
 
