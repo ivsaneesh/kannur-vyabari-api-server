@@ -193,7 +193,7 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         report.districtPayoutReport(req, res)
     });
-    app.post('/user/report',  function(req, res)  {
+    app.post('/report/dataEntry',  function(req, res)  {
         if(req.user.type.includes('admin'))
         report.dataEntryReport(req, res)
     });
