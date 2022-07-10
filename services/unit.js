@@ -84,7 +84,7 @@ class Unit {
                 json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
             }
             else {
-                json_obj.order = [['name', "ASC"]]
+                json_obj.order = [['id_number', "ASC"]]
             }
             var result = await api.findAllAsync(sequelize, "Unit", json_obj);
             return res.json({ "status": 'success', "data": result });
