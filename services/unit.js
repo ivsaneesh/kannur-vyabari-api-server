@@ -63,7 +63,7 @@ class Unit {
                 unit_condition.id = req.body.id;
             }
             if (utils.isNotUndefined(req.body.search)) {
-                unit_condition = { [Op.or]: [{ name: { [Op.like]: '%' + req.body.search + '%' } }] };
+                unit_condition = { [Op.or]: [{ name: { [Op.like]: '%' + req.body.search + '%' } }, { id_number: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
             if (utils.isNotUndefined(req.body.manager_id)) {
                 unit_condition.manager_id = req.body.manager_id;
