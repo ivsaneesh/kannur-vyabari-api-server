@@ -35,11 +35,6 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true
     },
-    modified_on: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0
-    },
     modified_by: {
       type: DataTypes.INTEGER,
       allowNull: true

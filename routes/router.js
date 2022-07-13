@@ -76,14 +76,6 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         collection.createCollectionAmount(req, res)
     });
-    app.put('/collectionAmount/update',  function(req, res)  {
-        if(req.user.type.includes('admin'))
-        collection.updateCollectionAmount(req, res)
-    });
-    app.put('/collectionAmount/remove',  function(req, res)  {
-        if(req.user.type.includes('admin'))
-        collection.removeCollectionAmount(req, res)
-    });
     app.post('/collection/list',  function(req, res)  {
         if(req.user.type.includes('admin'))
         collection.listCollection(req, res)
