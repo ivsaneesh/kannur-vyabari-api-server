@@ -123,7 +123,7 @@ class Collection {
             var json_obj = { where: { 'deleted': 0 } };
             var exclude = ['deleted_on', 'deleted']
             json_obj.attributes = { exclude: exclude };
-            // fetch the amount that is not deleted
+
             var result = await api.findAllAsync(sequelize, "CollectionAmount", json_obj);
 
             return res.json({ "status": 'success', "data": result });
@@ -159,13 +159,15 @@ class Collection {
                 'deleted_by': req.user.user_id,
             }
             var update_condition = {
-                where: { 'id': req.body.collectionAmountId, 'type': req.body.type }
+                where: { 'type': req.body.type }
             }
             // updating amount in the table
             var update_result = await api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
 
             // inserting new amount
-            var result = await api.createAsync(sequelize, "CollectionAmount", collection_data, transaction);
+            var result = await api.createT(sequelize, "CollectionAmount", collection_data, transaction);
+            await transaction.commit();
+
             return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
