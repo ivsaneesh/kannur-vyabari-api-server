@@ -124,7 +124,7 @@ class Collection {
             var exclude = ['deleted_on', 'deleted']
             json_obj.attributes = { exclude: exclude };
             // fetch the amount that is not deleted
-            var result = await api.findOneAsync(sequelize, "CollectionAmount", json_obj);
+            var result = await api.findAllAsync(sequelize, "CollectionAmount", json_obj);
 
             return res.json({ "status": 'success', "data": result });
         }
@@ -145,22 +145,9 @@ class Collection {
             var collection_data = {
                 'amount': req.body.amount ? req.body.amount : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
-                'created_by': req.user.user_id,
-
+                'created_by': req.user.user_id
             }
             transaction = await sequelize.sequelize.transaction();
-
-            var update_data = {
-                'deleted': 1,
-                'deleted_on': moment(new Date()).format("X"),
-                'deleted_by': req.user.user_id,
-            }
-            var update_condition = {
-                where: { 'deleted': 0 }
-            }
-            // updating all amount in the table to deleted before adding new amount
-
-            var colledtion_amount_update = api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
 
             // inserting new amount
             var result = await api.createAsync(sequelize, "CollectionAmount", collection_data, transaction);
@@ -261,6 +248,68 @@ class Collection {
         }
         catch (err) {
             logger.error("Collection Update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+    
+    async updateCollectionAmount(req, res) {
+        var transaction;
+        const sequelize = req.app.get('sequelize')
+        const logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        try {
+            if (!utils.isNotUndefined(req.body.collectionAmountId)) {
+                return res.json({ "status": "error", "message": "collectionAmountId is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.type)) {
+                return res.json({ "status": "error", "message": "type is required!" });
+            }
+            transaction = await sequelize.sequelize.transaction();
+
+            var update_data = {
+                'type': req.body.type,
+                'deleted_on': moment(new Date()).format("X"),
+                'deleted_by': req.user.user_id,
+            }
+            var update_condition = {
+                where: { 'id': req.body.collectionAmountId }
+            }
+            // updating amount in the table
+            var result = await api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("Collection amount Update Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+    async removeCollectionAmount(req, res) {
+        var transaction;
+        const sequelize = req.app.get('sequelize')
+        const logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
+        try {
+            if (!utils.isNotUndefined(req.body.collectionAmountId)) {
+                return res.json({ "status": "error", "message": "collectionAmountId is required!" });
+            }
+            transaction = await sequelize.sequelize.transaction();
+
+            var update_data = {
+                'deleted': 1,
+                'deleted_on': moment(new Date()).format("X"),
+                'deleted_by': req.user.user_id,
+            }
+            var update_condition = {
+                where: { 'id': req.body.collectionAmountId }
+            }
+            // updating amount in the table
+            var result = await api.updateCustomT(sequelize, "CollectionAmount", update_data, update_condition, transaction);
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("Collection amount Update Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
