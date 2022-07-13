@@ -515,7 +515,7 @@ class Report {
             var json_obj = {
                 where: user_condition, include: include,
                 attributes: ['id', 'first_name', 'middle_name', 'last_name', 'email', 'mobile', 'type', 'blocked', 'deleted'],
-                // group: ['User.id']
+                group: ['user.id']
             }
 
             var result = await api.findAllAsync(sequelize, "User", json_obj);
