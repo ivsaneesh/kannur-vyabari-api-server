@@ -24,7 +24,7 @@ class Death {
                 return res.json({ "status": "error", "message": "member id is required!" });
             }
             if (!req.body.date_time) {
-                return res.json({ "status": "error", "message": "date is required!" });
+                return res.json({ "status": "error", "message": "date_time is required!" });
             }
             if (req.body.plus_member == null) {
                 return res.json({ "status": "error", "message": "plus_member is required!" });
@@ -34,7 +34,7 @@ class Death {
             }
 
             /// if dead member is plus member
-            if (req.body.plus_member == true) {
+            if (req.body.plus_member === true) {
                 /// check if there is a collection amount with type plus_member
                 plusAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'plus_member' }, attributes: ['id'] });
                 /// if no collection amount with type plus_member is found return 
@@ -50,7 +50,7 @@ class Death {
                 }
             }
             /// if dead member is not plus member
-            if (req.body.plus_member == false) {
+            else if (req.body.plus_member === false) {
                 /// check if there is a collection amount with type default
                 defaultAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'default' }, attributes: ['id'] });
                 /// if no collection amount with type default is found return 
@@ -58,17 +58,6 @@ class Death {
                     return res.json({ "status": "error", "message": "Could not find a active default collection amount. Create a default collection amount!" });
                 }
             }
-
-
-            // fetch active collection amount
-            // var amount_condition = { where: { 'deleted': 0 } }
-            // var amountResult = await api.findOneAsync(sequelize, "CollectionAmount", amount_condition);
-            // if (!amountResult && !amountResult.id) {
-            //     return res.json({ "status": "error", "message": "Active amount not exist. Create new collection amount" });
-            // }
-            // else {
-            //     console.log(amountResult);
-            // }
 
             var death_data = {
                 'member_id': req.body.member_id ? req.body.member_id : null,
@@ -78,7 +67,6 @@ class Death {
                 'last_date': req.body.last_date ? req.body.last_date : null,
                 'created_on': req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
                 'created_by': req.user.user_id,
-
             }
             var member_data = {
                 'active': 0,
@@ -183,6 +171,7 @@ class Death {
         }
     }
 
+    /// this function is used to check given dob is plus member
     checkIsPlusMember(dob) {
         var today = new Date();
         var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
