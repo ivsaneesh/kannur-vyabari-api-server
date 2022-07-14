@@ -87,7 +87,7 @@ var db = function (app) {
 	this.models.Member.hasOne(this.models.RegistrationFeeCollected, { foreignKey: "member_id", as: 'RegistrationFeeCollected' });
 	this.models.Collection.belongsTo(this.models.Member, { foreignKey: "member_id", as: "Member" });
 	this.models.Collection.belongsTo(this.models.CollectionAmount, { foreignKey: "amount_id", as: "CollectionAmount" });
-
+	this.models.Member.hasOne(this.models.Death, { foreignKey: "member_id", as: 'Death' });
 
 	this.models.Collector.belongsTo(this.models.Unit, { foreignKey: "unit_id", as: "Unit" });
 	this.models.Collector.belongsTo(this.models.Area, { foreignKey: "area_id", as: "Area" });

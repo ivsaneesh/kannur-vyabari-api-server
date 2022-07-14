@@ -163,6 +163,8 @@ class Member {
             }
             if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
+            } else {
+                member_condition.dead = 0;
             }
             if (utils.isNotUndefined(req.body.migrated)) {
                 member_condition.migrated = req.body.migrated;
@@ -173,8 +175,9 @@ class Member {
             var include = [{ model: sequelize.models.Business, as: "Business" },
             { model: sequelize.models.Family, as: "Family" },
             { model: sequelize.models.Nominee, as: "Nominee" },
-            { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] },
-            { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] },
+            { model: sequelize.models.Area, as: "Area", attributes: ['id', 'name', 'id_number'] },
+            { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name', 'id_number'] },
+            { model: sequelize.models.Death, as: "Death", attributes: ['datetime', 'details', 'venue', 'last_date', 'created_on'] },
             { model: sequelize.models.RegistrationFeeCollected, as: "RegistrationFeeCollected", attributes: ['id'], include: [{ model: sequelize.models.RegistrationFee, as: "RegistrationFee", attributes: ['id', 'amount'] }] }];
             var json_obj = { where: member_condition, include: include }
             json_obj.offset = offset
@@ -185,23 +188,41 @@ class Member {
             }
             var result = await api.findAllAsync(sequelize, "Member", json_obj);
 
-            var today = new Date();
-            var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-            var date65 = moment(date).format("X");
-
             var resultValue = result;
             if (req.body.pagination == 1) {
                 resultValue = result.rows;
             }
 
-            // check plus member
-            for (let index = 0; index < resultValue.length; ++index) {
-                var dob = resultValue[index].date_of_birth;
-                if (date65 < dob) {
-                    resultValue[index].setDataValue('plus_member', 0);
+            /// check if requested for dead member list
+            if (utils.isNotUndefined(req.body.dead) && req.body.dead == 1) {
+                // check plus member
+                for (let index = 0; index < resultValue.length; ++index) {
+                    var date65 = resultValue[index].Death.datetime;
+
+                    var dob = resultValue[index].date_of_birth;
+                    if (date65 < dob) {
+                        resultValue[index].setDataValue('plus_member', 0);
+                    }
+                    else {
+                        resultValue[index].setDataValue('plus_member', 1);
+                    }
                 }
-                else {
-                    resultValue[index].setDataValue('plus_member', 1);
+            }
+            else {
+                /// if requested for non dead member list
+                var today = new Date();
+                var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+                var date65 = moment(date).format("X");
+
+                // check plus member
+                for (let index = 0; index < resultValue.length; ++index) {
+                    var dob = resultValue[index].date_of_birth;
+                    if (date65 < dob) {
+                        resultValue[index].setDataValue('plus_member', 0);
+                    }
+                    else {
+                        resultValue[index].setDataValue('plus_member', 1);
+                    }
                 }
             }
             return res.json({ "status": 'success', "data": await result });

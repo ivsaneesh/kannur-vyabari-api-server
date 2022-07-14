@@ -26,7 +26,6 @@ class Death {
             if (!req.body.date_time) {
                 return res.json({ "status": "error", "message": "date is required!" });
             }
-            req.body.plus_member = true;
             if (req.body.plus_member == null) {
                 return res.json({ "status": "error", "message": "plus_member is required!" });
             }
@@ -39,14 +38,14 @@ class Death {
                 /// check if there is a collection amount with type plus_member
                 plusAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'plus_member' }, attributes: ['id'] });
                 /// if no collection amount with type plus_member is found return 
-                if (!plusAmountResult && !plusAmountResult.id) {
+                if (!plusAmountResult || !plusAmountResult.id) {
                     return res.json({ "status": "error", "message": "Could not find a active plus_member collection amount. Create a plus_member collection amount!" });
                 }
 
                 /// check if there is a collection amount with type default
                 defaultAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'default' }, attributes: ['id'] });
                 /// if no collection amount with type default is found return 
-                if (!defaultAmountResult && !defaultAmountResult.id) {
+                if (!defaultAmountResult || !defaultAmountResult.id) {
                     return res.json({ "status": "error", "message": "Could not find a active default collection amount. Create a default collection amount!" });
                 }
             }
@@ -55,7 +54,7 @@ class Death {
                 /// check if there is a collection amount with type default
                 defaultAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'default' }, attributes: ['id'] });
                 /// if no collection amount with type default is found return 
-                if (!defaultAmountResult && !defaultAmountResult.id) {
+                if (!defaultAmountResult || !defaultAmountResult.id) {
                     return res.json({ "status": "error", "message": "Could not find a active default collection amount. Create a default collection amount!" });
                 }
             }
@@ -94,7 +93,7 @@ class Death {
             if (death_create_result) {
                 var json_obj = {};
                 var collection_array = [];
-                // if dead member is not a plus_member
+                // if dead member is not a plus_member only normal members has to pay the contribution
                 if (req.body.plus_member == false) {
                     var today = new Date();
                     var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
@@ -117,7 +116,7 @@ class Death {
                     })
                 }
                 else {
-                    // dead member is a plus_member
+                    // dead member is a plus_member both plus_member and normal members has to pay the contribution
                     json_obj = { where: { dead: 0, active: 1 }, attributes: ['id', 'date_of_birth'] }
                     var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
                     member_result.forEach((member) => {
