@@ -15,33 +15,61 @@ class Death {
         var transaction;
         var sequelize = req.app.get('sequelize')
         var logger = req.app.get('logger')
+        const Op = sequelize.Sequelize.Op
         try {
+            var plusAmountResult = null;
+            var defaultAmountResult = null;
+
             if (!req.body.member_id) {
                 return res.json({ "status": "error", "message": "member id is required!" });
             }
             if (!req.body.date_time) {
                 return res.json({ "status": "error", "message": "date is required!" });
             }
-            // if (!req.body.details) {
-            //     return res.json({ "status": "error", "message": "details is required!" });
-            // }
-            // if (!req.body.venue) {
-            //     return res.json({ "status": "error", "message": "venue is required!" });
-            // }
-            // if (!req.body.amount_id) {
-            //     return res.json({ "status": "error", "message": "amount id is required!" });
-            // }
+            req.body.plus_member = true;
+            if (req.body.plus_member == null) {
+                return res.json({ "status": "error", "message": "plus_member is required!" });
+            }
+            if (typeof req.body.plus_member != "boolean") {
+                return res.json({ "status": "error", "message": "plus_member must be true or false!" });
+            }
+
+            /// if dead member is plus member
+            if (req.body.plus_member == true) {
+                /// check if there is a collection amount with type plus_member
+                plusAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'plus_member' }, attributes: ['id'] });
+                /// if no collection amount with type plus_member is found return 
+                if (!plusAmountResult && !plusAmountResult.id) {
+                    return res.json({ "status": "error", "message": "Could not find a active plus_member collection amount. Create a plus_member collection amount!" });
+                }
+
+                /// check if there is a collection amount with type default
+                defaultAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'default' }, attributes: ['id'] });
+                /// if no collection amount with type default is found return 
+                if (!defaultAmountResult && !defaultAmountResult.id) {
+                    return res.json({ "status": "error", "message": "Could not find a active default collection amount. Create a default collection amount!" });
+                }
+            }
+            /// if dead member is not plus member
+            if (req.body.plus_member == false) {
+                /// check if there is a collection amount with type default
+                defaultAmountResult = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'deleted': 0, 'type': 'default' }, attributes: ['id'] });
+                /// if no collection amount with type default is found return 
+                if (!defaultAmountResult && !defaultAmountResult.id) {
+                    return res.json({ "status": "error", "message": "Could not find a active default collection amount. Create a default collection amount!" });
+                }
+            }
 
 
             // fetch active collection amount
-            var amount_condition = { where: { 'deleted': 0 } }
-            var amountResult = await api.findOneAsync(sequelize, "CollectionAmount", amount_condition);
-            if (!amountResult && !amountResult.id) {
-                return res.json({ "status": "error", "message": "Active amount not exist. Create new collection amount" });
-            }
-            else{
-                console.log(amountResult);
-            }
+            // var amount_condition = { where: { 'deleted': 0 } }
+            // var amountResult = await api.findOneAsync(sequelize, "CollectionAmount", amount_condition);
+            // if (!amountResult && !amountResult.id) {
+            //     return res.json({ "status": "error", "message": "Active amount not exist. Create new collection amount" });
+            // }
+            // else {
+            //     console.log(amountResult);
+            // }
 
             var death_data = {
                 'member_id': req.body.member_id ? req.body.member_id : null,
@@ -64,21 +92,55 @@ class Death {
             var member_update = api.updateCustomT(sequelize, "Member", member_data, member_condition, transaction);
             let [death_create_result, member_update_result] = await Promise.all([death_create, member_update]);
             if (death_create_result) {
-                var json_obj = { where: { dead: 0, active: 1 }, attributes: ['id'] }
-                var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
+                var json_obj = {};
                 var collection_array = [];
-                member_result.forEach((member) => {
-                    collection_array.push({
-                        member_id: member.id,
-                        dead_member_id: req.body.member_id,
-                        collector_type: req.body.collector_type ? req.body.collector_type : null,
-                        amount_id: amountResult.id,
-                        paid: 0,
-                        created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
-                        created_by: req.user.user_id,
+                // if dead member is not a plus_member
+                if (req.body.plus_member == false) {
+                    var today = new Date();
+                    var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+                    var date65 = moment(date).format("X");
+                    json_obj = { where: { dead: 0, active: 1, date_of_birth: { [Op.lt]: date65 } }, attributes: ['id', 'date_of_birth'] }
+                    var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
 
+                    member_result.forEach((member) => {
+                        var amountId = defaultAmountResult.id;
+                        collection_array.push({
+                            member_id: member.id,
+                            dead_member_id: req.body.member_id,
+                            collector_type: req.body.collector_type ? req.body.collector_type : null,
+                            amount_id: amountId,
+                            paid: 0,
+                            created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                            created_by: req.user.user_id,
+
+                        })
                     })
-                })
+                }
+                else {
+                    // dead member is a plus_member
+                    json_obj = { where: { dead: 0, active: 1 }, attributes: ['id', 'date_of_birth'] }
+                    var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
+                    member_result.forEach((member) => {
+                        var amountId = defaultAmountResult.id;
+                        if (this.checkIsPlusMember(member.date_of_birth) === true) {
+                            amountId = plusAmountResult.id;
+                        }
+                        else {
+                            amountId = defaultAmountResult.id
+                        }
+                        collection_array.push({
+                            member_id: member.id,
+                            dead_member_id: req.body.member_id,
+                            collector_type: req.body.collector_type ? req.body.collector_type : null,
+                            amount_id: amountId,
+                            paid: 0,
+                            created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
+                            created_by: req.user.user_id,
+
+                        })
+                    })
+                }
+
                 await collection.createBulkCollection(collection_array, transaction, sequelize, logger)
             }
             await transaction.commit();
@@ -119,6 +181,19 @@ class Death {
             logger.error("Death List Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
+    checkIsPlusMember(dob) {
+        var today = new Date();
+        var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+        var date65 = moment(date).format("X");
+        if (date65 < dob) {
+            console.log("IsPlusMember", false);
+            return false;
+        } else {
+            console.log("IsPlusMember", true);
+            return true;
         }
     }
 }

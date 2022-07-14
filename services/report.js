@@ -505,21 +505,50 @@ class Report {
         const Op = sequelize.Sequelize.Op
         const fn = sequelize.Sequelize.fn
         var user_condition = {}
+        const mysql = req.app.get('mysql')
+
         try {
+            var query = `SELECT user.id, user.first_name, user.middle_name, user.last_name, user.email, user.mobile, user.type, user.blocked, user.deleted,  COUNT(Member.register_number) AS total_count FROM user AS user LEFT OUTER JOIN member AS Member ON user.id = Member.created_by GROUP BY user.id;`;
 
-            var include = {
-                model: sequelize.models.Member, as: "Member",
-                attributes: [[fn('COUNT', sequelize.Sequelize.col('register_number')), 'count'],],
-            };
+            async.parallel([
+                function (callback) {
+                    mysql.query(query, (error, data) => {
+                        if (error) {
+                            callback(error, null)
+                        } else {
+                            callback(null, data)
+                        }
 
-            var json_obj = {
-                where: user_condition, include: include,
-                attributes: ['id', 'first_name', 'middle_name', 'last_name', 'email', 'mobile', 'type', 'blocked', 'deleted'],
-                group: ['user.id']
-            }
+                    })
+                },
+            ], function (err, results) {
+                if (err) {
+                    logger.error("district payout Report Exception :---->")
+                    logger.error(err)
+                    return res.json({ "status": 'error', "message": 'Something broken!' });
+                }
+                var result = results[0];
 
-            var result = await api.findAllAsync(sequelize, "User", json_obj);
-            return res.json({ "status": 'success', "data": result });
+                return res.json({ "status": 'success', "data": result });
+            });
+
+
+            // var exclude = ['id','created_on', 'modified_on', 'deleted']
+
+            // var include = {
+            //     model: sequelize.models.Member, as: "Member",
+            //     attributes: [[fn('COUNT', sequelize.Sequelize.col('Member.register_number')), 'count']],
+            //     exclude: exclude
+            // };
+
+            // var json_obj = {
+            //    include: include,
+            //     attributes: [['id', 'uid'], 'first_name', 'middle_name', 'last_name', 'email', 'mobile', 'type', 'blocked', 'deleted'],
+            //     group: ['user.created_on']
+            // }
+
+            // var result = await api.findAllAsync(sequelize, "User", json_obj);
+            // return res.json({ "status": 'success', "data": result });
         }
         catch (err) {
             logger.error("User List Exception :---->")
