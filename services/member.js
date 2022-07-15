@@ -136,10 +136,6 @@ class Member {
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var member_condition = {}
         try {
-
-            if (utils.isNotUndefined(req.body.id)) {
-                member_condition.id = req.body.id;
-            }
             if (utils.isNotUndefined(req.body.search)) {
                 member_condition = { [Op.or]: [{ first_name: { [Op.like]: '%' + req.body.search + '%' } }, { middle_name: { [Op.like]: '%' + req.body.search + '%' } }, { last_name: { [Op.like]: '%' + req.body.search + '%' } }, { mobile: { [Op.like]: '%' + req.body.search + '%' } }] };
             }
@@ -161,7 +157,11 @@ class Member {
             if (utils.isNotUndefined(req.body.area_id)) {
                 member_condition.area_id = req.body.area_id;
             }
-            if (utils.isNotUndefined(req.body.dead)) {
+            if (utils.isNotUndefined(req.body.id)) {
+                member_condition.id = req.body.id;
+            }
+            /// if memberId is present then dead condition is not taken
+            else if (utils.isNotUndefined(req.body.dead)) {
                 member_condition.dead = req.body.dead == 0 ? 0 : 1;
             } else {
                 member_condition.dead = 0;
@@ -193,8 +193,8 @@ class Member {
                 resultValue = result.rows;
             }
 
-            /// check if requested for dead member list
-            if (utils.isNotUndefined(req.body.dead) && req.body.dead == 1) {
+            /// check if requested for dead member list or when member list is called with req memberId and that member is dead.
+            if ((utils.isNotUndefined(req.body.dead) && req.body.dead == 1) || resultValue[0].dead == 1 ) {
                 // check plus member
                 for (let index = 0; index < resultValue.length; ++index) {
                     var date65 = resultValue[index].Death.datetime;
