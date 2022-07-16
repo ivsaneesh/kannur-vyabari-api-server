@@ -194,10 +194,12 @@ class Member {
             }
 
             /// check if requested for dead member list or when member list is called with req memberId and that member is dead.
-            if ((utils.isNotUndefined(req.body.dead) && req.body.dead == 1) || resultValue[0].dead == 1 ) {
+            if ((utils.isNotUndefined(req.body.dead) && req.body.dead == 1) || resultValue[0].dead == 1) {
                 // check plus member
                 for (let index = 0; index < resultValue.length; ++index) {
-                    var date65 = resultValue[index].Death.datetime;
+                    let death_date =  new Date(Date(resultValue[index].Death.datetime));
+                    var date = new Date(death_date.getFullYear() - 65, death_date.getMonth(), death_date.getDate());
+                    var date65 = moment(date).format("X");
 
                     var dob = resultValue[index].date_of_birth;
                     if (date65 < dob) {
