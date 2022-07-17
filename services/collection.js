@@ -184,6 +184,12 @@ class Collection {
             if (!utils.isNotUndefined(req.body.member_id)) {
                 return res.json({ "status": "error", "message": "member_id is required!" });
             }
+            if (!utils.isNotUndefined(req.body.unit_id)) {
+                return res.json({ "status": "error", "message": "unit_id is required!" });
+            }
+            if (!utils.isNotUndefined(req.body.area_id)) {
+                return res.json({ "status": "error", "message": "area_id is required!" });
+            }
             if (!utils.isNotUndefined(req.body.dead_member_id)) {
                 return res.json({ "status": "error", "message": "dead_member_id is required!" });
             }
@@ -216,47 +222,45 @@ class Collection {
                 }
                 else {
                     if (utils.isNotUndefined(req.body.paid) && req.body.paid == 1) {
-                        req.body.member_id.forEach(async (item) => {
-                            let partitionArray = [];
-                            let memberData = await api.findOneAsync(sequelize, "Member", { where: { 'id': item } });
-                            let partitionUnitData = {
-                                type: "Unit",
-                                type_id: memberData.unit_id,
-                                dead_member_id: req.body.dead_member_id,
-                                amount: Math.round((2 / 100) * amountData.amount),
-                                created_on: moment(new Date()).format("X"),
-                                created_by: req.user.user_id
-                            }
-                            partitionArray.push(partitionUnitData);
-                            let partitionAreaData = {
-                                type: "Area",
-                                type_id: memberData.area_id,
-                                dead_member_id: req.body.dead_member_id,
-                                amount: Math.round((2 / 100) * amountData.amount),
-                                created_on: moment(new Date()).format("X"),
-                                created_by: req.user.user_id
-                            }
-                            partitionArray.push(partitionAreaData);
-                            let partitionDistrictData = {
-                                type: "Area",
-                                type_id: 0,
-                                dead_member_id: req.body.dead_member_id,
-                                amount: Math.round((2 / 100) * amountData.amount),
-                                created_on: moment(new Date()).format("X"),
-                                created_by: req.user.user_id
-                            }
-                            partitionArray.push(partitionDistrictData);
-                            let partitionCollectorData = {
-                                type: "Collector",
-                                type_id: req.body.collector_id,
-                                dead_member_id: req.body.dead_member_id,
-                                amount: Math.round((4 / 100) * amountData.amount),
-                                created_on: moment(new Date()).format("X"),
-                                created_by: req.user.user_id
-                            }
-                            partitionArray.push(partitionCollectorData);
-                            await api.bulkCreateAsync(sequelize, 'CollectionPartition', partitionArray)
-                        })
+                        let partitionArray = [];
+                        let partitionUnitData = {
+                            type: "Unit",
+                            type_id: req.body.unit_id,
+                            dead_member_id: req.body.dead_member_id,
+                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            created_on: moment(new Date()).format("X"),
+                            created_by: req.user.user_id
+                        }
+                        partitionArray.push(partitionUnitData);
+                        let partitionAreaData = {
+                            type: "Area",
+                            type_id: req.body.area_id,
+                            dead_member_id: req.body.dead_member_id,
+                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            created_on: moment(new Date()).format("X"),
+                            created_by: req.user.user_id
+                        }
+                        partitionArray.push(partitionAreaData);
+                        let partitionDistrictData = {
+                            type: "Area",
+                            type_id: 0,
+                            dead_member_id: req.body.dead_member_id,
+                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            created_on: moment(new Date()).format("X"),
+                            created_by: req.user.user_id
+                        }
+                        partitionArray.push(partitionDistrictData);
+                        let partitionCollectorData = {
+                            type: "Collector",
+                            type_id: req.body.collector_id,
+                            dead_member_id: req.body.dead_member_id,
+                            amount: (Math.round((4 / 100) * amountData.amount)) * req.body.member_id.length,
+                            created_on: moment(new Date()).format("X"),
+                            created_by: req.user.user_id
+                        }
+                        partitionArray.push(partitionCollectorData);
+                        await api.bulkCreateAsync(sequelize, 'CollectionPartition', partitionArray)
+
                     }
 
                     return res.json({ "status": status, "data": data })

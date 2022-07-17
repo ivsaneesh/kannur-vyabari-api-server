@@ -15,6 +15,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
+    "chalk": "^2.4.2",
     "compression": "^1.7.4",
     "connect-redis": "^3.4.2",
     "connect-timeout": "^1.9.0",
