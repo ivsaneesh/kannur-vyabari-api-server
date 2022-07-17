@@ -122,14 +122,14 @@ class Wallet {
                 }
                 else {
                     if (utils.isNotUndefined(results[1][0]['total'])) {
-                        balance = results[1][0]['total'];
+                        balance = results[1][0]['total'] * -1;
                     }
                 }
 
                 var result = {
                     "transcation": wallet_result,
-                    "credit_total":utils.isNotUndefined(results[0][0]['total']) ? results[0][0]['total'] : 0,
-                    "debit_total": utils.isNotUndefined(results[1][0])['total'] ? results[1][0]['total'] : 0,
+                    "credit_total": utils.isNotUndefined(results[0][0]['total']) ? results[0][0]['total'] : 0,
+                    "debit_total": utils.isNotUndefined(results[1][0]['total']) ? results[1][0]['total'] : 0,
                     "balance": balance
                 };
                 // console.log("result >>> ", result);

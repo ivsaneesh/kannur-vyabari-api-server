@@ -80,6 +80,8 @@ class Collector {
             }
             if (utils.isNotUndefined(req.body.deleted)) {
                 collector_condition.deleted = req.body.deleted == 0 ? 0 : 1;
+            } else {
+                collector_condition.deleted = 0;
             }
             var include = [{ model: sequelize.models.Area, as: "Area", attributes: ['id', 'name'] }, { model: sequelize.models.Unit, as: "Unit", attributes: ['id', 'name'] }];
             var json_obj = { where: collector_condition, include: include }

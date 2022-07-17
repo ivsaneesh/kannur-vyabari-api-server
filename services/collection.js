@@ -4,6 +4,9 @@ var moment = require('moment')
 var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
+var async = require('async');
+const wallet = require('./wallet');
+
 class Collection {
 
     constructor() {
@@ -83,6 +86,7 @@ class Collection {
             }
             var json_obj = { where: collection_condition }
 
+            /// if uinit_id is present add unit condition to member
             if (utils.isNotUndefined(req.body.unit_id)) {
                 member_condition.unit_id = req.body.unit_id;
                 var include = [{
@@ -106,12 +110,51 @@ class Collection {
             if (req.body.sort_column) {
                 json_obj.order = [[req.body.sort_column, req.body.sort_order ? req.body.sort_order : "ASC"]]
             }
-            var result = await api.findAllAsync(sequelize, "Collection", json_obj);
-            return res.json({ "status": 'success', "data": result });
+            var collection_result = await api.findAllAsync(sequelize, "Collection", json_obj);
+
+            var resultValue = collection_result;
+            if (req.body.pagination == 1) {
+                resultValue = collection_result.rows;
+            }
+
+            /// for each collection get the member wallet balance
+            for (let index = 0; index < resultValue.length; ++index) {
+                var Wallet = await this.memberWalletBalance(req, resultValue[index].member_id);
+
+                var balance = 0;
+                if (utils.isNotUndefined(Wallet.credit.total)) {
+                    balance = Wallet.credit.total;
+                    if (utils.isNotUndefined(Wallet.debit.total)) {
+                        balance = Wallet.credit.total - Wallet.debit.total;
+                    }
+                }
+                else {
+                    if (utils.isNotUndefined(Wallet.debit.total)) {
+                        balance = Wallet.debit.total * -1;
+                    }
+                }
+                var wallet_result = {
+                    "credit_total": Wallet.credit.total ? Wallet.credit.total : 0,
+                    "debit_total": Wallet.debit.total ? Wallet.debit.total : 0,
+                    "balance": balance
+                };
+                resultValue[index].setDataValue('Wallet', wallet_result);
+            }
+
+            if (req.body.pagination == 1) {
+                collection_result.rows = resultValue;
+                return res.json({ "status": 'success', "data": await collection_result });
+            }
+            else {
+
+                return res.json({ "status": 'success', "data": await resultValue });
+            }
+
         }
         catch (err) {
-            logger.error("Collection List Exception :---->")
-            logger.error(err)
+
+            console.error("Collection List Exception :---->")
+            console.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
@@ -298,6 +341,29 @@ class Collection {
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
     }
+
+    /// return the wallet balance of member
+    async memberWalletBalance(req, memberId,) {
+        try {
+            var sequelize = req.app.get('sequelize')
+
+            var json_obj0 = { where: { 'credit_debit': 0, 'member_id': memberId }, raw: true, }
+            var json_obj1 = { where: { 'credit_debit': 1, 'member_id': memberId }, raw: true, }
+
+            json_obj0.attributes = [[sequelize.Sequelize.fn('sum', sequelize.Sequelize.col('amount')), 'total']];
+            json_obj1.attributes = [[sequelize.Sequelize.fn('sum', sequelize.Sequelize.col('amount')), 'total']];
+
+            var result0 = await api.findAllAsync(sequelize, "Wallet", json_obj0,);
+            var result1 = await api.findAllAsync(sequelize, "Wallet", json_obj1,);
+            return { 'credit': result0[0], 'debit': result1[0] };
+        }
+        catch (err) {
+            console.error("memberWalletBalance Exception :---->")
+            console.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
 }
 
 

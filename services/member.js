@@ -197,7 +197,7 @@ class Member {
             if ((utils.isNotUndefined(req.body.dead) && req.body.dead == 1) || resultValue[0].dead == 1) {
                 // check plus member
                 for (let index = 0; index < resultValue.length; ++index) {
-                    let death_date =  new Date(Date(resultValue[index].Death.datetime));
+                    let death_date = new Date(Date(resultValue[index].Death.datetime));
                     var date = new Date(death_date.getFullYear() - 65, death_date.getMonth(), death_date.getDate());
                     var date65 = moment(date).format("X");
 
@@ -209,6 +209,12 @@ class Member {
                         resultValue[index].setDataValue('plus_member', 1);
                     }
                 }
+                if (req.body.pagination == 1) {
+                    result.rows = resultValue;
+                } else {
+                    result = resultValue;
+                }
+                return res.json({ "status": 'success', "data": result });
             }
             else {
                 /// if requested for non dead member list
@@ -226,8 +232,13 @@ class Member {
                         resultValue[index].setDataValue('plus_member', 1);
                     }
                 }
+                if (req.body.pagination == 1) {
+                    resultValue = result.rows;
+                } else {
+                    result = resultValue;
+                }
+                return res.json({ "status": 'success', "data": result });
             }
-            return res.json({ "status": 'success', "data": await result });
         }
         catch (err) {
             logger.error("Member List Exception :---->")
