@@ -224,7 +224,7 @@ class Member {
             else {
                 /// if requested for non dead member list
                 var today = new Date();
-                var date = new  Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+                var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
                 var date65 = moment(date).format("X");
                 console.log('today >>> ', today);
                 console.log('date >>> ', date);
