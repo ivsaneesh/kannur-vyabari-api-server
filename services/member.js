@@ -202,6 +202,11 @@ class Member {
                     var date65 = moment(date).format("X");
 
                     var dob = resultValue[index].date_of_birth;
+
+                    console.log('death_date >>> ', death_date);
+                    console.log('date >>> ', date);
+                    console.log('date65 >>> ', date65);
+                    console.log('dob >>> ', dob);
                     if (date65 < dob) {
                         resultValue[index].setDataValue('plus_member', 0);
                     }
@@ -219,13 +224,18 @@ class Member {
             else {
                 /// if requested for non dead member list
                 var today = new Date();
-                var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
+                var date =  Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
                 var date65 = moment(date).format("X");
+                console.log('today >>> ', today);
+                console.log('date >>> ', date);
+                console.log('date65 >>> ', date65);
+
 
                 // check plus member
                 for (let index = 0; index < resultValue.length; ++index) {
                     var dob = resultValue[index].date_of_birth;
-                    if (date65 < dob) {
+                console.log('dob >>> ', dob);
+                if (date65 < dob) {
                         resultValue[index].setDataValue('plus_member', 0);
                     }
                     else {
