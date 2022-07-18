@@ -313,5 +313,11 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         wallet.listMemberWallet(req, res)
     });
+
+    /// sms
+    app.post('/sms/areasms', function(req, res)  {
+        if(req.user.type.includes('admin'))
+        area.areaSms(req, res)
+    });
     
 }

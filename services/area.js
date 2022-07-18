@@ -4,6 +4,9 @@ var moment = require('moment')
 var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
+var path_services = path.normalize(__dirname + "/../services")
+var sms = require(path_services + '/sendsms')
+
 class Area {
 
     constructor() {
@@ -172,6 +175,31 @@ class Area {
         }
         catch (err) {
             logger.error("Area delete Exception :---->")
+            logger.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
+
+    async areaSms(req, res) {
+        var sequelize = req.app.get('sequelize')
+        var logger = req.app.get('logger')
+        try {
+            if (!utils.isNotUndefined(req.body.area_id)) {
+                return res.json({ "status": "error", "message": "area id is required!" });
+            }
+            var json_obj = {};
+            var condition = { where: { area_id: req.body.area_id }, attributes: ['register_number', 'mobile'] };
+
+            json_obj = condition;
+            var result = await api.findAllAsync(sequelize, "Member", json_obj);
+            for (var i = 0; i < result.length; i++) {
+                await sms.areaSms(result[i].mobile, result[i].register_number);
+            }
+            return res.json({ "status": 'success', "data": result });
+        }
+        catch (err) {
+            logger.error("areaSms Exception :---->")
             logger.error(err)
             return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
         }
