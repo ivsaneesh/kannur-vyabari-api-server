@@ -319,5 +319,9 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         area.areaSms(req, res)
     });
-    
+    // app.get('/sms/check', function(req, res)  {
+    //     if(req.user.type.includes('admin'))
+    //     CronJob.sendSmsBasedOnArea(req, res)
+    // });
+
 }

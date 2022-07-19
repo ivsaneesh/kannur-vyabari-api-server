@@ -37,10 +37,10 @@ class SMS {
             var route = 'T';
 
             var api_url = `http://${host}/sendunicodesms?uname=${username}&pwd=${password}&senderid=${header}&to=${to}&msg=${msg}&route=${route}&peid=${entityId}&tempid=${templateId}`;
-            var res = encodeURI(api_url); 
-            await axios.post(res).then(data => console.log('SMS data >>> ', data));
+            var res = encodeURI(api_url);
+            var result = await axios.post(res);//.then(data => console.log('SMS data >>> ', data));
 
-            return true;
+            return result;
         }
         catch (err) {
             console.log("Error areasms >>>> " + err);

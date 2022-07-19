@@ -67,6 +67,18 @@ app.set('view engine', 'ejs');
 
 app["root_dir"] = __dirname;
 
+/***********************************
+cron job
+************************************/
+var path_services = path.normalize(__dirname + "/services")
+const CronJob = require(path_services + '/cron_job');
+
+var cron = require('node-cron');
+// send sms to area
+cron.schedule('0 18 * * *', () => {
+    CronJob.sendSmsBasedOnArea(app);
+});
+
 
 //http helper
 var http_helper = require("./helper/httpManager");

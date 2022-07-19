@@ -73,6 +73,8 @@ var db = function (app) {
 	this.models.DistrictPayout = require('../model/district_payout.js')(this.sequelize, this.Sequelize);
 	this.models.CollectionPartition = require('../model/collection_partition.js')(this.sequelize, this.Sequelize);
 	this.models.Wallet = require('../model/wallet.js')(this.sequelize, this.Sequelize);
+	this.models.SmsLog = require('../model/sms_log.js')(this.sequelize, this.Sequelize);
+	this.models.SendAreaSms = require('../model/send_area_sms.js')(this.sequelize, this.Sequelize);
 
 	//relations for user
 	this.models.User.hasOne(this.models.UserPermissions, { foreignKey: "user_id", as: 'UserPermission' });

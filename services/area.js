@@ -5,7 +5,6 @@ var utils = require("../helper/utils");
 var path_controller = path.normalize(__dirname + "/../controllers/")
 var api = require(path_controller + '/api')
 var path_services = path.normalize(__dirname + "/../services")
-var sms = require(path_services + '/sendsms')
 
 class Area {
 
@@ -188,15 +187,17 @@ class Area {
             if (!utils.isNotUndefined(req.body.area_id)) {
                 return res.json({ "status": "error", "message": "area id is required!" });
             }
-            var json_obj = {};
-            var condition = { where: { area_id: req.body.area_id }, attributes: ['register_number', 'mobile'] };
 
-            json_obj = condition;
-            var result = await api.findAllAsync(sequelize, "Member", json_obj);
-            for (var i = 0; i < result.length; i++) {
-                await sms.areaSms(result[i].mobile, result[i].register_number);
+            var sms_area_data = {
+                'area_id': req.body.area_id,
+                'completed': 0,
+                'created_by': req.user.user_id,
+                'created_on': moment(new Date()).format("X")
             }
-            return res.json({ "status": 'success', "data": result });
+
+            var sendAreaSmsResult = await api.createAsync(sequelize, "SendAreaSms", sms_area_data);
+
+            return res.json({ "status": 'success', "data": sendAreaSmsResult });
         }
         catch (err) {
             logger.error("areaSms Exception :---->")
