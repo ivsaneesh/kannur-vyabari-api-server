@@ -285,7 +285,7 @@ class Collection {
                         }
                         partitionArray.push(partitionAreaData);
                         let partitionDistrictData = {
-                            type: "Area",
+                            type: "District",
                             type_id: 0,
                             dead_member_id: req.body.dead_member_id,
                             amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
