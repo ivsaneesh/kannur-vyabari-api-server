@@ -148,6 +148,9 @@ class Member {
             } else if (utils.isNotUndefined(req.body.from_dob) && utils.isNotUndefined(req.body.to_dob) && req.body.from_dob == req.body.to_dob) {
                 member_condition.date_of_birth = req.body.from_dob;
             }
+            if (utils.isNotUndefined(req.body.plus_member)) {
+                member_condition.plus_member = req.body.plus_member;
+            }
             if (utils.isNotUndefined(req.body.division_id)) {
                 member_condition.division_id = req.body.division_id;
             }
