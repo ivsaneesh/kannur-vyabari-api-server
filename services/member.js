@@ -188,11 +188,7 @@ class Member {
             }
             var result = await api.findAllAsync(sequelize, "Member", json_obj);
 
-            var resultValue = result;
-            if (req.body.pagination == 1) {
-                resultValue = result.rows;
-            }
-            return res.json({ "status": 'success', "data": resultValue });
+            return res.json({ "status": 'success', "data": result });
 
         }
         catch (err) {
