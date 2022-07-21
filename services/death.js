@@ -83,10 +83,7 @@ class Death {
                 var collection_array = [];
                 // if dead member is not a plus_member only normal members has to pay the contribution
                 if (req.body.plus_member == false) {
-                    var today = new Date();
-                    var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-                    var date65 = moment(date).format("X");
-                    json_obj = { where: { dead: 0, active: 1, date_of_birth: { [Op.lt]: date65 } }, attributes: ['id', 'date_of_birth'] }
+                    json_obj = { where: { dead: 0, active: 1, plus_member: 0 }, attributes: ['id', 'date_of_birth'] }
                     var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
 
                     member_result.forEach((member) => {
@@ -100,16 +97,16 @@ class Death {
                             created_on: req.body.created_on ? req.body.created_on : moment(new Date()).format("X"),
                             created_by: req.user.user_id,
 
-                        })
-                    })
+                        });
+                    });
                 }
                 else {
                     // dead member is a plus_member both plus_member and normal members has to pay the contribution
-                    json_obj = { where: { dead: 0, active: 1 }, attributes: ['id', 'date_of_birth'] }
+                    json_obj = { where: { dead: 0, active: 1 }, attributes: ['id', 'date_of_birth', 'plus_member'] }
                     var member_result = await api.findAllAsync(sequelize, "Member", json_obj);
                     member_result.forEach((member) => {
                         var amountId = defaultAmountResult.id;
-                        if (this.checkIsPlusMember(member.date_of_birth) === true) {
+                        if (member.plus_member === 1) {
                             amountId = plusAmountResult.id;
                         }
                         else {
@@ -171,19 +168,6 @@ class Death {
         }
     }
 
-    /// this function is used to check given dob is plus member
-    checkIsPlusMember(dob) {
-        var today = new Date();
-        var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-        var date65 = moment(date).format("X");
-        if (date65 < dob) {
-            console.log("IsPlusMember", false);
-            return false;
-        } else {
-            console.log("IsPlusMember", true);
-            return true;
-        }
-    }
 }
 
 

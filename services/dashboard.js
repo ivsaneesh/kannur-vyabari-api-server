@@ -17,11 +17,7 @@ class Dashboard {
             var memberActive = 0;
             var memberDead = 0;
 
-            var today = new Date();
-            var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-            var date65 = moment(date).format("X");
-
-            var plus_condition = { [Op.or]: [{ date_of_birth: { [Op.lt]: date65 } }] };
+            var plus_condition = { plus_member: 1 };
             plus_condition.dead = 0;
             var plus_member = { where: plus_condition };
 
@@ -41,7 +37,7 @@ class Dashboard {
 
                         const amountCollected = await sequelize.sequelize.query("SELECT sum(ca.amount) as collected_amount FROM collection c JOIN collection_amount ca ON ca.id = c.amount_id WHERE paid = 1;");
                         dashboardResult['amount_collected'] = amountCollected;
-                        
+
                         const regAmount = await sequelize.sequelize.query("SELECT sum(rf.amount) as registration_amount FROM registration_fee rf JOIN registration_fee_collected rfc ON rfc.registration_fee_id = rf.id;");
                         dashboardResult['reg_collected'] = regAmount;
 

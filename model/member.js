@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   return sequelize.define('member', {
     id: {
       autoIncrement: true,
@@ -46,6 +46,11 @@ module.exports = function(sequelize, DataTypes) {
       unique: "member_id"
     },
     migrated: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0
+    },
+    plus_member: {
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0

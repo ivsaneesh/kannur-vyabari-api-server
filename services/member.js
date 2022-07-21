@@ -192,63 +192,8 @@ class Member {
             if (req.body.pagination == 1) {
                 resultValue = result.rows;
             }
+            return res.json({ "status": 'success', "data": resultValue });
 
-            /// check if requested for dead member list or when member list is called with req memberId and that member is dead.
-            if ((utils.isNotUndefined(req.body.dead) && req.body.dead == 1) || resultValue[0].dead == 1) {
-                // check plus member
-                for (let index = 0; index < resultValue.length; ++index) {
-                    let death_date = new Date(Date(resultValue[index].Death.datetime));
-                    var date = new Date(death_date.getFullYear() - 65, death_date.getMonth(), death_date.getDate());
-                    var date65 = moment(date).format("X");
-
-                    var dob = resultValue[index].date_of_birth;
-
-                    // console.log('death_date >>> ', death_date);
-                    // console.log('date >>> ', date);
-                    // console.log('date65 >>> ', date65);
-                    // console.log('dob >>> ', dob);
-                    if (date65 < dob) {
-                        resultValue[index].setDataValue('plus_member', 0);
-                    }
-                    else {
-                        resultValue[index].setDataValue('plus_member', 1);
-                    }
-                }
-                if (req.body.pagination == 1) {
-                    result.rows = resultValue;
-                } else {
-                    result = resultValue;
-                }
-                return res.json({ "status": 'success', "data": result });
-            }
-            else {
-                /// if requested for non dead member list
-                var today = new Date();
-                var date = new Date(today.getFullYear() - 65, today.getMonth(), today.getDate());
-                var date65 = moment(date).format("X");
-                // console.log('today >>> ', today);
-                // console.log('date >>> ', date);
-                // console.log('date65 >>> ', date65);
-
-
-                // check plus member
-                for (let index = 0; index < resultValue.length; ++index) {
-                    var dob = resultValue[index].date_of_birth;
-                // console.log('dob >>> ', dob);
-                if (date65 < dob) {
-                        resultValue[index].setDataValue('plus_member', 0);
-                    }
-                    else {
-                        resultValue[index].setDataValue('plus_member', 1);
-                    }
-                }
-                if (req.body.pagination == 1) {
-                    resultValue = result.rows;
-                } else {
-                    result = resultValue;
-                }
-                return res.json({ "status": 'success', "data": result });
-            }
         }
         catch (err) {
             logger.error("Member List Exception :---->")
