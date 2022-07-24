@@ -250,27 +250,74 @@ class Collection {
                 return res.json({ "status": "error", "message": "There is no collector with this collector id" });
             }
             const collection_data = {}
-            if (utils.isNotUndefined(req.body.paid)) collection_data.paid = req.body.paid;
+            collection_data.paid = 1;
             collection_data.collector_id = req.body.collector_id;
             collection_data.modified_on = moment(new Date()).format("X");
             collection_data.modified_by = req.user.user_id;
 
-            var condition = { where: { 'dead_member_id': req.body.dead_member_id, 'member_id': { [Op.in]: req.body.member_id } } };
-            var collectionData = await api.findOneAsync(sequelize, "Collection", condition);
-            var amountData = await api.findOneAsync(sequelize, "CollectionAmount", { where: { 'id': collectionData.amount_id } });
+            /// fetching distinct collection amountId from collection table
+            var collection_condition = { where: { 'dead_member_id': req.body.dead_member_id, 'member_id': { [Op.in]: req.body.member_id, } }, attributes: [[sequelize.Sequelize.fn('DISTINCT', sequelize.Sequelize.col('amount_id')), 'amount_id']] };
+            var collectionData = await api.findAllAsync(sequelize, "Collection", collection_condition);
+
+            /// fetch amount corresponding to collection amountId
+            var collection_amount_condition = {};
+            if (collectionData.length > 1) {
+                collection_amount_condition = { where: { [Op.or]: [{ 'id': collectionData[0].amount_id }, { 'id': collectionData[1].amount_id }], } };
+            }
+            else {
+                collection_amount_condition = { where: { 'id': collectionData[0].amount_id } };
+            }
+            var amountData = await api.findAllAsync(sequelize, "CollectionAmount", collection_amount_condition);
+
             // updating collection
+            var condition = { where: { 'dead_member_id': req.body.dead_member_id, 'member_id': { [Op.in]: req.body.member_id } } };
             api.updateCustom(sequelize, 'Collection', collection_data, condition, async function (status, data, message) {
                 if (status == 'error') {
                     return res.json({ "status": status, "message": message })
                 }
                 else {
-                    if (utils.isNotUndefined(req.body.paid) && req.body.paid == 1) {
+                    /// fetch member list for getting plus_member detail
+                    let memberData = await api.findAllAsync(sequelize, "Member", { where: { 'id': { [Op.in]: req.body.member_id } }, attributes: ['id', 'plus_member'] });
+                    memberData.forEach(async (item) => {
+
+                        /// amount paid by member. checking if member is plus_member and set the approprate amount
+                        var amount = amountData[0].amount;
+                        console.log("amountData >>> ", amountData);
+                        console.log("amountData[0].amount >>> ", amountData[0].amount);
+
+                        if (item.plus_member === 0) {
+                            if (amountData[0].type == 'default') {
+                                amount = amountData[0].amount;
+                            } else {
+                                amount = amountData[1].amount;
+                            }
+                        } else {
+                            if (amountData[0].type != 'default') {
+                                amount = amountData[0].amount;
+                            } else {
+                                amount = amountData[1].amount;
+                            }
+                        }
+
+                        /// update the wallet. subtract wallet balance with collection amount
+                        if (utils.isNotUndefined(req.body.wallet) && Array.isArray(req.body.wallet)) {
+                            if (req.body.wallet.includes(item.id)) {
+                                var condition = { where: { 'member_id': item.id } };
+                                const wallet_data = {}
+                                wallet_data.modified_on = moment(new Date()).format("X");
+                                wallet_data.modified_by = req.user.user_id;
+                                wallet_data.amount = sequelize.Sequelize.literal(`amount - ${amount}`);
+                                api.updateCustom(sequelize, 'Wallet', wallet_data, condition, function (status, data, message) { });
+                            }
+                        }
+
+                        /// setting the commision to CollectionPartition
                         let partitionArray = [];
                         let partitionUnitData = {
                             type: "Unit",
                             type_id: req.body.unit_id,
                             dead_member_id: req.body.dead_member_id,
-                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            amount: Math.round((2 / 100) * amount),
                             created_on: moment(new Date()).format("X"),
                             created_by: req.user.user_id
                         }
@@ -279,7 +326,7 @@ class Collection {
                             type: "Area",
                             type_id: req.body.area_id,
                             dead_member_id: req.body.dead_member_id,
-                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            amount: Math.round((2 / 100) * amount),
                             created_on: moment(new Date()).format("X"),
                             created_by: req.user.user_id
                         }
@@ -288,7 +335,7 @@ class Collection {
                             type: "District",
                             type_id: 0,
                             dead_member_id: req.body.dead_member_id,
-                            amount: (Math.round((2 / 100) * amountData.amount)) * req.body.member_id.length,
+                            amount: Math.round((2 / 100) * amount),
                             created_on: moment(new Date()).format("X"),
                             created_by: req.user.user_id
                         }
@@ -297,16 +344,15 @@ class Collection {
                             type: "Collector",
                             type_id: req.body.collector_id,
                             dead_member_id: req.body.dead_member_id,
-                            amount: (Math.round((4 / 100) * amountData.amount)) * req.body.member_id.length,
+                            amount: Math.round((4 / 100) * amount),
                             created_on: moment(new Date()).format("X"),
                             created_by: req.user.user_id
                         }
                         partitionArray.push(partitionCollectorData);
                         await api.bulkCreateAsync(sequelize, 'CollectionPartition', partitionArray)
 
-                    }
-
-                    return res.json({ "status": status, "data": data })
+                        return res.json({ "status": status, "data": data })
+                    });
                 }
             });
         }
