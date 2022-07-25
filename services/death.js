@@ -144,9 +144,6 @@ class Death {
         var pagination = req.body.pagination ? (req.body.pagination == 1 ? 1 : 0) : 0
         var collection_condition = {}
         try {
-            if (utils.isNotUndefined(req.body.id)) {
-                collection_condition.id = req.body.id;
-            }
             if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
             }

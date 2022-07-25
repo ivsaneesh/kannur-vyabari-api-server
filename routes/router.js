@@ -89,6 +89,11 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         death.createDeath(req, res)
     });
+    
+    app.post('/death/list',  function(req, res)  {
+        if(req.user.type.includes('admin'))
+        death.listDeath(req, res)
+    });
     /// collector
     app.post('/collector/create',  function(req, res)  {
         if(req.user.type.includes('admin'))
