@@ -147,7 +147,7 @@ class Death {
             if (utils.isNotUndefined(req.body.member_id)) {
                 collection_condition.member_id = req.body.member_id;
             }
-            var include = [{ model: sequelize.models.Business, as: "Business" }, { model: sequelize.models.Family, as: "Family" }, { model: sequelize.models.Nominee, as: "Nominee" }]
+            var include = [{ model: sequelize.models.Member, as: "Member" },]
             var json_obj = { where: collection_condition, include: include }
             json_obj.offset = offset
             json_obj.limit = limit
