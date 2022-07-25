@@ -42,7 +42,9 @@ class Dashboard {
                         var reg_collected = 0;
                         for (var i = 0; i < regAmountList[0].length; i++) {
                             const regAmounts = await sequelize.sequelize.query(`SELECT sum(amount) as registration_amount FROM registration_fee  where id =${regAmountList[0][i].registration_fee_id} GROUP BY amount;`);
-                            reg_collected = reg_collected + parseInt(regAmounts[0][0]['registration_amount']);
+                            if (utils.isNotUndefined(regAmounts[0][0]['registration_amount'])) {
+                                reg_collected = reg_collected + parseInt(regAmounts[0][0]['registration_amount']);
+                            }
                         }
                         dashboardResult['reg_collected'] = reg_collected;
 
