@@ -41,9 +41,12 @@ class Dashboard {
                         const regAmountList = await sequelize.sequelize.query("SELECT COUNT(registration_fee_id) AS count, registration_fee_id from `registration_fee_collected` GROUP BY registration_fee_id;");
                         var reg_collected = 0;
                         for (var i = 0; i < regAmountList[0].length; i++) {
-                            const regAmounts = await sequelize.sequelize.query(`SELECT sum(amount) as registration_amount FROM registration_fee  where id =${regAmountList[0][i].registration_fee_id} GROUP BY amount;`);
-                            if (utils.isNotUndefined(regAmounts[0][0]['registration_amount'])) {
-                                reg_collected = reg_collected + parseInt(regAmounts[0][0]['registration_amount']);
+                            const regAmounts = await sequelize.sequelize.query(`SELECT sum(amount) as amount FROM registration_fee  where id =${regAmountList[0][i].registration_fee_id} GROUP BY amount;`);
+                            
+                            console.log("amount >>> ",regAmounts);
+                            console.log("amount1 >>> ",regAmounts[0]);
+                            if (utils.isNotUndefined(regAmounts[0][0]['amount'])) {
+                                reg_collected = reg_collected + parseInt(regAmounts[0][0]['amount']);
                             }
                         }
                         dashboardResult['reg_collected'] = reg_collected;
