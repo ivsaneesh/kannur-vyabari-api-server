@@ -282,8 +282,6 @@ class Collection {
 
                         /// amount paid by member. checking if member is plus_member and set the approprate amount
                         var amount = amountData[0].amount;
-                        console.log("amountData >>> ", amountData);
-                        console.log("amountData[0].amount >>> ", amountData[0].amount);
 
                         if (item.plus_member === 0) {
                             if (amountData[0].type == 'default') {
@@ -302,7 +300,7 @@ class Collection {
                         /// update the wallet. subtract wallet balance with collection amount
                         if (utils.isNotUndefined(req.body.wallet) && Array.isArray(req.body.wallet)) {
                             if (req.body.wallet.includes(item.id)) {
-                                var condition = { where: { 'member_id': item.id } };
+                                var condition = { where: { 'member_id': item.id, amount: { [Op.gte]: amount } } };
                                 const wallet_data = {}
                                 wallet_data.modified_on = moment(new Date()).format("X");
                                 wallet_data.modified_by = req.user.user_id;

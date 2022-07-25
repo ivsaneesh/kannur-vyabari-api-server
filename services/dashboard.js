@@ -36,10 +36,16 @@ class Dashboard {
                         dashboardResult.dead_member = memberDead;
 
                         const amountCollected = await sequelize.sequelize.query("SELECT sum(ca.amount) as collected_amount FROM collection c JOIN collection_amount ca ON ca.id = c.amount_id WHERE paid = 1;");
-                        dashboardResult['amount_collected'] = amountCollected;
+                        dashboardResult['amount_collected'] = amountCollected[0][0]['collected_amount'];
 
-                        const regAmount = await sequelize.sequelize.query("SELECT sum(rf.amount) as registration_amount FROM registration_fee rf JOIN registration_fee_collected rfc ON rfc.registration_fee_id = rf.id;");
-                        dashboardResult['reg_collected'] = regAmount;
+                        const regAmountList = await sequelize.sequelize.query("SELECT COUNT(registration_fee_id) AS count, registration_fee_id from `registration_fee_collected` GROUP BY registration_fee_id;");
+                        var reg_collected = 0;
+                        for (var i = 0; i < regAmountList[0].length; i++) {
+                            const regAmounts = await sequelize.sequelize.query(`SELECT sum(amount) as registration_amount FROM registration_fee  where id =${regAmountList[0][i].registration_fee_id} GROUP BY amount;`);
+                            reg_collected = reg_collected + parseInt(regAmounts[0][0]['registration_amount']);
+                        }
+                        dashboardResult['reg_collected'] = reg_collected;
+
 
                         return res.json({ "status": 'success', "data": dashboardResult });
 
