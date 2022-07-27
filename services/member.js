@@ -229,6 +229,9 @@ class Member {
                 if (utils.isNotUndefined(req.body.basic_details.photo)) member_data.photo = req.body.basic_details.photo;
                 if (utils.isNotUndefined(req.body.basic_details.form_photo)) member_data.form_photo = req.body.basic_details.form_photo;
                 if (utils.isNotUndefined(req.body.basic_details.migrated)) member_data.migrated = req.body.basic_details.migrated;
+                if (utils.isNotUndefined(req.body.plus_member)) {
+                    member_data.plus_member = req.body.plus_member;
+                }
                 member_data.modified_on = moment(new Date()).format("X");
                 member_data.modified_by = req.user.user_id;
                 let condition = { where: { 'id': req.body.member_id } };
