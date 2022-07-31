@@ -480,85 +480,92 @@ class Member {
             var business_details = {};
             var family_details = {};
             var nominee_details = {};
+            var memberResult = await api.findOneAsync(sequelize, "Member", { where: { 'mobile': data[i].Mobile } });
 
-            transaction = await sequelize.sequelize.transaction();
+            if (memberResult == null || memberResult.id == null) {
+                {
+                    transaction = await sequelize.sequelize.transaction();
 
-            // get unit id_number
-            var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': this.appendzeroForExcel(data[i].Unit) } });
-            // get area id_number
-            var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': this.appendzeroForExcel(data[i].Area) } });
-
-
-            basic_details.first_name = data[i].FirstName;
-            basic_details.date_of_birth = moment(new Date()).format("X");
-            basic_details.mobile = data[i].Mobile;
-            basic_details.address = data[i].Address;
-            basic_details.area_id = areaIdNumberResult.id;
-            basic_details.unit_id = unitIdNumberResult.id;
-            basic_details.photo = data[i].Photo;
-            basic_details.aadhar = data[i].Aadhar;
-            basic_details.active = 1;
-            basic_details.created_by = data[i].UserId;
-            basic_details.created_on = moment(new Date()).format("X");
+                    // get unit id_number
+                    var unitIdNumberResult = await api.findOneAsync(sequelize, "Unit", { where: { 'id_number': this.appendzeroForExcel(data[i].Unit) } });
+                    // get area id_number
+                    var areaIdNumberResult = await api.findOneAsync(sequelize, "Area", { where: { 'id_number': this.appendzeroForExcel(data[i].Area) } });
 
 
-            // Creating member id
-            var lastMemberResult = await api.findOneAsync(sequelize, "Member", { order: [['id', 'DESC']] });
-            var newRegNo = '';
-            if (lastMemberResult && lastMemberResult.register_number) {
-                let splittedArr = lastMemberResult.register_number.slice(8);
-                let next = parseInt(splittedArr, 10);
-                next = next + 1;
-                newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(next);
-            } else { //First entry in the table
-                newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + '00001'
-            }
-            basic_details.register_number = newRegNo;
-            // inserting user permission }
-            var memberResult = await api.createT(sequelize, "Member", basic_details, transaction);
-
-            business_details.member_id = memberResult.id;
-            business_details.mobile = data[i].BusinessName;
-            business_details.name = data[i].BusonessMobile;
-            business_details.address = data[i].BusinessAddress;
-            business_details.description = "";
-            business_details.created_by = data[i].UserId;
-            business_details.created_on = moment(new Date()).format("X");
-
-            family_details.member_id = memberResult.id;
-            family_details.created_by = data[i].UserId;
-            family_details.created_on = moment(new Date()).format("X");
+                    basic_details.first_name = data[i].FirstName;
+                    basic_details.date_of_birth = moment(new Date()).format("X");
+                    basic_details.mobile = data[i].Mobile;
+                    basic_details.address = data[i].Address;
+                    basic_details.area_id = areaIdNumberResult.id;
+                    basic_details.unit_id = unitIdNumberResult.id;
+                    basic_details.photo = data[i].Photo;
+                    basic_details.aadhar = data[i].Aadhar;
+                    basic_details.active = 1;
+                    basic_details.created_by = data[i].UserId;
+                    basic_details.created_on = moment(new Date()).format("X");
 
 
-            nominee_details.member_id = memberResult.id;
-            nominee_details.full_name = data[i].NomineeName;
-            nominee_details.relation = data[i].NomineeRelation;
-            nominee_details.created_by = data[i].UserId;
-            nominee_details.created_on = moment(new Date()).format("X");
+                    // Creating member id
+                    var lastMemberResult = await api.findOneAsync(sequelize, "Member", { order: [['id', 'DESC']] });
+                    var newRegNo = '';
+                    if (lastMemberResult && lastMemberResult.register_number) {
+                        let splittedArr = lastMemberResult.register_number.slice(8);
+                        let next = parseInt(splittedArr, 10);
+                        next = next + 1;
+                        newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + this.appendzero(next);
+                    } else { //First entry in the table
+                        newRegNo = areaIdNumberResult.id_number + '/' + unitIdNumberResult.id_number + '/' + '00001'
+                    }
+                    basic_details.register_number = newRegNo;
+                    // inserting user permission }
+                    var memberResult = await api.createT(sequelize, "Member", basic_details, transaction);
+
+                    business_details.member_id = memberResult.id;
+                    business_details.mobile = data[i].BusinessName;
+                    business_details.name = data[i].BusonessMobile;
+                    business_details.address = data[i].BusinessAddress;
+                    business_details.description = "";
+                    business_details.created_by = data[i].UserId;
+                    business_details.created_on = moment(new Date()).format("X");
+
+                    family_details.member_id = memberResult.id;
+                    family_details.created_by = data[i].UserId;
+                    family_details.created_on = moment(new Date()).format("X");
+
+
+                    nominee_details.member_id = memberResult.id;
+                    nominee_details.full_name = data[i].NomineeName;
+                    nominee_details.relation = data[i].NomineeRelation;
+                    nominee_details.created_by = data[i].UserId;
+                    nominee_details.created_on = moment(new Date()).format("X");
 
 
 
-            var businessPromise = api.createT(sequelize, "Business", business_details, transaction);
-            var familyPromise = api.createT(sequelize, "Family", family_details, transaction);
-            var nomineePromise = api.createT(sequelize, "Nominee", nominee_details, transaction);
-            let [businessResult, familyResult, nomineeResult] = await Promise.all([businessPromise, familyPromise, nomineePromise]);
-            await transaction.commit();
+                    var businessPromise = api.createT(sequelize, "Business", business_details, transaction);
+                    var familyPromise = api.createT(sequelize, "Family", family_details, transaction);
+                    var nomineePromise = api.createT(sequelize, "Nominee", nominee_details, transaction);
+                    let [businessResult, familyResult, nomineeResult] = await Promise.all([businessPromise, familyPromise, nomineePromise]);
+                    await transaction.commit();
 
 
+                    // registration fee collected from member 
             // registration fee collected from member 
-            var registrationFeeResult = await api.findOneAsync(sequelize, "RegistrationFee", {
-                where: { deleted: '0' },
-            });
-            var registrationFeeId = 1;
-            /// inserting registration fee to registrationfeecollected table
-            var collected_data = {
-                'member_id': memberResult.id,
-                'registration_fee_id': registrationFeeResult != null ? registrationFeeResult.id : registrationFeeId,
-                'created_by': data[i].UserId,
-                'created_on': moment(new Date()).format("X")
-            }
-            var collectedResult = await api.createAsync(sequelize, "RegistrationFeeCollected", collected_data);
+                    // registration fee collected from member 
+                    var registrationFeeResult = await api.findOneAsync(sequelize, "RegistrationFee", {
+                        where: { deleted: '0' },
+                    });
+                    var registrationFeeId = 1;
+                    /// inserting registration fee to registrationfeecollected table
+                    var collected_data = {
+                        'member_id': memberResult.id,
+                        'registration_fee_id': registrationFeeResult != null ? registrationFeeResult.id : registrationFeeId,
+                        'created_by': data[i].UserId,
+                        'created_on': moment(new Date()).format("X")
+                    }
+                    var collectedResult = await api.createAsync(sequelize, "RegistrationFeeCollected", collected_data);
 
+                }
+            }
         }
         return res.json({ "status": data, "data": collectedResult });
 

@@ -21,9 +21,9 @@ class Payout {
             }
 
             var area_data = {
-                'member_id': req.body.member_id ? req.body.member_id : null,
-                'given': req.body.given ? req.body.given : null,
-                'deduction': req.body.deduction ? req.body.deduction : null,
+                'member_id': req.body.member_id,
+                'given': req.body.given,
+                'deduction': req.body.deduction ? req.body.deduction : 0,
                 'collected': req.body.collected ? req.body.collected : null,
                 'deduction_reason': req.body.deduction_reason ? req.body.deduction_reason : null,
                 'due': req.body.due ? req.body.due : null,

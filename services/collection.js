@@ -305,7 +305,11 @@ class Collection {
                                 wallet_data.modified_on = moment(new Date()).format("X");
                                 wallet_data.modified_by = req.user.user_id;
                                 wallet_data.amount = sequelize.Sequelize.literal(`amount - ${amount}`);
-                                api.updateCustom(sequelize, 'Wallet', wallet_data, condition, function (status, data, message) { });
+                                wallet_data.credit_debit = 1;
+                                api.updateCustom(sequelize, 'Wallet', wallet_data, condition, function (status, data, message) { 
+                                    console.log("wallet data >>>> ",data)
+
+                                });
                             }
                         }
 
