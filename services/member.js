@@ -466,7 +466,7 @@ class Member {
     async createMemberFromExcel(req, res) {
         var transaction;
         var sequelize = req.app.get('sequelize')
-        var workbook = XLSX.readFile("./excel/member.xlsx");
+        var workbook = XLSX.readFile("./excel/member2.xlsx");
         let data = [];
         let worksheet = workbook.Sheets[workbook.SheetNames[0]];
 
