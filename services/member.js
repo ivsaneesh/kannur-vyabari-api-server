@@ -546,10 +546,7 @@ class Member {
                     var nomineePromise = api.createT(sequelize, "Nominee", nominee_details, transaction);
                     let [businessResult, familyResult, nomineeResult] = await Promise.all([businessPromise, familyPromise, nomineePromise]);
                     await transaction.commit();
-
-
-                    // registration fee collected from member 
-            // registration fee collected from member 
+ 
                     // registration fee collected from member 
                     var registrationFeeResult = await api.findOneAsync(sequelize, "RegistrationFee", {
                         where: { deleted: '0' },
