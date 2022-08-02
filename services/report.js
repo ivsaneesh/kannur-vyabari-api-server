@@ -569,36 +569,36 @@ class Report {
                 member_condition.area_id = req.body.area_id;
             }
 
-            var condition = { where: { area_id: 1 } };
+            var condition = { where: { area_id: req.body.area_id } };
             var areaResult = await api.findAllAsync(sequelize, "Unit", condition);
 
             /// area plus memeber
-            var member_condition = { where: { plus_member: 1, area_id: 1 } };
+            var member_condition = { where: { plus_member: 1, area_id: req.body.area_id } };
             var reportResult = {};
             reportResult.plus_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area migrated total 
-            member_condition = { where: { migrated: 1, area_id: 1 } };
+            member_condition = { where: { migrated: 1, area_id: req.body.area_id } };
             reportResult.migrated_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area active total
-            member_condition = { where: { active: 1, dead: 0, area_id: 1 } };
+            member_condition = { where: { active: 1, dead: 0, area_id: req.body.area_id } };
             reportResult.active_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area dead total
-            member_condition = { where: { dead: 1, area_id: 1 } };
+            member_condition = { where: { dead: 1, area_id: req.body.area_id } };
             reportResult.total_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area normal dead member
-            member_condition = { where: { dead: 1, plus_member: 0, area_id: 1 } };
+            member_condition = { where: { dead: 1, plus_member: 0, area_id: req.body.area_id } };
             reportResult.normal_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area plus dead member
-            member_condition = { where: { dead: 1, plus_member: 1, area_id: 1 } };
+            member_condition = { where: { dead: 1, plus_member: 1, area_id: req.body.area_id } };
             reportResult.plus_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
 
             /// area all total 
-            member_condition = { where: { area_id: 1, } };
+            member_condition = { where: { area_id: req.body.area_id } };
             reportResult.total = await api.findCountAsync(sequelize, "Member", unit_condition);
 
             var area_count_result = [];
@@ -611,31 +611,31 @@ class Report {
                 unitResult.id_number = areaResult[i].id_number;
 
                 /// area active total 
-                unit_condition = { where: { active: 1, dead: 0, area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { active: 1, dead: 0, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.active_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit plus memeber
-                var unit_condition = { where: { plus_member: 1, area_id: 1, unit_id: areaResult[i].id } };
+                var unit_condition = { where: { plus_member: 1, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.plus_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit migrated total 
-                unit_condition = { where: { migrated: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { migrated: 1, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.migrated_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit dead total 
-                unit_condition = { where: { dead: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { dead: 1, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.total_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit normal dead member 
-                unit_condition = { where: { dead: 1, plus_member: 0, area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { dead: 1, plus_member: 0, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.normal_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit plus dead total 
-                unit_condition = { where: { dead: 1, plus_member: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { dead: 1, plus_member: 1, area_id: req.body.area_id, unit_id: areaResult[i].id } };
                 unitResult.plus_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
 
                 /// unit all total 
-                unit_condition = { where: { area_id: 1, unit_id: areaResult[i].id } };
+                unit_condition = { where: { area_id: req.body.area_idl̥, unit_id: areaResult[i].id } };
                 unitResult.total = await api.findCountAsync(sequelize, "Member", unit_condition);
 
 
