@@ -264,8 +264,8 @@ class Api {
     return await sequelize.models[model][json.pagination ? (json.pagination == 1 ? 'findAndCountAll' : 'findAll') : 'findAll'](json)
   }
 
-   //Find one using join
-   async findOneAsync(sequelize, model, json) {
+  //Find one using join
+  async findOneAsync(sequelize, model, json) {
     return await sequelize.models[model].findOne(json)
   }
 
@@ -319,16 +319,21 @@ class Api {
     })
   }
 
-    //Find sum
-    findSum(sequelize, model, json, cb) {
-      sequelize.models[model]['sum'](json).then(function (data) {
-        return cb("success", data, "")
-      }).catch(function (err) {
-        // handle error;
-        console.log(err)
-        return cb("error", {}, sequelize.getErrors(err))
-      })
-    }
+  //Find Count async
+  async findCountAsync(sequelize, model, json, cb) {
+    return await sequelize.models[model]['count'](json);
+  }
+
+  //Find sum
+  findSum(sequelize, model, json, cb) {
+    sequelize.models[model]['sum'](json).then(function (data) {
+      return cb("success", data, "")
+    }).catch(function (err) {
+      // handle error;
+      console.log(err)
+      return cb("error", {}, sequelize.getErrors(err))
+    })
+  }
 
 
 

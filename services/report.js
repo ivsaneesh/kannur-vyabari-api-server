@@ -558,6 +558,100 @@ class Report {
 
     }
 
+    /// report of members. will return number of member in area and unit
+    async memberReport(req, res) {
+        var sequelize = req.app.get('sequelize')
+        const Op = sequelize.Sequelize.Op
+
+        var member_condition = {}
+        try {
+            if (utils.isNotUndefined(req.body.area_id)) {
+                member_condition.area_id = req.body.area_id;
+            }
+
+            var condition = { where: { area_id: 1 } };
+            var areaResult = await api.findAllAsync(sequelize, "Unit", condition);
+
+            /// area plus memeber
+            var member_condition = { where: { plus_member: 1, area_id: 1 } };
+            var reportResult = {};
+            reportResult.plus_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area migrated total 
+            member_condition = { where: { migrated: 1, area_id: 1 } };
+            reportResult.migrated_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area active total
+            member_condition = { where: { active: 1, dead: 0, area_id: 1 } };
+            reportResult.active_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area dead total
+            member_condition = { where: { dead: 1, area_id: 1 } };
+            reportResult.total_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area normal dead member
+            member_condition = { where: { dead: 1, plus_member: 0, area_id: 1 } };
+            reportResult.normal_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area plus dead member
+            member_condition = { where: { dead: 1, plus_member: 1, area_id: 1 } };
+            reportResult.plus_dead_member = await api.findCountAsync(sequelize, "Member", member_condition);
+
+            /// area all total 
+            member_condition = { where: { area_id: 1, } };
+            reportResult.total = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+            var area_count_result = [];
+
+            for (var i = 0; i < areaResult.length; i++) {
+                let unitResult = {};
+
+                unitResult.id = areaResult[i].id;
+                unitResult.name = areaResult[i].name;
+                unitResult.id_number = areaResult[i].id_number;
+
+                /// area active total 
+                unit_condition = { where: { active: 1, dead: 0, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.active_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit plus memeber
+                var unit_condition = { where: { plus_member: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.plus_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit migrated total 
+                unit_condition = { where: { migrated: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.migrated_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit dead total 
+                unit_condition = { where: { dead: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.total_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit normal dead member 
+                unit_condition = { where: { dead: 1, plus_member: 0, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.normal_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit plus dead total 
+                unit_condition = { where: { dead: 1, plus_member: 1, area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.plus_dead_member = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+                /// unit all total 
+                unit_condition = { where: { area_id: 1, unit_id: areaResult[i].id } };
+                unitResult.total = await api.findCountAsync(sequelize, "Member", unit_condition);
+
+
+                area_count_result.push(unitResult);
+                reportResult.Area = area_count_result;
+            }
+            reportResult.Area = area_count_result;
+            return res.json({ "status": 'success', "data": reportResult });
+        }
+        catch (err) {
+            console.error("memberReport Exception :---->")
+            console.error(err)
+            return res.json({ "status": 'error', "message": sequelize.getErrors(err) })
+        }
+    }
+
 }
 
 module.exports = new Report()

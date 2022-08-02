@@ -68,6 +68,10 @@ module.exports = function(app) {
         if(req.user.type.includes('admin'))
         member.deleteMember(req, res)
     });
+    app.post('/member/report',  function(req, res)  {
+        if(req.user.type.includes('admin'))
+        report.memberReport(req, res)
+    });
     /// collection
     app.get('/collectionAmount',  function(req, res)  {
         collection.collectionAmount(req, res)
